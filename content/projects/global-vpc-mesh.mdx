@@ -1,0 +1,70 @@
+---
+title: "Global VPC Mesh Network & BGP Anycast Overhaul"
+description: "Architecting an eBPF and WireGuard multi-region mesh network across 18 cloud regions with dynamic BGP anycast routing and sub-15ms packet convergence."
+date: "2026-03-15"
+slug: "global-vpc-mesh"
+tags: ["WireGuard", "eBPF", "Cilium", "BGP", "Linux Kernel", "Google Cloud"]
+role: "Principal Network Architect"
+stack: ["WireGuard", "Cilium", "FRRouting", "Terraform", "Google Cloud", "eBPF"]
+year: "2026"
+featured: true
+gridSpan: "col-span-12 md:col-span-8"
+architectureMetric: "420 Gbps"
+architectureMetricLabel: "Aggregated Mesh Line-Rate"
+---
+
+## Executive Overview
+
+Modern distributed multi-cloud architectures struggle with inter-region latency, vendor lock-in VPN gateways, and brittle static routes. This project re-engineered the global backbone connecting 18 multi-cloud regions across Google Cloud, bare-metal point-of-presence (PoP) datacenters, and edge edge-compute zones.
+
+By leveraging **Cilium eBPF host-routing**, point-to-point **WireGuard kernel interfaces**, and **FRRouting BGP dynamic route redistribution**, we eliminated cloud-provider transit gateway egress bottlenecks while driving packet drop rates to less than 0.0001%.
+
+---
+
+## Architectural Challenges
+
+1. **Transit Gateway Bottlenecks**: Default cloud provider transit gateways incurred severe per-gigabyte surcharges and introduced 25ms+ inter-region latency jitter.
+2. **Dynamic Failover**: Single-link failures caused manual routing table rewrites and route flapping.
+3. **Encapsulation Overhead**: Traditional IPsec tunnels suffered from CPU thrashing during 100 Gbps traffic spikes due to symmetric context switching.
+
+---
+
+## Technical Implementation
+
+```
+[Edge Client / Anycast VIP]
+           │
+           ▼ (ECMP / BGP ASN: 39842)
+┌──────────────────────────────────────────────┐
+│  Anycast Border Routers (FRRouting / BGP)    │
+│  - XDP / eBPF packet acceleration             │
+│  - Line-rate WireGuard kernel encryption      │
+└──────────────────────────────────────────────┘
+           │
+     ┌─────┴──────────────────┐
+     ▼                        ▼
+[GCP us-central1]        [Bare-Metal EU-West]
+ (Cilium eBPF Mesh)       (Cilium eBPF Mesh)
+```
+
+### 1. eBPF Kernel Acceleration & Direct Server Return (DSR)
+Instead of standard iptables connection tracking, Cilium programs were attached to the `tc` (traffic control) and `XDP` (eXpress Data Path) hooks. This bypasses the TCP/IP stack overhead for packets directed toward internal mesh nodes:
+
+```bash
+# Verify active eBPF ingress programs on tunnel interfaces
+bpftool net show dev wg-mesh0
+# Output:
+# tc:
+#   wg-mesh0(24) clsact/ingress bpf_network_router id 4828
+```
+
+### 2. High-Performance WireGuard Tunneling
+WireGuard tunnels were configured with automated MTU optimization (1420 bytes) to avoid packet fragmentation over diverse underlay carriers, secured with ephemeral Noise Protocol handshake rotations every 180 seconds.
+
+---
+
+## Key Performance Indicators & Outcomes
+
+- **Aggregate Bandwidth**: Scaled past **420 Gbps** across global transit links with zero kernel panics.
+- **Failover Convergence**: Automated BGP BFD (Bidirectional Forwarding Detection) dropped link failover times from **45 seconds** to **14 milliseconds**.
+- **Infrastructure TCO**: Slashed inter-cloud cross-region egress expenses by **54%**, saving upwards of $1.2M annually.

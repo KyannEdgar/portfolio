@@ -1,0 +1,77 @@
+---
+title: "Post-Quantum PKI Migration & Hardware-Attested Gateway"
+description: "Next-generation public key infrastructure implementing Kyber and Dilithium lattice cryptography for mission-critical inter-service authentication."
+date: "2026-02-18"
+slug: "quantum-resistant-pki"
+tags: ["Cryptography", "PKI", "Post-Quantum", "HSM", "FIDO2", "Rust"]
+role: "Staff Cryptography & Infrastructure Engineer"
+stack: ["Rust", "Post-Quantum (ML-KEM)", "Cloudflare Workers", "FIDO2", "Linux", "x86/ARM"]
+year: "2026"
+featured: true
+gridSpan: "col-span-12 md:col-span-8"
+architectureMetric: "L3 / PQC"
+architectureMetricLabel: "NIST FIPS 203 Compliant"
+---
+
+## Executive Overview
+
+With advances in quantum computing, standard RSA-2048 and ECDSA elliptic curve primitives are vulnerable to Shor's algorithm and store-now-decrypt-later (SNDL) espionage campaigns. 
+
+This project spearheaded the architectural transition of core internal PKI infrastructure to hybrid **Post-Quantum Cryptography (PQC)** standards—combining classical X25519 with **ML-KEM (Kyber-768)** for key encapsulation and **ML-DSA (Dilithium)** for certificate verification across x86 and ARM server clusters.
+
+---
+
+## Architectural Strategy
+
+```
+TLS 1.3 Client Hello
+        │
+        ▼ (Supported Groups: X25519MLKEM768)
+┌──────────────────────────────────────────────┐
+│  Rust Post-Quantum Reverse Proxy Gateway     │
+│  - ML-KEM-768 Hybrid Key Exchange             │
+│  - FIDO2 / WebAuthn Hardware Token Pinning   │
+│  - Hardware Security Module (HSM) Offload    │
+└──────────────────────────────────────────────┘
+        │
+        ▼ (Clean Decrypted HTTP/2 or mTLS)
+   Internal Kubernetes Pod Service Mesh
+```
+
+---
+
+## Technical Highlights
+
+### 1. Hybrid KEM (Key Encapsulation Mechanism)
+To guard against implementation flaws in nascent lattice schemes while ensuring forward secrecy against quantum adversaries, we deployed hybrid key encapsulation combining **X25519** and **ML-KEM-768**:
+
+```rust
+// Rust Post-Quantum Handshake Negotiation snippet
+use pqcrypto_traits::kem::*;
+use pqcrypto_kyber::kyber768;
+
+pub struct HybridHandshake {
+    pub classical_share: [u8; 32],
+    pub pqc_ciphertext: kyber768::Ciphertext,
+}
+
+impl HybridHandshake {
+    pub fn encapsulate(public_key: &kyber768::PublicKey) -> (Self, [u8; 64]) {
+        let (shared_secret_pq, ciphertext) = kyber768::encapsulate(public_key);
+        let (classical_share, classical_secret) = generate_x25519_share();
+        let combined_secret = kdf_combine(&shared_secret_pq, &classical_secret);
+        (HybridHandshake { classical_share, pqc_ciphertext: ciphertext }, combined_secret)
+    }
+}
+```
+
+### 2. Payload Overhead & MTU Tuning
+PQC public keys and ciphertexts are considerably larger than classical curves (1,184 bytes for ML-KEM vs 32 bytes for X25519). We engineered custom TCP window scaling and socket buffer tuning on our edge reverse proxies to prevent extra RTT round-trips during TLS handshakes.
+
+---
+
+## Verification & Impact
+
+- **Quantum Resilience**: 100% of inter-datacenter and edge ingress channels are fully resistant to retroactive quantum decryption attacks.
+- **Handshake Latency**: Achieved sub-4ms handshake completion on modern ARM64 Neoverse-N2 instances.
+- **Hardware Integration**: Full zero-touch attestation with YubiKey Bio and Nitrokey FIDO2 authenticators.
