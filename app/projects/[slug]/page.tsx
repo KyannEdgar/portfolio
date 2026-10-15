@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllProjects, getProjectBySlug } from "@/lib/mdx";
-import { mdxComponents } from "@/components/mdx-components";
+import { mdxComponents } from "@/components/ui/mdx-components";
 import { ArrowLeft, Cpu, Layers, Calendar, UserCheck, ShieldCheck } from "lucide-react";
 
 interface ProjectPageProps {

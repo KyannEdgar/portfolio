@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { siteConfig } from "@/config";
 import { customSpring } from "@/lib/animation";
-import { SocialIcon } from "@/components/social-icons";
+import { SocialIcon } from "@/components/ui/icons/social-icons";
 import { ArrowUpRight, Share2, Mail } from "lucide-react";
 
 export function SocialsSection() {
@@ -13,7 +13,7 @@ export function SocialsSection() {
       className="relative w-full border-t border-border px-6 py-24 md:px-12 md:py-32"
     >
       <div className="mx-auto max-w-7xl">
-        {/* Numbered Section Header: 05/ Socials */}
+        {/* Numbered Section Header: 06/ Socials */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -33,7 +33,7 @@ export function SocialsSection() {
             <div>
               <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
                 <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
-                  05/
+                  06/
                 </span>
                 Socials &amp; Connect
               </h2>

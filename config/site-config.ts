@@ -1,73 +1,4 @@
-export interface NavItem {
-  id: string;
-  number: string;
-  label: string;
-  href: string;
-}
-
-export interface SocialLink {
-  platform: string;
-  label: string;
-  url: string;
-  handle: string;
-}
-
-export interface ExperienceItem {
-  period: string;
-  role: string;
-  company: string;
-  location: string;
-  description: string;
-  achievements: string[];
-  skills: string[];
-}
-
-export interface EducationItem {
-  period: string;
-  degree: string;
-  institution: string;
-  location: string;
-  description: string;
-  honors?: string;
-  focusAreas: string[];
-}
-
-export interface CertificationItem {
-  id: string;
-  title: string;
-  issuer: string;
-  period: string;
-  credentialId: string;
-  credentialUrl?: string;
-  description: string;
-  skills: string[];
-  status?: "VERIFIED" | "ACTIVE";
-}
-
-export interface SiteConfig {
-  name: string;
-  author: string;
-  role: string;
-  title: string;
-  description: string;
-  location: string;
-  systemStatus: {
-    state: "ONLINE" | "DEGRADED" | "MAINTENANCE";
-    region: string;
-    uptime: string;
-  };
-  navigation: NavItem[];
-  socials: SocialLink[];
-  experience: ExperienceItem[];
-  education: EducationItem[];
-  certifications: CertificationItem[];
-  marqueeTech: string[];
-  metrics: {
-    label: string;
-    value: string;
-    detail: string;
-  }[];
-}
+import { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
   name: "Kian Edgar Villamater Abustan",
@@ -77,17 +8,13 @@ export const siteConfig: SiteConfig = {
   description:
     "High-throughput multi-cloud architectures, resilient zero-trust networking, eBPF-driven telemetry, and post-quantum cryptographic systems.",
   location: "Distributed // Global Anycast",
-  systemStatus: {
-    state: "ONLINE",
-    region: "GLOBAL-ANYCAST // ASN:39842",
-    uptime: "99.999% SLA",
-  },
   navigation: [
-    { id: "projects", number: "01", label: "Projects", href: "#projects" },
-    { id: "experience", number: "02", label: "Experience", href: "#experience" },
-    { id: "education", number: "03", label: "Education", href: "#education" },
-    { id: "certifications", number: "04", label: "Certifications", href: "#certifications" },
-    { id: "socials", number: "05", label: "Socials", href: "#socials" },
+    { id: "certifications", number: "01", label: "Certifications", href: "#certifications" },
+    { id: "skills", number: "02", label: "Skills", href: "#skills" },
+    { id: "projects", number: "03", label: "Projects", href: "#projects" },
+    { id: "experience", number: "04", label: "Experience", href: "#experience" },
+    { id: "education", number: "05", label: "Education", href: "#education" },
+    { id: "socials", number: "06", label: "Socials", href: "#socials" },
   ],
   socials: [
     {
@@ -246,37 +173,15 @@ export const siteConfig: SiteConfig = {
     },
   ],
   marqueeTech: [
-    "Next.js",
+    "AWS",
     "Google Cloud",
-    "Firebase",
-    "Supabase",
-    "Vercel",
+    "Kubernetes",
+    "Terraform",
     "Linux",
-    "SQL",
-    "Cryptography",
-    "n8n",
-    "x86/ARM architecture",
-  ],
-  metrics: [
-    {
-      label: "Global Mesh Throughput",
-      value: "420 Gbps",
-      detail: "Line-rate wireguard kernel data path",
-    },
-    {
-      label: "MTTD / MTTR",
-      value: "< 14s",
-      detail: "Autonomous eBPF threat neutralization",
-    },
-    {
-      label: "Zero-Trust Endpoints",
-      value: "140K+",
-      detail: "mTLS + SPIFFE/SPIRE attestation",
-    },
-    {
-      label: "Cost Optimization Index",
-      value: "-38.4%",
-      detail: "Kubernetes spot & ARM64 autoscaling",
-    },
+    "Next.js",
+    "Supabase",
+    "Firebase",
+    "Wireshark",
+    "Figma",
   ],
 };

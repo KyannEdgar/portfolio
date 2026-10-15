@@ -1,6 +1,6 @@
 import React from "react";
 
-interface SocialIconProps extends React.SVGProps<SVGSVGElement> {
+export interface SocialIconProps extends React.SVGProps<SVGSVGElement> {
   platform: string;
 }
 
