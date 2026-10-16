@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
+          "var(--font-sans)",
           "var(--font-geist-sans)",
           "system-ui",
           "-apple-system",
@@ -21,6 +22,7 @@ const config: Config = {
           "sans-serif",
         ],
         mono: [
+          "var(--font-mono)",
           "var(--font-geist-mono)",
           "ui-monospace",
           "SFMono-Regular",

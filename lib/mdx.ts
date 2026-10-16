@@ -15,7 +15,7 @@ export interface ProjectFrontmatter {
   year: string;
   heroImage?: string;
   featured?: boolean;
-  gridSpan?: "col-span-12 md:col-span-8" | "col-span-12 md:col-span-4" | "col-span-12 md:col-span-6" | "col-span-12";
+  gridSpan?: typeof VALID_GRID_SPANS[number];
   architectureMetric?: string;
   architectureMetricLabel?: string;
 }
@@ -35,6 +35,13 @@ export function getProjectSlugs(): string[] {
     .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
     .map((file) => file.replace(/\.mdx?$/, ""));
 }
+
+const VALID_GRID_SPANS = [
+  "col-span-12 md:col-span-8",
+  "col-span-12 md:col-span-4",
+  "col-span-12 md:col-span-6",
+  "col-span-12",
+] as const;
 
 export function getProjectBySlug(slug: string): Project | null {
   try {
@@ -65,7 +72,9 @@ export function getProjectBySlug(slug: string): Project | null {
       year: data.year ? String(data.year) : "2026",
       heroImage: data.heroImage || "",
       featured: Boolean(data.featured),
-      gridSpan: data.gridSpan || "col-span-12 md:col-span-6",
+      gridSpan: VALID_GRID_SPANS.includes(data.gridSpan as typeof VALID_GRID_SPANS[number])
+        ? (data.gridSpan as typeof VALID_GRID_SPANS[number])
+        : "col-span-12 md:col-span-6",
       architectureMetric: data.architectureMetric || "",
       architectureMetricLabel: data.architectureMetricLabel || "",
     };

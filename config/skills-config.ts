@@ -1,4 +1,4 @@
-import { SkillCategoryDef, SkillItem } from "@/types";
+import { SkillCategory, SkillCategoryDef, SkillItem, MarqueeItem } from "@/types";
 
 export const SKILL_CATEGORIES: SkillCategoryDef[] = [
   {
@@ -172,3 +172,100 @@ export const SKILLS_DATA: SkillItem[] = [
     tags: ["Routing", "Switching", "Simulation"],
   },
 ];
+
+export interface GetSkillsMarqueeItemsOptions {
+  includeTechnologies?: boolean;
+  includeConcepts?: boolean;
+  category?: SkillCategory;
+  deduplicateConcepts?: boolean;
+}
+
+/**
+ * Dynamically generates marquee items comprising technologies and concepts from SKILLS_DATA.
+ */
+export function getSkillsMarqueeItems(
+  options: GetSkillsMarqueeItemsOptions = {}
+): MarqueeItem[] {
+  const {
+    includeTechnologies = true,
+    includeConcepts = true,
+    category,
+    deduplicateConcepts = false,
+  } = options;
+
+  const targetSkills =
+    category && category !== "all"
+      ? SKILLS_DATA.filter((s) => s.category === category)
+      : SKILLS_DATA;
+
+  const items: MarqueeItem[] = [];
+  const seenConcepts = new Set<string>();
+
+  targetSkills.forEach((skill) => {
+    // 1. Add technology
+    if (includeTechnologies) {
+      items.push({
+        id: `tech-${skill.name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
+        label: skill.name,
+        name: skill.name,
+        type: "technology",
+        icon: skill.icon,
+        category: skill.category,
+      });
+    }
+
+    // 2. Add concepts from tags
+    if (includeConcepts && skill.tags && skill.tags.length > 0) {
+      skill.tags.forEach((tag) => {
+        if (deduplicateConcepts) {
+          const normalized = tag.toLowerCase();
+          if (seenConcepts.has(normalized)) return;
+          seenConcepts.add(normalized);
+        }
+
+        items.push({
+          id: `concept-${skill.name}-${tag}`.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+          label: tag,
+          name: tag,
+          type: "concept",
+          category: skill.category,
+        });
+      });
+    }
+  });
+
+  return items;
+}
+
+/**
+ * Dynamically extracts all technologies with metadata from SKILLS_DATA.
+ */
+export function getSkillsTechnologies(): {
+  name: string;
+  icon: string;
+  category: SkillCategory;
+}[] {
+  return SKILLS_DATA.map((skill) => ({
+    name: skill.name,
+    icon: skill.icon,
+    category: skill.category,
+  }));
+}
+
+/**
+ * Dynamically extracts all unique concepts (tags) across all skills in SKILLS_DATA.
+ */
+export function getSkillsConcepts(): string[] {
+  const conceptsSet = new Set<string>();
+  SKILLS_DATA.forEach((skill) => {
+    skill.tags?.forEach((tag) => conceptsSet.add(tag));
+  });
+  return Array.from(conceptsSet);
+}
+
+/**
+ * Default precomputed marquee items dynamically combining all technologies and concepts.
+ */
+export const SKILLS_MARQUEE_ITEMS: MarqueeItem[] = getSkillsMarqueeItems();
+export const SKILLS_TECHNOLOGIES = getSkillsTechnologies();
+export const SKILLS_CONCEPTS = getSkillsConcepts();

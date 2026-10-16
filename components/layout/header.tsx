@@ -12,9 +12,17 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string>("landing");
   const [hidden, setHidden] = useState(false);
 
+  const scrollAnimationRef = React.useRef<number | null>(null);
+  const isAutoScrollingRef = React.useRef<boolean>(false);
+
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    if (isAutoScrollingRef.current) {
+      setHidden(false);
+      return;
+    }
+
     const previous = scrollY.getPrevious() ?? 0;
     const diff = latest - previous;
 
@@ -24,6 +32,65 @@ export function Header() {
       setHidden(false);
     }
   });
+
+  const handleSmoothScroll = (targetId: string, duration: number = 1100) => {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      // Fallback if navigating from another route
+      window.location.href = `/#${targetId}`;
+      return;
+    }
+
+    if (scrollAnimationRef.current !== null) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+
+    isAutoScrollingRef.current = true;
+    setHidden(false);
+
+    const headerOffset = 80; // Matches h-20 header height
+    const targetPosition =
+      targetId === "landing"
+        ? 0
+        : Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+    const startPosition = window.scrollY;
+    const distance = targetPosition - startPosition;
+    let startTime: number | null = null;
+
+    const easeInOutCubic = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const step = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = easeInOutCubic(progress);
+
+      window.scrollTo(0, startPosition + distance * ease);
+
+      if (elapsed < duration) {
+        scrollAnimationRef.current = requestAnimationFrame(step);
+      } else {
+        scrollAnimationRef.current = null;
+        isAutoScrollingRef.current = false;
+        // Update URL hash without instant jumping
+        window.history.pushState(null, "", `#${targetId}`);
+        setActiveSection(targetId);
+      }
+    };
+
+    scrollAnimationRef.current = requestAnimationFrame(step);
+  };
+
+  // Clean up any ongoing animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollAnimationRef.current !== null) {
+        cancelAnimationFrame(scrollAnimationRef.current);
+      }
+    };
+  }, []);
 
   // Track scroll position for header frosted glass (GEMINI.md Rule 5)
   useEffect(() => {
@@ -107,10 +174,15 @@ export function Header() {
         {/* Brand / Logo */}
         <Link
           href="/#landing"
-          onClick={() => setActiveSection("landing")}
-          className="text-base font-bold tracking-tight text-foreground transition-opacity hover:opacity-80"
+          onClick={(e) => {
+            e.preventDefault();
+            handleSmoothScroll("landing");
+          }}
+          className="font-mono text-sm md:text-base font-bold tracking-widest text-foreground transition-opacity duration-200 hover:opacity-70"
         >
-          {siteConfig.name}
+          <span>KA</span>
+          <span className="text-muted-foreground font-normal">/</span>
+          <span>01</span>
         </Link>
 
         {/* Center / Navigation: Spaced-out, minimalist, clean unboxed text links with active indicator */}
@@ -122,7 +194,10 @@ export function Header() {
               <Link
                 key={item.id}
                 href={item.href}
-                onClick={() => setActiveSection(item.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSmoothScroll(item.id);
+                }}
                 className={`relative py-1 text-sm font-medium tracking-wide transition-colors duration-200 ${
                   isActive
                     ? "text-foreground font-semibold"

@@ -1,6 +1,26 @@
 import React from "react";
+import Image from "next/image";
 
 export const mdxComponents = {
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+    const { src, alt, width, height } = props;
+    // Skip next/image for data URIs or missing src
+    if (!src || typeof src !== "string" || src.startsWith("data:")) {
+      return <img {...props} className="my-6 rounded-xl border border-border w-full" />;
+    }
+    return (
+      <span className="block my-6 overflow-hidden rounded-xl border border-border">
+        <Image
+          src={src as string}
+          alt={alt || ""}
+          width={typeof width === "number" ? width : 1200}
+          height={typeof height === "number" ? height : 630}
+          className="w-full h-auto object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 896px"
+        />
+      </span>
+    );
+  },
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mt-10 mb-4 uppercase"

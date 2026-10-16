@@ -67,6 +67,17 @@ export interface SkillCategoryDef {
   description: string;
 }
 
+export type MarqueeItemType = "technology" | "concept";
+
+export interface MarqueeItem {
+  id: string;
+  label: string;
+  name?: string;
+  type: MarqueeItemType;
+  icon?: string;
+  category?: SkillCategory;
+}
+
 export interface SiteConfig {
   name: string;
   author: string;
@@ -80,6 +91,7 @@ export interface SiteConfig {
   education: EducationItem[];
   certifications: CertificationItem[];
   marqueeTech: string[];
+  marqueeItems?: MarqueeItem[];
   metrics?: {
     label: string;
     value: string;

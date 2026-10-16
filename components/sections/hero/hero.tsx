@@ -1,142 +1,285 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 import { siteConfig } from "@/config";
 import {
   heroContainerVariants,
   heroItemVariants,
 } from "@/lib/animation";
-import { ArrowDownRight, Award, Terminal } from "lucide-react";
 import { SocialIcon } from "@/components/ui/icons/social-icons";
 
-// Dynamically import the 3D Canvas to prevent SSR WebGL canvas mismatches
-const Hero3D = dynamic(
-  () => import("@/components/sections/hero/hero-3d").then((mod) => mod.Hero3D),
+const PORTRAITS = [
   {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="h-20 w-20 animate-pulse rounded-full border border-white/20" />
-      </div>
-    ),
-  }
-);
+    src: "/images/portrait-1.jpg",
+    alt: "Kian Abustan - Graduation Portrait (No Cap)",
+  },
+  {
+    src: "/images/portrait-2.jpg",
+    alt: "Kian Abustan - Graduation Portrait (Holding Cap)",
+  },
+  {
+    src: "/images/portrait-3.jpg",
+    alt: "Kian Abustan - Graduation Portrait (Academic Cap A)",
+  },
+  {
+    src: "/images/portrait-4.jpg",
+    alt: "Kian Abustan - Graduation Portrait (Academic Cap B)",
+  },
+];
 
 export function Hero() {
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [isHoveringPicture, setIsHoveringPicture] = useState(false);
+  const [hoveredSocialIndex, setHoveredSocialIndex] = useState<number | null>(null);
+  const [isInsideHero, setIsInsideHero] = useState(false);
+
+  // Compute visibility of the global trailing cursor bubble
+  const isBubbleVisible = isInsideHero && !isHoveringPicture && hoveredSocialIndex === null;
+
+  // Water fluid lag spring configuration for cursor bubble
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
+  const springConfig = { stiffness: 120, damping: 18, mass: 0.6 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+    if (!isInsideHero) setIsInsideHero(true);
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+    setIsInsideHero(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsInsideHero(false);
+    setIsHoveringPicture(false);
+    setHoveredSocialIndex(null);
+  };
+
+  const handleCyclePhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPhotoIndex((prev) => (prev + 1) % PORTRAITS.length);
+  };
+
   return (
     <section
       id="landing"
-      className="relative flex min-h-screen w-full items-center overflow-hidden px-6 pt-24 pb-16 md:px-12 bg-grid-pattern"
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="relative flex min-h-screen w-full flex-col justify-between px-6 pt-24 pb-8 md:px-12 md:pb-12 bg-background overflow-hidden select-none"
     >
       {/* Background ambient lighting - strictly monochrome */}
-      <div className="pointer-events-none absolute top-1/3 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.03] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.03] blur-[140px]" />
 
-      {/* Absolute 3D Architectural Canvas Layer */}
-      <div
-        className="absolute inset-y-0 right-0 w-full md:w-[60vw] lg:w-[55vw] h-full pointer-events-none z-0 overflow-visible flex items-center justify-center"
+      {/* Trailing Inverted Fluid Water Bubble (Scoped to Hero, Desktop Only) */}
+      <motion.div
+        className="pointer-events-none absolute -top-12 -left-12 z-30 rounded-full bg-white mix-blend-difference hidden md:block"
         style={{
-          WebkitMaskImage: "radial-gradient(circle at 60% 50%, black 45%, transparent 85%)",
-          maskImage: "radial-gradient(circle at 60% 50%, black 45%, transparent 85%)",
+          x: smoothX,
+          y: smoothY,
         }}
+        animate={{
+          width: 70,
+          height: 70,
+          opacity: isBubbleVisible ? 1 : 0,
+          scale: isBubbleVisible ? 1 : 0.5,
+        }}
+        transition={{ type: "spring", stiffness: 250, damping: 22 }}
+      />
+
+      {/* Master Framer Motion Stagger Container */}
+      <motion.div
+        variants={heroContainerVariants}
+        initial="hidden"
+        animate="visible"
+        className="flex flex-1 flex-col justify-between w-full mx-auto"
       >
-        <Hero3D />
-      </div>
+        {/* Invisible Top Rail for optical vertical centering */}
+        <div className="hidden md:block h-6 w-full opacity-0 pointer-events-none" />
 
-      {/* Main Content Grid Container */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
-          
-          {/* Left Column: Massive Typography & CTA Buttons (8 cols) */}
-          <motion.div
-            variants={heroContainerVariants}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col justify-center lg:col-span-8"
+        {/* Centerpiece: Massive Editorial Typographic Lockup with Dual-Axis Expandable Portrait */}
+        <div className="my-auto flex flex-col items-center justify-center w-full py-8 md:py-12">
+          <motion.h1
+            variants={heroItemVariants}
+            className="w-full text-center text-5xl sm:text-6xl md:text-[5.5vw] lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-none text-foreground select-none"
           >
-            {/* Tag / Category Indicator */}
             <motion.div
-              variants={heroItemVariants}
-              className="mb-6 flex items-center gap-3"
+              layout
+              transition={{ type: "spring", stiffness: 240, damping: 22 }}
+              className="flex flex-col md:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8"
             >
-              <span className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
-                <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
-                SYSTEM ARCHITECTURE &amp; SECURITY
-              </span>
-              <span className="h-px flex-1 max-w-[80px] bg-border" />
-            </motion.div>
-
-            {/* Massive Display Heading */}
-            <motion.h1
-              variants={heroItemVariants}
-              className="text-5xl font-black tracking-tighter leading-none text-foreground sm:text-6xl md:text-7xl lg:text-8xl uppercase"
-            >
-              Infrastructure &amp; <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-foreground to-muted-foreground inline-block pb-2">
-                Cloud Engineering
-              </span>
-            </motion.h1>
-
-            {/* Subtitle / Bio */}
-            <motion.p
-              variants={heroItemVariants}
-              className="mt-8 max-w-xl text-base text-muted-foreground md:text-lg font-normal leading-relaxed"
-            >
-              {siteConfig.description} Designing resilient multi-region architectures, line-rate WireGuard mesh networks, and post-quantum cryptographic primitives.
-            </motion.p>
-
-            {/* Dual CTA Buttons */}
-            <motion.div
-              variants={heroItemVariants}
-              className="mt-10 flex flex-wrap items-center gap-4 sm:gap-6"
-            >
-              {/* Primary CTA: Certifications */}
-              <Link
-                href="#certifications"
-                className="group relative inline-flex items-center gap-3 overflow-hidden rounded bg-foreground px-8 py-4 font-mono text-sm font-semibold tracking-wider text-background uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+              {/* Word 1: Kian + Dual-Axis Expandable Portrait */}
+              <motion.div
+                layout
+                transition={{ type: "spring", stiffness: 240, damping: 22 }}
+                className="inline-flex items-center gap-3 sm:gap-4 md:gap-8"
               >
-                <Award className="h-4 w-4" />
-                <span>View Certifications</span>
-                <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              </Link>
+                <motion.span
+                  layout
+                  transition={{ type: "spring", stiffness: 240, damping: 22 }}
+                  className="tracking-tighter transition-opacity duration-300 hover:opacity-85 select-none"
+                >
+                  Kian
+                </motion.span>
 
-              {/* Secondary CTA: Projects */}
-              <Link
-                href="#projects"
-                className="group inline-flex items-center gap-3 rounded border border-card-border bg-card/60 px-8 py-4 font-mono text-sm font-medium tracking-wider text-foreground uppercase backdrop-blur-md transition-all duration-200 hover:border-foreground/40 hover:bg-card/90 active:scale-[0.98]"
+                {/* Center Dual-Axis Expandable Interactive Multi-Portrait Frame */}
+                <motion.div
+                  layout
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Cycle portrait gallery. Showing photo ${photoIndex + 1} of ${PORTRAITS.length}`}
+                  onMouseEnter={() => setIsHoveringPicture(true)}
+                  onMouseLeave={() => setIsHoveringPicture(false)}
+                  onClick={handleCyclePhoto}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setPhotoIndex((prev) => (prev + 1) % PORTRAITS.length);
+                    }
+                  }}
+                  animate={{
+                    width: isHoveringPicture ? "2.3em" : "1.25em",
+                    height: isHoveringPicture ? "1.25em" : "0.85em",
+                    scale: isHoveringPicture ? 1.05 : 1,
+                  }}
+                  transition={{ type: "spring", stiffness: 240, damping: 22 }}
+                  className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md md:rounded-lg border border-border/80 dark:border-white/10 cursor-pointer align-middle shadow-sm focus:outline-none focus:ring-1 focus:ring-foreground/40"
+                >
+                  {/* Multi-Photo Transition Layer */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={photoIndex}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.05 }}
+                      transition={{ duration: 0.22, ease: "easeOut" }}
+                      className="relative h-full w-full"
+                    >
+                      <Image
+                        src={PORTRAITS[photoIndex].src}
+                        alt={PORTRAITS[photoIndex].alt}
+                        fill
+                        priority
+                        sizes="(max-width: 640px) 160px, (max-width: 768px) 220px, (max-width: 1024px) 300px, 360px"
+                        className="object-cover object-[center_20%] grayscale contrast-105 transition-all duration-500 ease-out group-hover:grayscale-0 group-hover:contrast-100"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Subtle Minimalist Index Pill on Hover */}
+                  <AnimatePresence>
+                    {isHoveringPicture && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 4, scale: 0.9 }}
+                        transition={{ duration: 0.15 }}
+                        className="pointer-events-none absolute bottom-1.5 inset-x-0 mx-auto w-fit z-20 rounded bg-background/85 px-2 py-0.5 font-mono text-[9px] md:text-[10px] font-medium tracking-wider text-foreground backdrop-blur-md border border-border/80 uppercase shadow-sm select-none"
+                      >
+                        [{String(photoIndex + 1).padStart(2, "0")} // {String(PORTRAITS.length).padStart(2, "0")}]
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </motion.div>
+
+              {/* Word 2: Abustan */}
+              <motion.span
+                layout
+                transition={{ type: "spring", stiffness: 240, damping: 22 }}
+                className="tracking-tighter transition-opacity duration-300 hover:opacity-85 select-none"
               >
-                <Terminal className="h-4 w-4 text-foreground" />
-                <span>Explore Projects</span>
-              </Link>
+                Abustan
+              </motion.span>
             </motion.div>
+          </motion.h1>
+        </div>
 
-            {/* Minimalist Social Links directly below CTA buttons */}
-            <motion.div
-              variants={heroItemVariants}
-              className="mt-8 flex items-center gap-3 sm:gap-4"
-            >
-              {siteConfig.socials.map((social) => (
-                <a
+        {/* Bottom Editorial Footer Bar (3 Responsive Zones) */}
+        <motion.div
+          variants={heroItemVariants}
+          className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-5 pt-8 text-center"
+        >
+          {/* Zone 1 (Left): Unboxed Social Icons with Dedicated Dock Bubble */}
+          <div className="flex items-center justify-center md:justify-start gap-2 sm:gap-3 order-2 md:order-1">
+            {siteConfig.socials.map((social, idx) => {
+              const isHovered = hoveredSocialIndex === idx;
+
+              return (
+                <motion.a
                   key={social.platform}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.platform}
                   title={`${social.platform}: ${social.handle}`}
-                  className="group flex h-9 w-9 items-center justify-center rounded-md border border-card-border bg-card/60 text-muted-foreground backdrop-blur-sm transition-all duration-200 hover:border-foreground/40 hover:bg-card/90 hover:text-foreground active:scale-95"
+                  onMouseEnter={() => setHoveredSocialIndex(idx)}
+                  onMouseLeave={() => setHoveredSocialIndex(null)}
+                  layout
+                  className="relative flex items-center justify-center h-9 w-9 rounded-full text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  animate={{
+                    scale: isHovered ? 1.25 : 1,
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
+                  {/* Dedicated circle bubble appearing strictly on the hovered icon */}
+                  {isHovered && (
+                    <motion.div
+                      layoutId="socialIconBubble"
+                      className="absolute inset-0 rounded-full bg-foreground/10 dark:bg-white/15 border border-foreground/20 dark:border-white/20"
+                      initial={{ scale: 0.7, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.7, opacity: 0 }}
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                    />
+                  )}
+
                   <SocialIcon
                     platform={social.platform}
-                    className="h-4 w-4 transition-transform group-hover:scale-110"
+                    className="relative z-10 h-4 w-4"
                   />
-                </a>
-              ))}
-            </motion.div>
-          </motion.div>
+                </motion.a>
+              );
+            })}
+          </div>
 
-        </div>
-      </div>
+          {/* Zone 2 (Center): Role Descriptor */}
+          <div className="order-1 md:order-2 flex justify-center px-4">
+            <p className="font-mono text-xs md:text-sm uppercase tracking-wider sm:tracking-widest text-muted-foreground text-center max-w-[260px] md:max-w-none leading-relaxed">
+              Aspiring Network and Cloud Engineer
+            </p>
+          </div>
+
+          {/* Zone 3 (Right): Unboxed Scroll Indicator */}
+          <div className="flex items-center justify-center md:justify-end order-3">
+            <Link
+              href="#certifications"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs md:text-sm uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors duration-200"
+            >
+              <span>Scroll to Explore</span>
+              <span className="inline-block transition-transform duration-300 group-hover:translate-y-1">
+                ↓
+              </span>
+            </Link>
+          </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

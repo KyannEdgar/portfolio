@@ -287,6 +287,17 @@ function OrthogonalRoutingCanvas() {
 export function AboutStatement() {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  // Tracks scroll progress as About approaches the viewport from hero/marquee
+  const { scrollYProgress: approachScrollProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "start start"],
+  });
+
+  const smoothApproachProgress = useSpring(approachScrollProgress, {
+    stiffness: 120,
+    damping: 25,
+  });
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -297,23 +308,23 @@ export function AboutStatement() {
     damping: 25,
   });
 
-  // Part 1 Exit: Opacity 1 -> 0, Scale 1 -> 1.05 across [0.30, 0.38]
-  const part1Opacity = useTransform(smoothProgress, [0.30, 0.38], [1, 0]);
-  const part1Scale = useTransform(smoothProgress, [0.30, 0.38], [1, 1.05]);
+  // Part 1 Exit: Holds across [0.00, 0.10], Exits Opacity 1 -> 0 across [0.12, 0.18]
+  const part1Opacity = useTransform(smoothProgress, [0.12, 0.18], [1, 0]);
+  const part1Scale = useTransform(smoothProgress, [0.12, 0.18], [1, 1.05]);
   const part1Visibility = useTransform(smoothProgress, (v) =>
-    v >= 0.38 ? "hidden" : "visible"
+    v >= 0.18 ? "hidden" : "visible"
   );
 
-  // Part 2 Visibility & Opacity Guard (reveals words across [0.42, 0.70])
-  const part2Opacity = useTransform(smoothProgress, [0.40, 0.42], [0, 1]);
+  // Part 2 Visibility & Reveal
+  const part2Opacity = useTransform(smoothProgress, [0.20, 0.22], [0, 1]);
   const part2Visibility = useTransform(smoothProgress, (v) =>
-    v < 0.40 ? "hidden" : "visible"
+    v < 0.20 ? "hidden" : "visible"
   );
 
-  // Parallax Recede: Keep overall container receding during final [0.75, 1.0] as Projects curtain rises
-  const recedeScale = useTransform(smoothProgress, [0.75, 1], [1, 0.93]);
-  const recedeOpacity = useTransform(smoothProgress, [0.75, 1], [1, 0.3]);
-  const recedeY = useTransform(smoothProgress, [0.75, 1], [0, -40]);
+  // Early Parallax Recede: Depth exit across [0.65, 0.85]
+  const recedeScale = useTransform(smoothProgress, [0.65, 0.85], [1, 0.85]);
+  const recedeOpacity = useTransform(smoothProgress, [0.65, 0.85], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.65, 0.85], [0, -80]);
 
   return (
     <section
@@ -334,7 +345,7 @@ export function AboutStatement() {
 
         {/* Massive Centered Coordinate Space for Sequential Reveal */}
         <div className="relative z-10 w-full max-w-6xl xl:max-w-7xl mx-auto px-6 h-full flex items-center justify-center select-none">
-          {/* Part 1: Reveals [0.02, 0.25], Holds [0.25, 0.30], Exits [0.30, 0.38] */}
+          {/* Part 1: Reveals [0.25, 0.90] on approach, Holds [0.00, 0.10], Exits [0.12, 0.18] */}
           <motion.div
             style={{
               opacity: part1Opacity,
@@ -349,14 +360,14 @@ export function AboutStatement() {
                 token={token}
                 index={index}
                 totalTokens={PART1_TOKENS.length}
-                progress={smoothProgress}
-                rangeStart={0.02}
-                rangeEnd={0.25}
+                progress={smoothApproachProgress}
+                rangeStart={0.25}
+                rangeEnd={0.90}
               />
             ))}
           </motion.div>
 
-          {/* Part 2: Reveals [0.42, 0.70], Holds [0.70, 0.75], Recedes [0.75, 1.0] */}
+          {/* Part 2: Reveals [0.22, 0.45], Reading Buffer [0.45, 0.65], Early Recede [0.65, 0.85] */}
           <motion.div
             style={{
               opacity: part2Opacity,
@@ -371,8 +382,8 @@ export function AboutStatement() {
                 index={index}
                 totalTokens={PART2_TOKENS.length}
                 progress={smoothProgress}
-                rangeStart={0.42}
-                rangeEnd={0.70}
+                rangeStart={0.22}
+                rangeEnd={0.45}
               />
             ))}
           </motion.div>

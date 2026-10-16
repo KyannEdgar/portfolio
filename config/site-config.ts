@@ -1,4 +1,5 @@
 import { SiteConfig } from "@/types";
+import { SKILLS_DATA, SKILLS_MARQUEE_ITEMS } from "./skills-config";
 
 export const siteConfig: SiteConfig = {
   name: "Kian Edgar Villamater Abustan",
@@ -172,16 +173,6 @@ export const siteConfig: SiteConfig = {
       status: "ACTIVE",
     },
   ],
-  marqueeTech: [
-    "AWS",
-    "Google Cloud",
-    "Kubernetes",
-    "Terraform",
-    "Linux",
-    "Next.js",
-    "Supabase",
-    "Firebase",
-    "Wireshark",
-    "Figma",
-  ],
+  marqueeTech: SKILLS_DATA.map((skill) => skill.name),
+  marqueeItems: SKILLS_MARQUEE_ITEMS,
 };
