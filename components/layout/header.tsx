@@ -6,11 +6,14 @@ import Link from "next/link";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { siteConfig } from "@/config";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useHeroCursor } from "@/components/ui/hero-cursor-context";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("landing");
   const [hidden, setHidden] = useState(false);
+
+  const { setHoveredElementBounds, setIsHeaderHovered } = useHeroCursor();
 
   const scrollAnimationRef = React.useRef<number | null>(null);
   const isAutoScrollingRef = React.useRef<boolean>(false);
@@ -18,7 +21,14 @@ export function Header() {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    // Step A: Programmatic Scroll Guard
     if (isAutoScrollingRef.current) {
+      setHidden(false);
+      return;
+    }
+
+    // Step B: Hero Resting State
+    if (latest <= 20) {
       setHidden(false);
       return;
     }
@@ -26,10 +36,36 @@ export function Header() {
     const previous = scrollY.getPrevious() ?? 0;
     const diff = latest - previous;
 
-    if (latest > 100 && diff > 0) {
-      setHidden(true);
-    } else if (diff < 0 || latest <= 100) {
-      setHidden(false);
+    // Step C: Section Boundary Check
+    const hasHero = !!document.getElementById("landing");
+
+    if (hasHero) {
+      const certEl = document.getElementById("certifications");
+      const isInSections1to6 = certEl
+        ? certEl.getBoundingClientRect().top <= 100
+        : false;
+
+      // Hero & About suppression: keep sticky header hidden during both scroll-down and scroll-up
+      if (!isInSections1to6) {
+        setHidden(true);
+        return;
+      }
+
+      // Sections 1–6 sticky behavior
+      if (diff > 0) {
+        setHidden(true);
+      } else if (diff < 0) {
+        setHidden(false);
+      }
+    } else {
+      // Fallback for standalone routes without #landing (e.g. /projects/[slug])
+      if (latest <= 100) {
+        setHidden(false);
+      } else if (diff > 0) {
+        setHidden(true);
+      } else if (diff < 0) {
+        setHidden(false);
+      }
     }
   });
 
@@ -92,10 +128,28 @@ export function Header() {
     };
   }, []);
 
-  // Track scroll position for header frosted glass (GEMINI.md Rule 5)
+  // Track scroll position for header frosted glass and synchronize initial visibility
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 20);
+
+      if (!isAutoScrollingRef.current) {
+        if (currentScrollY <= 20) {
+          setHidden(false);
+        } else {
+          const hasHero = !!document.getElementById("landing");
+          if (hasHero) {
+            const certEl = document.getElementById("certifications");
+            const isInSections1to6 = certEl
+              ? certEl.getBoundingClientRect().top <= 100
+              : false;
+            if (!isInSections1to6) {
+              setHidden(true);
+            }
+          }
+        }
+      }
     };
 
     handleScroll();
@@ -164,6 +218,11 @@ export function Header() {
         stiffness: 300,
         damping: 30,
       }}
+      onMouseEnter={() => setIsHeaderHovered(true)}
+      onMouseLeave={() => {
+        setIsHeaderHovered(false);
+        setHoveredElementBounds(null);
+      }}
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled
           ? "border-b border-border/60 bg-background/80 backdrop-blur-md shadow-sm"
@@ -197,6 +256,21 @@ export function Header() {
                 onClick={(e) => {
                   e.preventDefault();
                   handleSmoothScroll(item.id);
+                }}
+                onMouseEnter={(e) => {
+                  if (window.scrollY <= 20) {
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                    setHoveredElementBounds({
+                      x: rect.left,
+                      y: rect.top,
+                      width: rect.width,
+                      height: rect.height,
+                      shape: "pill",
+                    });
+                  }
+                }}
+                onMouseLeave={() => {
+                  setHoveredElementBounds(null);
                 }}
                 className={`relative py-1 text-sm font-medium tracking-wide transition-colors duration-200 ${
                   isActive

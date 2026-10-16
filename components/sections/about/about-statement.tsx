@@ -328,6 +328,7 @@ export function AboutStatement() {
 
   return (
     <section
+      id="about"
       ref={containerRef}
       className="relative h-[400vh] w-full bg-background transition-colors duration-500 z-10"
     >

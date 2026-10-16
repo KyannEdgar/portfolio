@@ -137,8 +137,18 @@ All worker prompts MUST include these constraints sourced from `GEMINI.md`:
   `heroImage`, `featured`, `gridSpan`, `architectureMetric`,
   `architectureMetricLabel`.
 - **No global state**: Local `useState` only. No context or external stores.
-- **Icon libraries**: `lucide-react` for UI icons; custom SVG wrappers in
-  `components/ui/icons/` for tech and social icons.
+- **Icon libraries**: `lucide-react` for UI icons; custom SVG wrappers in `components/ui/icons/` for tech and social icons.
+- **Section Transition Boundary Invariant**:
+  - The ONLY full-height parallax curtain transition is between the pinned 400vh `AboutStatement` and the beginning of Section 01 (`CertificationsSection`), mediated by `-mt-[100vh]`, the specular horizon line, and the micro-hatched bezel strip.
+  - **Do NOT attempt intra-section parallax or scroll-pinning between Sections 1 through 6** (`Certifications`, `Skills`, `Projects`, `Experience`, `Education`, `Socials`). Variable-height content and horizontal scroll components (`ExperienceSection`) suffer severe scroll friction and anchor displacement when subjected to full-page sticky card-stacking. Sections 1 through 6 must remain in a unified continuous scroll container.
+- **Hero / Landing Section Architecture**:
+  - Centerpiece: "Kian [Portrait] Abustan" inline layout with multi-photo switching (4 graduation portraits: `portrait-1.jpg` to `portrait-4.jpg`) and dual-axis spring hover expansion (width + height).
+  - Scoped fluid water cursor bubble: Uses `mix-blend-difference` with `bg-white`, suppressed on hover over the portrait or social links.
+  - Dock-style growing social bubbles with `layoutId="socialIconBubble"` and `select-none` text highlight protection.
+  - Footer: "Aspiring Network and Cloud Engineer" centered in monospace.
+- **Header Navigation Architecture**:
+  - Monogram brand logo: "KA/01" in Geist Mono (`font-mono`).
+  - Paced custom smooth scroll: `handleSmoothScroll` using `requestAnimationFrame` with `easeInOutCubic` (80px fixed header offset).
 
 ---
 
@@ -146,9 +156,8 @@ All worker prompts MUST include these constraints sourced from `GEMINI.md`:
 
 ### Group A — UX Polish
 - `A1` Mobile navigation drawer missing (`md:flex` hides nav on mobile)
-- `A2` `public/images/portrait.png` exists but unused in any component
-- `A3` `prose prose-invert` used unconditionally in project detail page — breaks light mode
-- `A4` 300vh horizontal scroll hijack has poor mobile ergonomics
+- `A2` `prose prose-invert` used unconditionally in project detail page — breaks light mode
+- `A3` 300vh horizontal scroll hijack has poor mobile ergonomics
 
 ### Group B — Missing Features
 - `B1` No downloadable CV link or contact form (only a mailto href)
@@ -159,4 +168,4 @@ All worker prompts MUST include these constraints sourced from `GEMINI.md`:
 ### Group C — Architecture Quality
 - `C1` Root `config.ts` may be stale/redundant vs `config/index.ts`
 - `C2` MDX `gridSpan` field has no runtime validation guard
-- `C3` `next/image` not used anywhere; raw `<img>` or missing image tags
+- `C3` `next/image` not used in MDX case studies (`mdx-components.tsx` has no `img` override)

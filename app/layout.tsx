@@ -4,6 +4,7 @@ import { siteConfig } from "@/config";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { HeroCursorProvider } from "@/components/ui/hero-cursor-context";
 import "./globals.css";
 
 const inter = Inter({
@@ -78,11 +79,13 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <HeroCursorProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </HeroCursorProvider>
         </ThemeProvider>
       </body>
     </html>
