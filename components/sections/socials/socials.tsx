@@ -66,27 +66,27 @@ export function SocialsSection() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ ...customSpring, delay: idx * 0.06 }}
               whileHover={{ scale: 1.02, y: -3 }}
-              className="group flex flex-col justify-between rounded-xl border border-white/10 dark:border-white/10 border-black/10 bg-card/60 p-6 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-foreground/30 hover:shadow-lg"
+              className="group flex flex-col justify-between rounded-xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-6 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
             >
               <div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-card-border bg-card/80 text-foreground transition-transform group-hover:scale-110">
+                <div className="flex items-center justify-between text-neutral-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/[0.04] text-white transition-transform group-hover:scale-110">
                     <SocialIcon platform={social.platform} className="h-5 w-5" />
                   </div>
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
+                  <ArrowUpRight className="h-4 w-4 text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
                 </div>
 
                 <div className="mt-6">
-                  <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                  <div className="font-mono text-xs uppercase tracking-wider text-neutral-400">
                     {social.platform}
                   </div>
-                  <div className="mt-1 font-mono text-base font-bold text-foreground">
+                  <div className="mt-1 font-mono text-base font-bold text-white">
                     {social.handle}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 border-t border-border pt-3 text-xs text-muted-foreground">
+              <div className="mt-6 border-t border-white/10 pt-3 text-xs text-neutral-400">
                 {social.label}
               </div>
             </motion.a>

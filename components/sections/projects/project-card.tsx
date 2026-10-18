@@ -28,16 +28,16 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     >
       <Link
         href={`/projects/${slug}`}
-        className="group relative flex w-full flex-col justify-between overflow-hidden rounded-xl border border-white/10 dark:border-white/10 border-black/10 bg-card/60 p-8 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 hover:scale-[1.01] hover:border-foreground/30 hover:shadow-2xl"
+        className="group relative flex w-full flex-col justify-between overflow-hidden rounded-xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-8 backdrop-blur-md transition-[border-color,box-shadow,transform] duration-300 hover:scale-[1.01] hover:border-white/30 hover:shadow-2xl"
       >
         {/* Subtle decorative grid overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/[0.03] dark:to-white/[0.02]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/[0.02]" />
 
         {/* Top bar: Numeric Index, Year & Role */}
         <div>
-          <div className="flex items-center justify-between border-b border-border pb-4 font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4 font-mono text-xs uppercase tracking-widest text-neutral-400">
             <div className="flex items-center gap-2">
-              <span className="text-foreground font-bold">
+              <span className="text-white font-bold">
                 PRJ_0{index + 1}
               </span>
               <span className="opacity-40">//</span>
@@ -45,32 +45,32 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <span className="hidden sm:inline">{frontmatter.role}</span>
-              <div className="flex h-7 w-7 items-center justify-center rounded border border-card-border bg-card transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                <ArrowUpRight className="h-4 w-4 text-foreground transition-transform duration-200 group-hover:scale-110" />
+              <div className="flex h-7 w-7 items-center justify-center rounded border border-white/15 bg-white/[0.04] text-white transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                <ArrowUpRight className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-110" />
               </div>
             </div>
           </div>
 
           {/* Title & Description */}
           <div className="mt-6">
-            <h3 className="text-2xl font-bold tracking-tight text-foreground transition-opacity duration-200 group-hover:opacity-80 sm:text-3xl">
+            <h3 className="text-2xl font-bold tracking-tight text-white transition-opacity duration-200 group-hover:opacity-80 sm:text-3xl">
               {frontmatter.title}
             </h3>
-            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-neutral-300 sm:text-base">
               {frontmatter.description}
             </p>
           </div>
         </div>
 
         {/* Bottom Section: Metric Badge & Tags */}
-        <div className="mt-8 pt-6 border-t border-border">
+        <div className="mt-8 pt-6 border-t border-white/10">
           {frontmatter.architectureMetric && (
-            <div className="mb-4 flex items-center justify-between rounded bg-muted/40 px-3.5 py-2 font-mono text-xs">
-              <span className="text-muted-foreground flex items-center gap-1.5">
-                <Cpu className="h-3.5 w-3.5 text-foreground" />
+            <div className="mb-4 flex items-center justify-between rounded border border-white/10 bg-white/[0.05] px-3.5 py-2 font-mono text-xs text-neutral-200">
+              <span className="text-neutral-400 flex items-center gap-1.5">
+                <Cpu className="h-3.5 w-3.5 text-neutral-300" />
                 {frontmatter.architectureMetricLabel || "Key Metric"}
               </span>
-              <span className="font-bold text-foreground">
+              <span className="font-bold text-white">
                 {frontmatter.architectureMetric}
               </span>
             </div>
@@ -81,9 +81,9 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             {frontmatter.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1 rounded border border-card-border bg-card/80 px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+                className="inline-flex items-center gap-1 rounded border border-white/10 bg-white/[0.05] px-2.5 py-1 font-mono text-[11px] text-neutral-200"
               >
-                <Layers className="h-3 w-3 opacity-60" />
+                <Layers className="h-3 w-3 opacity-60 text-neutral-300" />
                 {tag}
               </span>
             ))}

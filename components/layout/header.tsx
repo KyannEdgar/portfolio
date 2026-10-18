@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { siteConfig } from "@/config";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useHeroCursor } from "@/components/ui/hero-cursor-context";
 
 export function Header() {
@@ -295,10 +294,8 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right Actions: Minimalist Theme Switcher */}
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-        </div>
+        {/* Right Actions */}
+        <div className="flex items-center gap-4" />
       </div>
     </motion.header>
   );

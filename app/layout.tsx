@@ -71,13 +71,14 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`dark ${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable}`}
     >
       <body className={`${inter.className} min-h-screen bg-background font-sans text-foreground antialiased selection:bg-foreground selection:text-background transition-colors duration-500 ease-in-out`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          forcedTheme="light"
           enableSystem={false}
+          disableTransitionOnChange
         >
           <HeroCursorProvider>
             <div className="relative flex min-h-screen flex-col">

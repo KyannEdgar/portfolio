@@ -27,7 +27,9 @@ export default function Home() {
         <AboutStatement />
       </div>
 
-      {/* Layered Parallax Curtain Container (Slides up and over About during final 100vh) */}
+      {/* =========================================================================
+          SECTION 01: CERTIFICATIONS (Curtain Layer over About)
+          ========================================================================= */}
       <div className="relative z-20 bg-background -mt-[100vh] shadow-[0_-25px_60px_rgba(0,0,0,0.07)] dark:shadow-[0_-35px_70px_rgba(0,0,0,0.95)]">
         {/* Specular Horizon Line (Top Highlight) */}
         <div className="h-px w-full bg-gradient-to-r from-black/5 via-black/40 to-black/5 dark:from-white/5 dark:via-white/60 dark:to-white/5" />
@@ -41,22 +43,41 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 01/ Certifications */}
         <CertificationsSection />
+      </div>
 
-        {/* 02/ Skills */}
+      {/* =========================================================================
+          SECTION 02: SKILLS (Isolated Stacking Layer)
+          ========================================================================= */}
+      <div className="relative z-[21] bg-background">
         <SkillsSection />
+      </div>
 
-        {/* 03/ Projects */}
+      {/* =========================================================================
+          SECTION 03: PROJECTS (Isolated Stacking Layer)
+          ========================================================================= */}
+      <div className="relative z-[22] bg-background">
         <ProjectsSection projects={projects} />
+      </div>
 
-        {/* 04/ Experience */}
+      {/* =========================================================================
+          SECTION 04: EXPERIENCE (Isolated Stacking Layer, 300vh Scroll)
+          ========================================================================= */}
+      <div className="relative z-[23] bg-background">
         <ExperienceSection />
+      </div>
 
-        {/* 05/ Education */}
+      {/* =========================================================================
+          SECTION 05: EDUCATION (Isolated Stacking Layer)
+          ========================================================================= */}
+      <div className="relative z-[24] bg-background">
         <EducationSection />
+      </div>
 
-        {/* 06/ Socials */}
+      {/* =========================================================================
+          SECTION 06: SOCIALS (Isolated Outro Layer)
+          ========================================================================= */}
+      <div className="relative z-[25] bg-background">
         <SocialsSection />
       </div>
     </div>

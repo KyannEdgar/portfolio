@@ -467,7 +467,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="group relative flex shrink-0 w-[85vw] md:w-[60vw] lg:w-[52vw] h-[60vh] min-h-[500px] max-h-[620px] rounded-2xl border border-white/10 dark:border-white/10 border-black/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
+        className="group relative flex shrink-0 w-[85vw] md:w-[60vw] lg:w-[52vw] h-[60vh] min-h-[500px] max-h-[620px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
       >
         {/* Dynamic Monochrome Spotlight Overlay */}
         <motion.div

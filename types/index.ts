@@ -37,11 +37,23 @@ export interface CertificationItem {
   title: string;
   issuer: string;
   period: string;
-  credentialId: string;
+  credentialId?: string;
   credentialUrl?: string;
+  downloadUrl?: string;
   description: string;
   skills: string[];
-  status?: "VERIFIED" | "ACTIVE";
+  status: "VERIFIED" | "IN_PROGRESS" | "ACTIVE";
+  certificateNo?: string;
+}
+
+export interface InProgressCertification {
+  id: string;
+  title: string;
+  issuer: string;
+  period: string;
+  description: string;
+  skills: string[];
+  status: "IN_PROGRESS";
 }
 
 export type SkillCategory =
@@ -90,6 +102,11 @@ export interface SiteConfig {
   experience: ExperienceItem[];
   education: EducationItem[];
   certifications: CertificationItem[];
+  inProgressCertifications?: InProgressCertification[];
+  documents?: {
+    resume?: string;
+    [key: string]: string | undefined;
+  };
   marqueeTech: string[];
   marqueeItems?: MarqueeItem[];
   metrics?: {
