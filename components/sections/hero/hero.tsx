@@ -40,7 +40,7 @@ const PORTRAITS = [
 export function Hero() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isHoveringPicture, setIsHoveringPicture] = useState(false);
-  const [isInsideHero, setIsInsideHero] = useState(false);
+  const [isCursorActive, setIsCursorActive] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function Hero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { hoveredElementBounds, setHoveredElementBounds, isHeaderHovered } = useHeroCursor();
+  const { hoveredElementBounds, setHoveredElementBounds } = useHeroCursor();
 
   // Water fluid lag spring configuration for cursor bubble
   const mouseX = useMotionValue(-200);
@@ -62,32 +62,20 @@ export function Hero() {
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // Window-level mouse tracking for visible portion of Landing and resting Header
+  // Window-level mouse tracking for the entire page
   useEffect(() => {
     const handleWindowMouseMove = (e: MouseEvent) => {
-      const landingEl = document.getElementById("landing");
-      if (!landingEl) return;
+      setIsCursorActive(true);
 
-      const rect = landingEl.getBoundingClientRect();
-
-      // The cursor is inside Hero if it falls within the visible vertical slice of #landing
-      const isOverLanding = e.clientY >= rect.top && e.clientY <= rect.bottom;
-      const isOverRestingHeader = isHeaderHovered && window.scrollY <= 20;
-
-      if (isOverLanding || isOverRestingHeader) {
-        setIsInsideHero(true);
-        // Follow cursor if not currently locked to an element
-        if (!hoveredElementBounds) {
-          mouseX.set(e.clientX);
-          mouseY.set(e.clientY);
-        }
-      } else {
-        setIsInsideHero(false);
+      // Follow cursor if not currently locked to an absorbed element
+      if (!hoveredElementBounds) {
+        mouseX.set(e.clientX);
+        mouseY.set(e.clientY);
       }
     };
 
     const handleWindowMouseLeave = () => {
-      setIsInsideHero(false);
+      setIsCursorActive(false);
     };
 
     window.addEventListener("mousemove", handleWindowMouseMove, { passive: true });
@@ -96,7 +84,7 @@ export function Hero() {
       window.removeEventListener("mousemove", handleWindowMouseMove);
       window.removeEventListener("mouseleave", handleWindowMouseLeave);
     };
-  }, [hoveredElementBounds, isHeaderHovered, mouseX, mouseY]);
+  }, [hoveredElementBounds, mouseX, mouseY]);
 
   // Snap spring targets to exact element center on absorption
   useEffect(() => {
@@ -165,21 +153,39 @@ export function Hero() {
     setPhotoIndex((prev) => (prev + 1) % PORTRAITS.length);
   };
 
-  // The bubble remains visible during social/button hover because it absorbs them!
+  // The bubble remains visible across all sections on the page!
   // Only hide when hovering the central portrait:
-  const isBubbleVisible = isInsideHero && !isHoveringPicture;
+  const isBubbleVisible = isCursorActive && !isHoveringPicture;
 
   let targetWidth = 70;
   let targetHeight = 70;
+  let targetRadius: number | string = 9999;
 
   if (hoveredElementBounds) {
     if (hoveredElementBounds.shape === "circle") {
-      targetWidth = 42;
-      targetHeight = 42;
+      targetWidth = Math.max(
+        hoveredElementBounds.width,
+        hoveredElementBounds.height,
+        42
+      );
+      targetHeight = targetWidth;
+      targetRadius = 9999;
+    } else if (
+      hoveredElementBounds.shape === "rounded" ||
+      hoveredElementBounds.borderRadius !== undefined
+    ) {
+      // Follow the exact element dimensions with comfortable breathing room
+      targetWidth = hoveredElementBounds.width + 12;
+      targetHeight = hoveredElementBounds.height + 8;
+      targetRadius =
+        typeof hoveredElementBounds.borderRadius === "number"
+          ? hoveredElementBounds.borderRadius
+          : 8;
     } else {
-      // "pill"
-      targetWidth = hoveredElementBounds.width + 24;
-      targetHeight = 34;
+      // Default / "pill"
+      targetWidth = hoveredElementBounds.width + 20;
+      targetHeight = hoveredElementBounds.height + 8;
+      targetRadius = 9999;
     }
   }
 
@@ -203,7 +209,7 @@ export function Hero() {
         animate={{
           width: targetWidth,
           height: targetHeight,
-          borderRadius: 9999,
+          borderRadius: targetRadius,
           opacity: isBubbleVisible ? 1 : 0,
           scale: isBubbleVisible ? 1 : 0.4,
         }}

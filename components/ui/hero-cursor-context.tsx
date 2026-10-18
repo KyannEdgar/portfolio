@@ -8,7 +8,8 @@ export interface ElementAbsorptionBounds {
   y: number;
   width: number;
   height: number;
-  shape?: "pill" | "circle";
+  shape?: "pill" | "circle" | "rounded";
+  borderRadius?: number | string;
 }
 
 interface HeroCursorContextType {

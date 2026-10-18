@@ -11,6 +11,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("landing");
   const [hidden, setHidden] = useState(false);
+  const [hoveredNavId, setHoveredNavId] = useState<string | null>(null);
 
   const { setHoveredElementBounds, setIsHeaderHovered } = useHeroCursor();
 
@@ -220,6 +221,7 @@ export function Header() {
       onMouseEnter={() => setIsHeaderHovered(true)}
       onMouseLeave={() => {
         setIsHeaderHovered(false);
+        setHoveredNavId(null);
         setHoveredElementBounds(null);
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
@@ -236,6 +238,19 @@ export function Header() {
             e.preventDefault();
             handleSmoothScroll("landing");
           }}
+          onMouseEnter={(e) => {
+            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            setHoveredElementBounds({
+              x: rect.left,
+              y: rect.top,
+              width: rect.width,
+              height: rect.height,
+              shape: "pill",
+            });
+          }}
+          onMouseLeave={() => {
+            setHoveredElementBounds(null);
+          }}
           className="font-mono text-sm md:text-base font-bold tracking-widest text-foreground transition-opacity duration-200 hover:opacity-70"
         >
           <span>KA</span>
@@ -247,6 +262,7 @@ export function Header() {
         <nav className="hidden items-center gap-8 lg:gap-10 md:flex">
           {siteConfig.navigation.map((item) => {
             const isActive = activeSection === item.id;
+            const isThisLinkHovered = hoveredNavId === item.id;
 
             return (
               <Link
@@ -257,18 +273,18 @@ export function Header() {
                   handleSmoothScroll(item.id);
                 }}
                 onMouseEnter={(e) => {
-                  if (window.scrollY <= 20) {
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                    setHoveredElementBounds({
-                      x: rect.left,
-                      y: rect.top,
-                      width: rect.width,
-                      height: rect.height,
-                      shape: "pill",
-                    });
-                  }
+                  setHoveredNavId(item.id);
+                  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                  setHoveredElementBounds({
+                    x: rect.left,
+                    y: rect.top,
+                    width: rect.width,
+                    height: rect.height,
+                    shape: "pill",
+                  });
                 }}
                 onMouseLeave={() => {
+                  setHoveredNavId(null);
                   setHoveredElementBounds(null);
                 }}
                 className={`relative py-1 text-sm font-medium tracking-wide transition-colors duration-200 ${
@@ -281,11 +297,24 @@ export function Header() {
                 {isActive && (
                   <motion.div
                     layoutId="activeNavUnderline"
-                    className="absolute -bottom-1 left-0 right-0 h-[1px] bg-foreground"
+                    className="absolute -bottom-1 left-0 right-0 h-[1.5px] bg-foreground origin-center"
+                    initial={false}
+                    animate={{
+                      opacity: isThisLinkHovered ? 0 : 1,
+                      scaleX: isThisLinkHovered ? 0.2 : 1,
+                      scaleY: isThisLinkHovered ? 0 : 1,
+                      y: isThisLinkHovered ? -10 : 0,
+                    }}
                     transition={{
-                      type: "spring",
-                      stiffness: 380,
-                      damping: 30,
+                      layout: {
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 30,
+                      },
+                      opacity: { duration: 0.18, ease: "easeInOut" },
+                      scaleX: { type: "spring", stiffness: 400, damping: 28 },
+                      scaleY: { type: "spring", stiffness: 400, damping: 28 },
+                      y: { type: "spring", stiffness: 400, damping: 28 },
                     }}
                   />
                 )}

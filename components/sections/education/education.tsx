@@ -1,17 +1,17 @@
 "use client";
 
+import * as React from "react";
 import { motion } from "framer-motion";
-import { siteConfig } from "@/config";
 import { customSpring } from "@/lib/animation";
-import { GraduationCap, Award, BookOpen } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 
 export function EducationSection() {
   return (
     <section
       id="education"
-      className="relative w-full border-t border-border px-6 py-24 md:px-12 md:py-32 bg-grid-pattern"
+      className="relative w-full h-screen px-6 py-24 md:px-12 md:py-32 flex flex-col justify-start"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl w-full">
         {/* Numbered Section Header: 05/ Education */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,75 +40,6 @@ export function EducationSection() {
             </p>
           </div>
         </motion.div>
-
-        {/* Education & Credentials Grid */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {siteConfig.education.map((item, idx) => (
-            <motion.div
-              key={item.degree}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ ...customSpring, delay: idx * 0.15 }}
-              className="group flex flex-col justify-between rounded-xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-8 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl md:p-10"
-            >
-              <div>
-                {/* Card Top Meta */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 font-mono text-xs uppercase tracking-widest text-neutral-400">
-                  <div className="flex items-center gap-2">
-                    {idx === 0 ? (
-                      <BookOpen className="h-4 w-4 text-white" />
-                    ) : (
-                      <Award className="h-4 w-4 text-white" />
-                    )}
-                    <span>EDU_0{idx + 1}</span>
-                  </div>
-                  <span>{item.period}</span>
-                </div>
-
-                {/* Degree & Institution */}
-                <div className="mt-6">
-                  <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                    {item.degree}
-                  </h3>
-                  <div className="mt-2 font-mono text-sm text-neutral-200">
-                    {item.institution}
-                  </div>
-                  <div className="font-mono text-xs text-neutral-400 mt-0.5">
-                    {item.location}
-                  </div>
-                  {item.honors && (
-                    <div className="mt-3 inline-block rounded border border-white/15 bg-white/[0.06] px-2.5 py-1 font-mono text-xs font-semibold text-white">
-                      {item.honors}
-                    </div>
-                  )}
-                </div>
-
-                {/* Description */}
-                <p className="mt-6 text-sm leading-relaxed text-neutral-300 sm:text-base">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Focus Areas / Certifications */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="font-mono text-xs uppercase tracking-wider text-neutral-400 mb-3">
-                  {idx === 0 ? "Core Focus Areas" : "Verified Accreditations"}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {item.focusAreas.map((area) => (
-                    <span
-                      key={area}
-                      className="rounded border border-white/10 bg-white/[0.05] px-2.5 py-1 font-mono text-xs text-neutral-200"
-                    >
-                      {area}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
