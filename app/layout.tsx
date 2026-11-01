@@ -73,7 +73,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable}`}
     >
-      <body className={`${inter.className} min-h-screen bg-background font-sans text-foreground antialiased selection:bg-foreground selection:text-background transition-colors duration-500 ease-in-out`}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.className} min-h-screen bg-background font-sans text-foreground antialiased selection:bg-foreground selection:text-background transition-colors duration-500 ease-in-out`}
+      >
         <ThemeProvider
           attribute="class"
           forcedTheme="light"

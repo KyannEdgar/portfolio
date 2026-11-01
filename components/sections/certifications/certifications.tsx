@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   motion,
   useScroll,
@@ -9,6 +9,8 @@ import {
   useSpring,
   useMotionValueEvent,
 } from "framer-motion";
+import { PrimeReactProvider } from "primereact/api";
+import { Timeline } from "@primereact/ui/timeline";
 import { siteConfig } from "@/config";
 import { useHeroCursor } from "@/components/ui/hero-cursor-context";
 import { customSpring } from "@/lib/animation";
@@ -47,10 +49,22 @@ const ALL_CERTIFICATIONS: UnifiedCertification[] = [
   })),
 ];
 
+const VERIFIED_ITEMS = ALL_CERTIFICATIONS.filter(
+  (c) => c.group === "verified"
+);
+const IN_PROGRESS_ITEMS = ALL_CERTIFICATIONS.filter(
+  (c) => c.group === "inProgress"
+);
+
 export function CertificationsSection() {
   const containerRef = useRef<HTMLElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const { setHoveredElementBounds } = useHeroCursor();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -109,16 +123,16 @@ export function CertificationsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between px-6 pt-20 pb-8 md:px-12 md:pt-24 md:pb-12 origin-center will-change-transform"
+        className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-start px-6 py-24 md:px-12 md:py-32 origin-center will-change-transform"
       >
-        <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col justify-between">
-          {/* Numbered Section Header */}
+        <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
+          {/* Numbered Section Header: 01/ Certifications */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-40px" }}
             transition={customSpring}
-            className="mb-4 sm:mb-6 flex flex-col gap-2 shrink-0"
+            className="mb-12 flex flex-col gap-3 md:mb-16 shrink-0"
           >
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
@@ -128,14 +142,14 @@ export function CertificationsSection() {
               <span className="h-px flex-1 max-w-[80px] bg-border" />
             </div>
 
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-              <h2 className="text-3xl font-extrabold tracking-tighter text-foreground sm:text-4xl md:text-5xl uppercase leading-none">
-                <span className="text-foreground/40 font-mono text-2xl sm:text-3xl md:text-4xl mr-3 font-normal">
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+              <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
+                <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
                   01/
                 </span>
                 Certifications
               </h2>
-              <p className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
+              <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
                 Verified Technical Credentials &amp; Cloud Specializations
               </p>
             </div>
@@ -144,347 +158,239 @@ export function CertificationsSection() {
           {/* Dual Track Architecture */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 flex-1 items-center min-h-0">
             {/* ==============================================================
-                LEFT COLUMN: High-Fidelity Attestation Timeline (5/12 cols)
+                LEFT COLUMN: PrimeReact Timeline Attestation Tracks (5/12 cols)
                 ============================================================== */}
             <div className="lg:col-span-5 flex flex-col justify-center space-y-6 sm:space-y-8 select-none">
-              {/* Track A: Verified Attestations */}
-              <div
-                className={`flex flex-col transition-opacity duration-500 ${
-                  isUserInVerified ? "opacity-100" : "opacity-45"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <CheckCircle2
-                    className={`h-3.5 w-3.5 transition-colors duration-300 ${
-                      isUserInVerified
-                        ? "text-foreground"
-                        : "text-muted-foreground"
+              {isMounted ? (
+                <PrimeReactProvider unstyled>
+                  {/* Track A: Verified Attestations */}
+                  <div
+                    className={`flex flex-col transition-opacity duration-500 ${
+                      isUserInVerified ? "opacity-100" : "opacity-45"
                     }`}
-                  />
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
-                    VERIFIED ATTESTATIONS
-                  </span>
-                </div>
-
-                <div className="flex flex-col">
-                  {/* Node 0: Google Cybersecurity */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      {/* Concentric Node Ring */}
-                      <div
-                        className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center z-10 ${
-                          isUserInVerified && activeIndex === 0
-                            ? "border-foreground bg-foreground scale-110 shadow-sm"
-                            : isUserInVerified && activeIndex > 0
-                            ? "border-foreground bg-foreground/70"
-                            : "border-muted-foreground/40 bg-background"
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <CheckCircle2
+                        className={`h-3.5 w-3.5 transition-colors duration-300 ${
+                          isUserInVerified
+                            ? "text-foreground"
+                            : "text-muted-foreground"
                         }`}
-                      >
-                        {isUserInVerified && activeIndex === 0 && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
-                        )}
-                      </div>
-
-                      {/* Discrete Connector Line (Node 0 -> Node 1) */}
-                      <div className="w-[1.5px] h-10 sm:h-12 bg-border/50 relative overflow-hidden my-0.5">
-                        <motion.div
-                          className="absolute inset-x-0 top-0 bg-foreground origin-top"
-                          animate={{
-                            height:
-                              isUserInVerified && activeIndex === 1
-                                ? "100%"
-                                : "0%",
-                          }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                        />
-                      </div>
+                      />
+                      <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
+                        VERIFIED ATTESTATIONS
+                      </span>
                     </div>
 
-                    {/* Telemetry Card with Full Bubble Enclosure */}
-                    <button
-                      onClick={() => handleScrollToCard(0)}
-                      onMouseEnter={(e) => {
-                        const rect = (
-                          e.currentTarget as HTMLElement
-                        ).getBoundingClientRect();
-                        setHoveredElementBounds({
-                          x: rect.left,
-                          y: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          shape: "rounded",
-                          borderRadius: 12,
-                        });
-                      }}
-                      onMouseLeave={() => setHoveredElementBounds(null)}
-                      className={`text-left transition-all duration-200 cursor-pointer block -mt-1 p-2 rounded-xl border border-transparent ${
-                        isUserInVerified && activeIndex === 0
-                          ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
-                      }`}
-                    >
-                      <div className="text-sm md:text-base font-semibold leading-snug">
-                        {ALL_CERTIFICATIONS[0].title}
-                      </div>
-                      <div className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                        {ALL_CERTIFICATIONS[0].issuer} &bull;{" "}
-                        {ALL_CERTIFICATIONS[0].period}
-                      </div>
-                    </button>
+                    <Timeline.Root align="left" className="w-full">
+                      {VERIFIED_ITEMS.map((item, index) => {
+                        const globalIdx = index; // 0, 1
+                        const isNodeActive =
+                          isUserInVerified && activeIndex === globalIdx;
+                        const isNodeCompleted =
+                          isUserInVerified && activeIndex > globalIdx;
+
+                        return (
+                          <Timeline.Event
+                            key={item.id}
+                            className="flex items-stretch gap-4"
+                          >
+                            <Timeline.Separator className="self-stretch flex flex-col items-center shrink-0 w-5 relative">
+                              {/* Full-width marker container overriding PrimeReact baseline align */}
+                              <Timeline.Marker className="z-10 mt-2.5 w-5 flex items-center justify-center shrink-0 !border-0 !p-0 !bg-transparent !shadow-none !before:hidden !after:hidden">
+                                <div
+                                  className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
+                                    isNodeActive
+                                      ? "border-foreground bg-foreground scale-110 shadow-sm"
+                                      : isNodeCompleted
+                                      ? "border-foreground bg-foreground/70"
+                                      : "border-muted-foreground/40 bg-background"
+                                  }`}
+                                >
+                                  {isNodeActive && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
+                                  )}
+                                </div>
+                              </Timeline.Marker>
+
+                              {/* Mathematically centered 2px connector line */}
+                              {index !== VERIFIED_ITEMS.length - 1 && (
+                                <Timeline.Connector className="flex-1 w-0.5 bg-border/50 relative overflow-hidden my-1.5 mx-auto">
+                                  <motion.div
+                                    className="absolute inset-x-0 top-0 bg-foreground origin-top"
+                                    animate={{
+                                      height:
+                                        isUserInVerified && activeIndex === 1
+                                          ? "100%"
+                                          : "0%",
+                                    }}
+                                    transition={{
+                                      duration: 0.35,
+                                      ease: "easeOut",
+                                    }}
+                                  />
+                                </Timeline.Connector>
+                              )}
+                            </Timeline.Separator>
+
+                            <Timeline.Content className="flex-1 pb-4">
+                              <button
+                                type="button"
+                                onClick={() => handleScrollToCard(globalIdx)}
+                                onMouseEnter={(e) => {
+                                  const rect = (
+                                    e.currentTarget as HTMLElement
+                                  ).getBoundingClientRect();
+                                  setHoveredElementBounds({
+                                    x: rect.left,
+                                    y: rect.top,
+                                    width: rect.width,
+                                    height: rect.height,
+                                    shape: "rounded",
+                                    borderRadius: 12,
+                                  });
+                                }}
+                                onMouseLeave={() => setHoveredElementBounds(null)}
+                                className={`text-left transition-all duration-200 cursor-pointer block p-2 rounded-xl border border-transparent w-full ${
+                                  isNodeActive
+                                    ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
+                                }`}
+                              >
+                                <span className="block text-sm md:text-base font-semibold leading-snug">
+                                  {item.title}
+                                </span>
+                                <span className="block font-mono text-[11px] text-muted-foreground mt-0.5">
+                                  {item.issuer} &bull; {item.period}
+                                </span>
+                              </button>
+                            </Timeline.Content>
+                          </Timeline.Event>
+                        );
+                      })}
+                    </Timeline.Root>
                   </div>
 
-                  {/* Node 1: TESDA NCII (Terminal node: NO line below Node 1) */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      <div
-                        className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center z-10 ${
-                          isUserInVerified && activeIndex === 1
-                            ? "border-foreground bg-foreground scale-110 shadow-sm"
-                            : "border-muted-foreground/40 bg-background"
-                        }`}
-                      >
-                        {isUserInVerified && activeIndex === 1 && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Telemetry Card with Full Bubble Enclosure */}
-                    <button
-                      onClick={() => handleScrollToCard(1)}
-                      onMouseEnter={(e) => {
-                        const rect = (
-                          e.currentTarget as HTMLElement
-                        ).getBoundingClientRect();
-                        setHoveredElementBounds({
-                          x: rect.left,
-                          y: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          shape: "rounded",
-                          borderRadius: 12,
-                        });
-                      }}
-                      onMouseLeave={() => setHoveredElementBounds(null)}
-                      className={`text-left transition-all duration-200 cursor-pointer block -mt-1 p-2 rounded-xl border border-transparent ${
-                        isUserInVerified && activeIndex === 1
-                          ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
-                      }`}
-                    >
-                      <div className="text-sm md:text-base font-semibold leading-snug">
-                        {ALL_CERTIFICATIONS[1].title}
-                      </div>
-                      <div className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                        {ALL_CERTIFICATIONS[1].issuer} &bull;{" "}
-                        {ALL_CERTIFICATIONS[1].period}
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Track B: In-Progress Roadmap (Decoupled from Track A) */}
-              <div
-                className={`flex flex-col transition-opacity duration-500 ${
-                  isUserInProgress ? "opacity-100" : "opacity-45"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Clock
-                    className={`h-3.5 w-3.5 transition-colors duration-300 ${
-                      isUserInProgress
-                        ? "text-foreground"
-                        : "text-muted-foreground"
+                  {/* Track B: Pipeline // In-Progress (`isUserInProgress`) */}
+                  <div
+                    className={`flex flex-col transition-opacity duration-500 ${
+                      isUserInProgress ? "opacity-100" : "opacity-45"
                     }`}
-                  />
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
-                    PIPELINE // IN-PROGRESS
-                  </span>
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <Clock
+                        className={`h-3.5 w-3.5 transition-colors duration-300 ${
+                          isUserInProgress
+                            ? "text-foreground"
+                            : "text-muted-foreground"
+                        }`}
+                      />
+                      <span className="font-mono text-xs font-bold uppercase tracking-widest text-foreground">
+                        PIPELINE // IN-PROGRESS
+                      </span>
+                    </div>
+
+                    <Timeline.Root align="left" className="w-full">
+                      {IN_PROGRESS_ITEMS.map((item, index) => {
+                        const globalIdx = 2 + index; // 2, 3, 4
+                        const isNodeActive =
+                          isUserInProgress && activeIndex === globalIdx;
+                        const isNodeCompleted =
+                          isUserInProgress && activeIndex > globalIdx;
+
+                        return (
+                          <Timeline.Event
+                            key={item.id}
+                            className="flex items-stretch gap-4"
+                          >
+                            <Timeline.Separator className="self-stretch flex flex-col items-center shrink-0 w-5 relative">
+                              <Timeline.Marker className="z-10 mt-2.5 w-5 flex items-center justify-center shrink-0 !border-0 !p-0 !bg-transparent !shadow-none !before:hidden !after:hidden">
+                                <div
+                                  className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
+                                    isNodeActive
+                                      ? "border-foreground bg-foreground scale-110 shadow-sm"
+                                      : isNodeCompleted
+                                      ? "border-foreground bg-foreground/70"
+                                      : "border-muted-foreground/40 bg-background"
+                                  }`}
+                                >
+                                  {isNodeActive && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
+                                  )}
+                                </div>
+                              </Timeline.Marker>
+
+                              {/* Mathematically centered 2px connector line */}
+                              {index !== IN_PROGRESS_ITEMS.length - 1 && (
+                                <Timeline.Connector className="flex-1 w-0.5 bg-border/50 relative overflow-hidden my-1.5 mx-auto">
+                                  <motion.div
+                                    className="absolute inset-x-0 top-0 bg-foreground origin-top"
+                                    animate={{
+                                      height:
+                                        isUserInProgress &&
+                                        activeIndex >= globalIdx + 1
+                                          ? "100%"
+                                          : "0%",
+                                    }}
+                                    transition={{
+                                      duration: 0.35,
+                                      ease: "easeOut",
+                                    }}
+                                  />
+                                </Timeline.Connector>
+                              )}
+                            </Timeline.Separator>
+
+                            <Timeline.Content className="flex-1 pb-4">
+                              <button
+                                type="button"
+                                onClick={() => handleScrollToCard(globalIdx)}
+                                onMouseEnter={(e) => {
+                                  const rect = (
+                                    e.currentTarget as HTMLElement
+                                  ).getBoundingClientRect();
+                                  setHoveredElementBounds({
+                                    x: rect.left,
+                                    y: rect.top,
+                                    width: rect.width,
+                                    height: rect.height,
+                                    shape: "rounded",
+                                    borderRadius: 12,
+                                  });
+                                }}
+                                onMouseLeave={() => setHoveredElementBounds(null)}
+                                className={`text-left transition-all duration-200 cursor-pointer block p-2 rounded-xl border border-transparent w-full ${
+                                  isNodeActive
+                                    ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
+                                }`}
+                              >
+                                <span className="block text-sm md:text-base font-semibold leading-snug">
+                                  {item.title}
+                                </span>
+                                <span className="block font-mono text-[11px] text-muted-foreground mt-0.5">
+                                  {item.issuer} &bull; {item.period}
+                                </span>
+                              </button>
+                            </Timeline.Content>
+                          </Timeline.Event>
+                        );
+                      })}
+                    </Timeline.Root>
+                  </div>
+                </PrimeReactProvider>
+              ) : (
+                <div className="space-y-8 opacity-40">
+                  <div className="h-28 rounded-xl border border-border/20 animate-pulse bg-card/20" />
+                  <div className="h-36 rounded-xl border border-border/20 animate-pulse bg-card/20" />
                 </div>
-
-                <div className="flex flex-col">
-                  {/* Node 2: CCNA */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      <div
-                        className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center z-10 ${
-                          isUserInProgress && activeIndex === 2
-                            ? "border-foreground bg-foreground scale-110 shadow-sm"
-                            : isUserInProgress && activeIndex > 2
-                            ? "border-foreground bg-foreground/70"
-                            : "border-muted-foreground/40 bg-background"
-                        }`}
-                      >
-                        {isUserInProgress && activeIndex === 2 && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
-                        )}
-                      </div>
-
-                      <div className="w-[1.5px] h-10 sm:h-12 bg-border/50 relative overflow-hidden my-0.5">
-                        <motion.div
-                          className="absolute inset-x-0 top-0 bg-foreground origin-top"
-                          animate={{
-                            height:
-                              isUserInProgress && activeIndex >= 3
-                                ? "100%"
-                                : "0%",
-                          }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleScrollToCard(2)}
-                      onMouseEnter={(e) => {
-                        const rect = (
-                          e.currentTarget as HTMLElement
-                        ).getBoundingClientRect();
-                        setHoveredElementBounds({
-                          x: rect.left,
-                          y: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          shape: "rounded",
-                          borderRadius: 12,
-                        });
-                      }}
-                      onMouseLeave={() => setHoveredElementBounds(null)}
-                      className={`text-left transition-all duration-200 cursor-pointer block -mt-1 p-2 rounded-xl border border-transparent ${
-                        isUserInProgress && activeIndex === 2
-                          ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
-                      }`}
-                    >
-                      <div className="text-sm md:text-base font-semibold leading-snug">
-                        {ALL_CERTIFICATIONS[2].title}
-                      </div>
-                      <div className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                        {ALL_CERTIFICATIONS[2].issuer} &bull;{" "}
-                        {ALL_CERTIFICATIONS[2].period}
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Node 3: AWS CCP */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      <div
-                        className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center z-10 ${
-                          isUserInProgress && activeIndex === 3
-                            ? "border-foreground bg-foreground scale-110 shadow-sm"
-                            : isUserInProgress && activeIndex > 3
-                            ? "border-foreground bg-foreground/70"
-                            : "border-muted-foreground/40 bg-background"
-                        }`}
-                      >
-                        {isUserInProgress && activeIndex === 3 && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
-                        )}
-                      </div>
-
-                      <div className="w-[1.5px] h-10 sm:h-12 bg-border/50 relative overflow-hidden my-0.5">
-                        <motion.div
-                          className="absolute inset-x-0 top-0 bg-foreground origin-top"
-                          animate={{
-                            height:
-                              isUserInProgress && activeIndex >= 4
-                                ? "100%"
-                                : "0%",
-                          }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleScrollToCard(3)}
-                      onMouseEnter={(e) => {
-                        const rect = (
-                          e.currentTarget as HTMLElement
-                        ).getBoundingClientRect();
-                        setHoveredElementBounds({
-                          x: rect.left,
-                          y: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          shape: "rounded",
-                          borderRadius: 12,
-                        });
-                      }}
-                      onMouseLeave={() => setHoveredElementBounds(null)}
-                      className={`text-left transition-all duration-200 cursor-pointer block -mt-1 p-2 rounded-xl border border-transparent ${
-                        isUserInProgress && activeIndex === 3
-                          ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
-                      }`}
-                    >
-                      <div className="text-sm md:text-base font-semibold leading-snug">
-                        {ALL_CERTIFICATIONS[3].title}
-                      </div>
-                      <div className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                        {ALL_CERTIFICATIONS[3].issuer} &bull;{" "}
-                        {ALL_CERTIFICATIONS[3].period}
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Node 4: AWS SAA (Terminal node: NO line below Node 4) */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      <div
-                        className={`h-4 w-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center z-10 ${
-                          isUserInProgress && activeIndex === 4
-                            ? "border-foreground bg-foreground scale-110 shadow-sm"
-                            : "border-muted-foreground/40 bg-background"
-                        }`}
-                      >
-                        {isUserInProgress && activeIndex === 4 && (
-                          <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
-                        )}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleScrollToCard(4)}
-                      onMouseEnter={(e) => {
-                        const rect = (
-                          e.currentTarget as HTMLElement
-                        ).getBoundingClientRect();
-                        setHoveredElementBounds({
-                          x: rect.left,
-                          y: rect.top,
-                          width: rect.width,
-                          height: rect.height,
-                          shape: "rounded",
-                          borderRadius: 12,
-                        });
-                      }}
-                      onMouseLeave={() => setHoveredElementBounds(null)}
-                      className={`text-left transition-all duration-200 cursor-pointer block -mt-1 p-2 rounded-xl border border-transparent ${
-                        isUserInProgress && activeIndex === 4
-                          ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
-                          : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.02]"
-                      }`}
-                    >
-                      <div className="text-sm md:text-base font-semibold leading-snug">
-                        {ALL_CERTIFICATIONS[4].title}
-                      </div>
-                      <div className="font-mono text-[11px] text-muted-foreground mt-0.5">
-                        {ALL_CERTIFICATIONS[4].issuer} &bull;{" "}
-                        {ALL_CERTIFICATIONS[4].period}
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* ==============================================================
                 RIGHT COLUMN: Shuffling Card Deck with Button Absorption
                 ============================================================== */}
-            <div className="lg:col-span-7 relative h-[440px] sm:h-[460px] md:h-[480px] w-full max-w-xl mx-auto flex items-center justify-center">
+            <div className="lg:col-span-7 relative h-[440px] sm:h-[460px] md:h-[480px] max-h-full w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
               {ALL_CERTIFICATIONS.map((item, idx) => {
                 const isPast = idx < activeIndex;
                 const isCurrent = idx === activeIndex;

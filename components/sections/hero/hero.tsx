@@ -41,17 +41,6 @@ export function Hero() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isHoveringPicture, setIsHoveringPicture] = useState(false);
   const [isCursorActive, setIsCursorActive] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const { hoveredElementBounds, setHoveredElementBounds } = useHeroCursor();
 
@@ -159,7 +148,7 @@ export function Hero() {
 
   let targetWidth = 70;
   let targetHeight = 70;
-  let targetRadius: number | string = 9999;
+  let targetRadius = 35; // 70 / 2 = exact circle (never 9999!)
 
   if (hoveredElementBounds) {
     if (hoveredElementBounds.shape === "circle") {
@@ -169,23 +158,23 @@ export function Hero() {
         42
       );
       targetHeight = targetWidth;
-      targetRadius = 9999;
+      targetRadius = targetHeight / 2;
     } else if (
       hoveredElementBounds.shape === "rounded" ||
       hoveredElementBounds.borderRadius !== undefined
     ) {
-      // Follow the exact element dimensions with comfortable breathing room
+      // Follow exact element dimensions
       targetWidth = hoveredElementBounds.width + 12;
       targetHeight = hoveredElementBounds.height + 8;
       targetRadius =
         typeof hoveredElementBounds.borderRadius === "number"
           ? hoveredElementBounds.borderRadius
-          : 8;
+          : 12;
     } else {
-      // Default / "pill"
+      // Pill shape (header nav links)
       targetWidth = hoveredElementBounds.width + 20;
       targetHeight = hoveredElementBounds.height + 8;
-      targetRadius = 9999;
+      targetRadius = targetHeight / 2;
     }
   }
 
@@ -363,35 +352,52 @@ export function Hero() {
           variants={heroItemVariants}
           className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-5 pt-8 text-center"
         >
-          {/* Zone 1 (Left): Unboxed Social Icons with Absorption Bubble */}
-          <div className="flex items-center justify-center md:justify-start gap-2 sm:gap-3 order-2 md:order-1">
-            {siteConfig.socials.map((social) => (
-              <motion.a
-                key={social.platform}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.platform}
-                title={`${social.platform}: ${social.handle}`}
-                onMouseEnter={(e) => {
-                  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                  setHoveredElementBounds({
-                    x: rect.left,
-                    y: rect.top,
-                    width: rect.width,
-                    height: rect.height,
-                    shape: "circle",
-                  });
+          {/* Zone 1 (Left): Unboxed Social Icons with Animated Directional Indicator */}
+          <div className="flex items-center justify-center md:justify-start gap-2.5 sm:gap-3 order-2 md:order-1">
+            <div className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-widest text-muted-foreground select-none">
+              <span>Socials</span>
+              <motion.span
+                animate={{ x: [0, 4, 0] }}
+                transition={{
+                  duration: 1.6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
                 }}
-                onMouseLeave={() => setHoveredElementBounds(null)}
-                className="relative flex items-center justify-center h-10 w-10 rounded-full text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="inline-block text-current"
               >
-                <SocialIcon
-                  platform={social.platform}
-                  className="h-4 w-4"
-                />
-              </motion.a>
-            ))}
+                &rarr;
+              </motion.span>
+            </div>
+
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              {siteConfig.socials.map((social) => (
+                <motion.a
+                  key={social.platform}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.platform}
+                  title={`${social.platform}: ${social.handle}`}
+                  onMouseEnter={(e) => {
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                    setHoveredElementBounds({
+                      x: rect.left,
+                      y: rect.top,
+                      width: rect.width,
+                      height: rect.height,
+                      shape: "circle",
+                    });
+                  }}
+                  onMouseLeave={() => setHoveredElementBounds(null)}
+                  className="relative flex items-center justify-center h-9 w-9 rounded-full text-muted-foreground hover:text-foreground transition-colors duration-200"
+                >
+                  <SocialIcon
+                    platform={social.platform}
+                    className="h-4 w-4"
+                  />
+                </motion.a>
+              ))}
+            </div>
           </div>
 
           {/* Zone 2 (Center): Role Descriptor */}
@@ -420,9 +426,17 @@ export function Hero() {
               className="group inline-flex items-center gap-1.5 font-mono text-xs md:text-sm uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors duration-200 px-2 py-1"
             >
               <span>Scroll to Explore</span>
-              <span className="inline-block transition-transform duration-300 group-hover:translate-y-1">
-                ↓
-              </span>
+              <motion.span
+                animate={{ y: [0, 4, 0] }}
+                transition={{
+                  duration: 1.6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="inline-block text-current"
+              >
+                &darr;
+              </motion.span>
             </Link>
           </div>
         </motion.div>

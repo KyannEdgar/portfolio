@@ -22,14 +22,27 @@ export interface ExperienceItem {
   skills: string[];
 }
 
+export interface EducationPillar {
+  name: string;
+  description: string;
+  skills: string[];
+}
+
 export interface EducationItem {
-  period: string;
-  degree: string;
+  id: string;
+  category: "ACADEMIC" | "UPSKILL";
+  categoryBadge: string;
+  program: string;
   institution: string;
+  period: string;
   location: string;
   description: string;
-  honors?: string;
-  focusAreas: string[];
+  metricBadge?: string;
+  affiliation?: string;
+  cohort?: string;
+  sponsors?: string[];
+  credentialTarget?: string;
+  pillars: EducationPillar[];
 }
 
 export interface CertificationItem {
@@ -114,4 +127,46 @@ export interface SiteConfig {
     value: string;
     detail: string;
   }[];
+}
+
+export interface PipelineStep {
+  id: string;
+  stepNumber: string;
+  title: string;
+  service: string;
+  description: string;
+  detailCode?: string;
+  securityControl?: string;
+  runtimeLogic?: string;
+}
+
+export interface SystemPipeline {
+  id: string;
+  name: string;
+  trigger: string;
+  objective: string;
+  steps: PipelineStep[];
+}
+
+export interface TopologyLayer {
+  layer: string;
+  devices: string;
+  protocols: string;
+  details: string;
+  configSnippet?: string;
+}
+
+export interface ProjectSystem {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: "cloud-ai" | "cisco-networking";
+  categoryLabel: string;
+  role: string;
+  status: "PRODUCTION" | "LAB_TOPOLOGY";
+  stack: string[];
+  metrics: { label: string; value: string }[];
+  pipelines?: SystemPipeline[];
+  topologyLayers?: TopologyLayer[];
+  keyHighlights: string[];
 }

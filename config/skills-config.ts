@@ -40,7 +40,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "aws",
     description: "Multi-region cloud infrastructure, VPC peering, IAM, and high-availability solutions.",
-    proficiency: "Production",
+    proficiency: "Intermediate",
     tags: ["Cloud", "IaC", "Compute"],
   },
   {
@@ -48,7 +48,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "gcp",
     description: "Enterprise GKE clusters, VPC Service Controls, and global Anycast infrastructure.",
-    proficiency: "Production",
+    proficiency: "Intermediate",
     tags: ["Cloud", "Containers", "Networking"],
   },
   {
@@ -56,7 +56,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "github",
     description: "GitOps automation pipelines, distributed version control, and CI/CD workflows.",
-    proficiency: "Advanced",
+    proficiency: "Intermediate",
     tags: ["Version Control", "CI/CD", "DevOps"],
   },
   {
@@ -64,7 +64,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "vercel",
     description: "Edge network compute, Next.js deployment orchestration, and global CDN delivery.",
-    proficiency: "Production",
+    proficiency: "Basic",
     tags: ["Edge", "Hosting", "Next.js"],
   },
   {
@@ -72,7 +72,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "supabase",
     description: "PostgreSQL relational databases, row-level security policies, and realtime subscriptions.",
-    proficiency: "Production",
+    proficiency: "Basic",
     tags: ["PostgreSQL", "BaaS", "SQL"],
   },
   {
@@ -90,7 +90,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "os",
     icon: "linux",
     description: "Kernel tuning, namespaces, cgroups, systemd services, and production server administration.",
-    proficiency: "Core",
+    proficiency: "Proficient",
     tags: ["Kernel", "POSIX", "SysAdmin"],
   },
   {
@@ -108,7 +108,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "design",
     icon: "figma",
     description: "High-fidelity component design systems, autolayout wireframing, and interactive prototyping.",
-    proficiency: "Advanced",
+    proficiency: "Proficient",
     tags: ["Design System", "Prototyping", "UI/UX"],
   },
   {
@@ -116,7 +116,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "design",
     icon: "photoshop",
     description: "Raster asset manipulation, visual compositing, and web graphic optimization.",
-    proficiency: "Proficient",
+    proficiency: "Advanced",
     tags: ["Raster", "Graphics", "Creative"],
   },
   {
@@ -124,7 +124,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "design",
     icon: "illustrator",
     description: "Scalable vector graphics synthesis, technical icon design, and identity assets.",
-    proficiency: "Proficient",
+    proficiency: "Advanced",
     tags: ["Vector", "SVG", "Iconography"],
   },
 
@@ -134,7 +134,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "shell",
     icon: "powershell",
     description: "Object-oriented scripting pipelines, Windows system management, and cloud automation.",
-    proficiency: "Advanced",
+    proficiency: "Intermediate",
     tags: ["CLI", "Automation", "Scripting"],
   },
   {
@@ -142,7 +142,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "shell",
     icon: "bash",
     description: "POSIX shell automation, environment bootstrapping, process plumbing, and Unix tooling.",
-    proficiency: "Advanced",
+    proficiency: "Intermediate",
     tags: ["Linux", "CLI", "Automation"],
   },
 
@@ -152,7 +152,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "networking",
     icon: "wireshark",
     description: "Deep packet inspection, TCP stream dissection, TLS analysis, and latency troubleshooting.",
-    proficiency: "Advanced",
+    proficiency: "Intermediate",
     tags: ["Packet Analysis", "Protocols", "Security"],
   },
   {
@@ -160,7 +160,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "networking",
     icon: "nmap",
     description: "Network host discovery, port vulnerability scanning, and service version enumeration.",
-    proficiency: "Advanced",
+    proficiency: "Basic",
     tags: ["Reconnaissance", "Security", "Auditing"],
   },
   {

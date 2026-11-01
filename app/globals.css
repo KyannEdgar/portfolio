@@ -98,6 +98,12 @@
   }
 }
 
+@layer utilities {
+  .bg-border\/50 {
+    background-color: color-mix(in srgb, var(--border) 50%, transparent);
+  }
+}
+
 /* Custom subtle grid background */
 .bg-grid-pattern {
   background-size: 36px 36px;

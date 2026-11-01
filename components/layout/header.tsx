@@ -84,12 +84,14 @@ export function Header() {
 
     isAutoScrollingRef.current = true;
     setHidden(false);
+    setActiveSection(targetId);
 
-    const headerOffset = 80; // Matches h-20 header height
+    // Do NOT subtract headerOffset: sections have built-in py-24/py-32 padding and sticky top-0 containers.
+    // Scrolling directly to the section top tucks the preceding SectionCurtainDivider off-screen.
     const targetPosition =
       targetId === "landing"
         ? 0
-        : Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+        : Math.ceil(target.getBoundingClientRect().top + window.scrollY);
     const startPosition = window.scrollY;
     const distance = targetPosition - startPosition;
     let startTime: number | null = null;
@@ -157,56 +159,65 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Track active section via IntersectionObserver
+  // Track active section based on the cascading curtain stack layout
   useEffect(() => {
+    // Reverse DOM order: highest z-index / lowest section in DOM checked first
     const sectionIds = [
-      "landing",
-      "certifications",
-      "skills",
-      "projects",
-      "experience",
       "education",
-      "socials",
+      "experience",
+      "projects",
+      "skills",
+      "certifications",
+      "landing",
     ];
 
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
+    const updateActiveSection = () => {
+      // Do not overwrite during active programmatic smooth scrolling
+      if (isAutoScrollingRef.current) return;
 
-    if (sections.length === 0) return;
+      const currentScrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: 0,
+      // Bottom of page check: reliably highlight education when scrolled to bottom/footer
+      if (currentScrollY + windowHeight >= fullHeight - 60) {
+        setActiveSection("education");
+        return;
       }
-    );
 
-    sections.forEach((section) => observer.observe(section));
-
-    // Handle bottom of page edge-case to reliably highlight the final section
-    const handleScrollBottom = () => {
-      const isBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 50;
-      if (isBottom) {
-        setActiveSection("socials");
+      // Top of page / Hero resting state
+      if (currentScrollY <= 80) {
+        setActiveSection("landing");
+        return;
       }
+
+      // In cascading curtain architecture, sections stack with ascending z-index.
+      // The highest-order section whose top has reached or passed the activation threshold (120px)
+      // is the layer currently in view.
+      const activationThreshold = 120; // 80px header height + 40px buffer
+
+      for (const id of sectionIds) {
+        if (id === "landing") continue;
+        const el = document.getElementById(id);
+        if (!el) continue;
+
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= activationThreshold) {
+          setActiveSection(id);
+          return;
+        }
+      }
+
+      setActiveSection("landing");
     };
 
-    window.addEventListener("scroll", handleScrollBottom, { passive: true });
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection, { passive: true });
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScrollBottom);
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
     };
   }, []);
 

@@ -15,7 +15,6 @@ export const siteConfig: SiteConfig = {
     { id: "projects", number: "03", label: "Projects", href: "#projects" },
     { id: "experience", number: "04", label: "Experience", href: "#experience" },
     { id: "education", number: "05", label: "Education", href: "#education" },
-    { id: "socials", number: "06", label: "Socials", href: "#socials" },
   ],
   socials: [
     {
@@ -51,63 +50,129 @@ export const siteConfig: SiteConfig = {
   ],
   experience: [
     {
-      period: "2024 – PRESENT",
-      role: "Lead Cloud & Infrastructure Architect",
-      company: "Autonomous Infrastructure Systems",
-      location: "Distributed // Global Anycast",
+      period: "Feb 2026 – May 2026",
+      role: "Web Developer Intern (OJT)",
+      company: "ABBE Technology Solutions Inc.",
+      location: "Makati City, Philippines",
       description:
-        "Architecting resilient multi-region Kubernetes clusters, line-rate WireGuard mesh overlays, and automated eBPF runtime security instrumentation.",
+        "Initiated code architecture and backend API services for an enterprise Human Resource Information System (HRIS) utilizing .NET within a Domain-Driven Design (DDD) framework.",
       achievements: [
-        "Designed and deployed dual-cloud Kubernetes infrastructure across AWS and GCP maintaining 99.999% SLA.",
-        "Engineered Cilium eBPF host routing topology that reduced cross-region network latency by 42%.",
-        "Implemented zero-trust workload attestation using SPIFFE/SPIRE with hardware TPM verification.",
+        "Initiated the initial setup and code structure for Human Resource Information System (HRIS).",
+        "Designed and implemented core API logic using .NET within a Domain-Driven Design (DDD) architecture for scalable and modular backend services.",
+        "Presented weekly progress reports and system demonstrations to the HR department to gather feedback and align project goals.",
+        "Collaborated with the internal development team during sync meetings to review tasks, update sprint goals, and document system workflows.",
       ],
-      skills: ["Kubernetes", "eBPF", "AWS", "Google Cloud", "WireGuard", "Terraform", "Go"],
+      skills: [
+        ".NET",
+        "Domain-Driven Design",
+        "C#",
+        "RESTful APIs",
+        "SQL Database Querying",
+        "System Architecture",
+        "HRIS",
+      ],
     },
     {
-      period: "2022 – 2024",
-      role: "Senior Security & Systems Engineer",
-      company: "Enterprise Cloud Platforms",
-      location: "Manila // Hybrid",
+      period: "2024 – 2025",
+      role: "Freelance Quality Assurance Tester",
+      company: "uTest & Tester Work",
+      location: "Remote",
       description:
-        "Led continuous infrastructure-as-code automation, post-quantum cryptographic migration, and autonomous threat mitigation systems.",
+        "Executed functional test cases, cross-device stability tests, and detailed defect reproduction reporting across mobile, tablet, and desktop platforms.",
       achievements: [
-        "Automated infrastructure drift reconciliation using custom n8n workflows and OpenTofu state tracking, reducing MTTR below 15s.",
-        "Integrated post-quantum ML-KEM key exchange primitives into internal microservice transport security layers.",
-        "Standardized zero-regression GitOps deployment pipelines across 24 high-throughput microservices.",
+        "Executed test cases across different applications to detect functional errors and interface anomalies.",
+        "Tested app stability and layout compatibility across multiple mobile devices, tablets, and operating systems.",
+        "Prepared detailed bug reports including step-by-step reproduction instructions, screenshots, and device log files.",
       ],
-      skills: ["Zero-Trust", "Cryptography", "Linux Kernel", "Docker", "n8n", "CI/CD", "TypeScript"],
-    },
-    {
-      period: "2020 – 2022",
-      role: "Full-Stack & Cloud Systems Engineer",
-      company: "Core Distributed Engineering",
-      location: "Manila, PH",
-      description:
-        "Engineered scalable distributed applications, relational and time-series database optimizations, and telemetry ingestion pipelines.",
-      achievements: [
-        "Architected high-throughput API microservices handling over 10M daily requests with sub-50ms latency.",
-        "Refactored relational database schemas and indexing structures, achieving a 65% reduction in query execution times.",
-        "Built real-time telemetry observation dashboards and alerting mechanisms for mission-critical services.",
+      skills: [
+        "QA Testing",
+        "Test Case Execution",
+        "Cross-Platform Validation",
+        "Bug Reporting",
+        "Device Log Analysis",
+        "Mobile & Web Testing",
+        "Android / iOS",
       ],
-      skills: ["Next.js", "Node.js", "PostgreSQL", "Supabase", "Firebase", "Redis", "SQL"],
     },
   ],
   education: [
     {
-      period: "2018 – 2022",
-      degree: "Bachelor of Science in Computer Science",
-      institution: "Technological University // Engineering Institute",
-      location: "Manila, Philippines",
-      honors: "Magna Cum Laude // Highest Academic Honors",
+      id: "EDU_01",
+      category: "ACADEMIC",
+      categoryBadge: "ACADEMIC DEGREE // FORMAL HIGHER EDUCATION",
+      program: "Bachelor of Science in Information Technology",
+      institution: "Southern Luzon State University – Main Campus",
+      period: "2022 – 2026",
+      location: "Lucban, Quezon",
+      metricBadge: "GPA: 1.53",
+      affiliation: "Member of Integrated Student of Information Technology",
       description:
-        "Rigorous specialization in Distributed Systems, Computer Networks, Operating Systems, and Applied Cryptography. Completed thesis on resilient peer-to-peer mesh networking.",
-      focusAreas: [
-        "Distributed Systems & Consensus",
-        "Network Protocols & Architecture",
-        "Cryptography & Data Security",
-        "Advanced Algorithms & Complexity",
-        "Operating Systems & Kernel Programming",
+        "Four-year undergraduate degree program focusing on software engineering, database systems, networking fundamentals, and computer hardware diagnostics.",
+      pillars: [
+        {
+          name: "Backend & Software Architecture",
+          description:
+            "Enterprise system design, object-oriented programming, and relational database schema construction.",
+          skills: [".NET", "Domain-Driven Design (DDD)", "C#", "SQL Querying"],
+        },
+        {
+          name: "Systems & Networking",
+          description:
+            "Network layer protocols, IP address planning, and packet flow simulation.",
+          skills: ["Routing & Switching", "TCP/IP & Subnetting", "Cisco Packet Tracer"],
+        },
+        {
+          name: "Infrastructure & Security",
+          description:
+            "Linux systems administration, access control architectures, and network reconnaissance.",
+          skills: ["Linux CLI", "Virtual Machines", "Nmap", "Wireshark", "RBAC"],
+        },
+        {
+          name: "Hardware & IT Operations",
+          description:
+            "Modular hardware assembly, component-level troubleshooting, and firmware maintenance.",
+          skills: ["PC Assembly & Diagnostics", "Hardware Upgrades", "OS Management"],
+        },
+      ],
+    },
+    {
+      id: "EDU_02",
+      category: "UPSKILL",
+      categoryBadge: "CLOUD WORKFORCE INITIATIVE // INDUSTRY FELLOWSHIP",
+      program: "AWS re/Start Program",
+      institution: "Amazon Web Services (AWS) Training & Certification",
+      period: "Cohort 2026",
+      location: "Hybrid // Philippines",
+      cohort: "BATCH PHMAN 31",
+      sponsors: ["DigiPlus Interactive Corp.", "Edukasyon.ph"],
+      credentialTarget: "AWS Certified Cloud Practitioner (CCP) Readiness",
+      description:
+        "Intensive, skills-based training curriculum preparing non-traditional learners for entry-level cloud careers with hands-on labs and scenario-based technical drills.",
+      pillars: [
+        {
+          name: "AWS Core Infrastructure",
+          description:
+            "Foundational compute, storage, virtual networking, and identity management in the AWS Cloud.",
+          skills: ["Amazon EC2", "Amazon S3", "Amazon VPC", "AWS IAM", "Amazon RDS"],
+        },
+        {
+          name: "Linux & Shell Scripting",
+          description:
+            "POSIX shell command proficiency, automated system maintenance, and user permission models.",
+          skills: ["Bash Shell", "File Systems", "Process Management", "Permissions"],
+        },
+        {
+          name: "Cloud Networking & Security",
+          description:
+            "Virtual private cloud segmentation, stateful security groups, and cloud perimeter defense.",
+          skills: ["Subnetting", "Security Groups & NACLs", "Zero-Trust Access"],
+        },
+        {
+          name: "Python Automation & Observability",
+          description:
+            "Programmatic cloud infrastructure interactions and runtime metrics monitoring.",
+          skills: ["Python Scripting", "Boto3 Fundamentals", "Amazon CloudWatch"],
+        },
       ],
     },
   ],
