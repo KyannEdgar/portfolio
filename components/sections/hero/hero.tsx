@@ -9,7 +9,7 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Download, FileText } from "lucide-react";
 import { siteConfig } from "@/config";
 import {
   heroContainerVariants,
@@ -41,6 +41,7 @@ export function Hero() {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isHoveringPicture, setIsHoveringPicture] = useState(false);
   const [isCursorActive, setIsCursorActive] = useState(false);
+  const [isResumeHovered, setIsResumeHovered] = useState(false);
 
   const { hoveredElementBounds, setHoveredElementBounds } = useHeroCursor();
 
@@ -345,6 +346,81 @@ export function Hero() {
               </motion.span>
             </motion.div>
           </motion.h1>
+
+          {/* =========================================================================
+              CENTRAL HIGH-VISIBILITY RESUME DOWNLOAD ACTION (BUBBLE-ABSORBING)
+              ========================================================================= */}
+          <motion.div
+            variants={heroItemVariants}
+            className="mt-6 sm:mt-8 md:mt-10 flex flex-col items-center justify-center relative z-20"
+          >
+            {/* Floating Info Tooltip on Hover */}
+            <AnimatePresence>
+              {isResumeHovered && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.92 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.92 }}
+                  transition={{ duration: 0.16, ease: "easeOut" }}
+                  className="pointer-events-none absolute -top-8 sm:-top-9 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 whitespace-nowrap rounded-full bg-background/95 px-3 py-0.5 font-mono text-[9px] md:text-[10px] font-semibold uppercase tracking-widest text-foreground backdrop-blur-md border border-border/80 shadow-md select-none"
+                >
+                  <FileText className="h-3 w-3 text-foreground" />
+                  <span>DIRECT PDF DOWNLOAD &bull; 160 KB</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Main Interactive Capsule Button */}
+            <motion.a
+              href={siteConfig.documents?.resume || "/documents/resume/kian-edgar-abustan-resume.pdf"}
+              download="Kian_Edgar_Abustan_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download Kian Edgar Abustan's Resume in PDF format"
+              onMouseEnter={(e) => {
+                setIsResumeHovered(true);
+                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                setHoveredElementBounds({
+                  x: rect.left,
+                  y: rect.top,
+                  width: rect.width,
+                  height: rect.height,
+                  shape: "pill",
+                });
+              }}
+              onMouseLeave={() => {
+                setIsResumeHovered(false);
+                setHoveredElementBounds(null);
+              }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="group relative inline-flex items-center gap-3 rounded-full border border-foreground/25 bg-foreground/[0.04] hover:bg-foreground/[0.08] hover:border-foreground/80 px-5 py-2.5 sm:px-6 sm:py-3 font-mono text-xs sm:text-sm tracking-wider uppercase text-foreground backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-all duration-200 cursor-pointer select-none"
+            >
+              {/* Pulsing Monochrome Beacon Dot */}
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-30" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground" />
+              </span>
+
+              {/* Animated Download Icon */}
+              <motion.span
+                animate={{ y: isResumeHovered ? [0, 3, 0] : [0, 1.5, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  duration: isResumeHovered ? 0.9 : 1.8,
+                  ease: "easeInOut",
+                }}
+                className="inline-flex shrink-0"
+              >
+                <Download className="h-4 w-4 text-foreground" />
+              </motion.span>
+
+              {/* Dynamic Label Text */}
+              <span className="font-semibold tracking-widest font-mono text-[11px] sm:text-xs text-foreground transition-colors duration-200">
+                {isResumeHovered ? "DOWNLOAD RESUME [PDF]" : "CURRICULUM VITAE // RESUME"}
+              </span>
+            </motion.a>
+          </motion.div>
         </div>
 
         {/* Bottom Editorial Footer Bar (3 Responsive Zones) */}

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HeroCursorProvider } from "@/components/ui/hero-cursor-context";
+import { Preloader } from "@/components/ui/preloader";
 import "./globals.css";
 
 const inter = Inter({
@@ -84,6 +85,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <HeroCursorProvider>
+            <Preloader />
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>

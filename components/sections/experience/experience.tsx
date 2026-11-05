@@ -362,7 +362,7 @@ export function ExperienceSection() {
       const track = trackRef.current;
       const scrollWidth = track.scrollWidth;
       const clientWidth = track.parentElement?.clientWidth || window.innerWidth;
-      const distance = Math.max(0, scrollWidth - clientWidth);
+      const distance = Math.max(0, Math.ceil(scrollWidth - clientWidth));
       setScrollRange(distance);
     };
 
@@ -380,21 +380,21 @@ export function ExperienceSection() {
     };
   }, []);
 
-  // Smooth horizontal travel finishes at 60% progress, giving Card 2 ample reading time
-  const x = useTransform(smoothProgress, [0.05, 0.60], [0, -scrollRange]);
+  // Horizontal travel finishes at 0.46 progress, hitting the right side padding before Section 05 enters at 0.58
+  const x = useTransform(smoothProgress, [0.04, 0.46], [0, -scrollRange]);
 
-  // Section 04 exit recede as Section 05 (Education) cascades in over the final scroll portion
-  const recedeScale = useTransform(smoothProgress, [0.82, 0.98], [1, 0.88]);
-  const recedeOpacity = useTransform(smoothProgress, [0.82, 0.95], [1, 0]);
-  const recedeY = useTransform(smoothProgress, [0.82, 0.98], [0, -60]);
+  // Section 04 recedes smoothly as Section 05 (Education) slides in over the final portion
+  const recedeScale = useTransform(smoothProgress, [0.72, 0.98], [1, 0.88]);
+  const recedeOpacity = useTransform(smoothProgress, [0.72, 0.95], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.72, 0.98], [0, -50]);
 
   return (
     <section
       id="experience"
       ref={containerRef}
-      className="relative h-[260vh] w-full"
+      className="relative h-[340vh] w-full"
     >
-      {/* Sticky Frame: Stays fixed in viewport while user scrolls through 260vh */}
+      {/* Sticky Frame: Stays fixed in viewport while user scrolls through 340vh */}
       <motion.div
         style={{
           scale: recedeScale,
