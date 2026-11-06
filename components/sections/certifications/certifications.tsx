@@ -123,7 +123,7 @@ export function CertificationsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-start px-6 py-24 md:px-12 md:py-32 origin-center will-change-transform"
+        className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
           {/* Numbered Section Header: 01/ Certifications */}
@@ -132,7 +132,7 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={customSpring}
-            className="mb-12 flex flex-col gap-3 md:mb-16 shrink-0"
+            className="mb-4 sm:mb-6 md:mb-8 flex flex-col gap-2 md:gap-3 shrink-0"
           >
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
@@ -390,7 +390,7 @@ export function CertificationsSection() {
             {/* ==============================================================
                 RIGHT COLUMN: Shuffling Card Deck with Button Absorption
                 ============================================================== */}
-            <div className="lg:col-span-7 relative h-[440px] sm:h-[460px] md:h-[480px] max-h-full w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
+            <div className="lg:col-span-7 relative h-[380px] sm:h-[410px] md:h-[440px] lg:h-[460px] max-h-[calc(100vh-240px)] w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
               {ALL_CERTIFICATIONS.map((item, idx) => {
                 const isPast = idx < activeIndex;
                 const isCurrent = idx === activeIndex;

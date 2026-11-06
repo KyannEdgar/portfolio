@@ -86,6 +86,11 @@ export function Header() {
     setHidden(false);
     setActiveSection(targetId);
 
+    // Temporarily bypass any browser smooth-scroll interception
+    if (typeof document !== "undefined") {
+      document.documentElement.style.scrollBehavior = "auto";
+    }
+
     // Do NOT subtract headerOffset: sections have built-in py-24/py-32 padding and sticky top-0 containers.
     // Scrolling directly to the section top tucks the preceding SectionCurtainDivider off-screen.
     const targetPosition =
@@ -105,13 +110,20 @@ export function Header() {
       const progress = Math.min(elapsed / duration, 1);
       const ease = easeInOutCubic(progress);
 
-      window.scrollTo(0, startPosition + distance * ease);
+      window.scrollTo({
+        top: startPosition + distance * ease,
+        left: 0,
+        behavior: "instant",
+      });
 
       if (elapsed < duration) {
         scrollAnimationRef.current = requestAnimationFrame(step);
       } else {
         scrollAnimationRef.current = null;
         isAutoScrollingRef.current = false;
+        if (typeof document !== "undefined") {
+          document.documentElement.style.scrollBehavior = "";
+        }
         // Update URL hash without instant jumping
         window.history.pushState(null, "", `#${targetId}`);
         setActiveSection(targetId);
@@ -126,6 +138,9 @@ export function Header() {
     return () => {
       if (scrollAnimationRef.current !== null) {
         cancelAnimationFrame(scrollAnimationRef.current);
+      }
+      if (typeof document !== "undefined") {
+        document.documentElement.style.scrollBehavior = "";
       }
     };
   }, []);
@@ -237,7 +252,7 @@ export function Header() {
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "border-b border-border/60 bg-background/80 backdrop-blur-md shadow-sm"
+          ? "border-b border-border/60 bg-background/85 backdrop-blur-md shadow-sm"
           : "border-b border-transparent bg-transparent"
       }`}
     >

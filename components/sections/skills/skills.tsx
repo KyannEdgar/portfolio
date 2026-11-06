@@ -22,6 +22,73 @@ export function SkillsSection() {
   const [activeSkill, setActiveSkill] = useState<SkillItem>(SKILLS_DATA[0]);
   const { setHoveredElementBounds } = useHeroCursor();
 
+  const mousePosRef = useRef<{ x: number; y: number } | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Unified hover & focus handler with equality guard
+  const handleHoverSkill = (
+    skill: SkillItem,
+    e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>
+  ) => {
+    if (activeSkill.name !== skill.name) {
+      setActiveSkill(skill);
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoveredElementBounds({
+      x: rect.left,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+      shape: "rounded",
+      borderRadius: 12,
+    });
+  };
+
+  // Automatically activate whichever skill lands under the resting cursor when scrolling stops
+  const handleListScroll = () => {
+    setHoveredElementBounds(null);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (!mousePosRef.current) return;
+      const element = document.elementFromPoint(
+        mousePosRef.current.x,
+        mousePosRef.current.y
+      );
+      const skillBtn = element?.closest<HTMLButtonElement>("button[data-skill-name]");
+      if (skillBtn) {
+        const skillName = skillBtn.getAttribute("data-skill-name");
+        const matched = filteredSkills.find((s) => s.name === skillName);
+        if (matched) {
+          if (activeSkill.name !== matched.name) {
+            setActiveSkill(matched);
+          }
+          const rect = skillBtn.getBoundingClientRect();
+          setHoveredElementBounds({
+            x: rect.left,
+            y: rect.top,
+            width: rect.width,
+            height: rect.height,
+            shape: "rounded",
+            borderRadius: 12,
+          });
+        }
+      }
+    }, 40);
+  };
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const filteredSkills = useMemo(() => {
     if (selectedCategory === "all") return SKILLS_DATA;
     return SKILLS_DATA.filter((s) => s.category === selectedCategory);
@@ -58,15 +125,16 @@ export function SkillsSection() {
     damping: 25,
   });
 
-  const recedeScale = useTransform(smoothProgress, [0.78, 0.98], [1, 0.88]);
-  const recedeOpacity = useTransform(smoothProgress, [0.78, 0.95], [1, 0]);
-  const recedeY = useTransform(smoothProgress, [0.78, 0.98], [0, -60]);
+  // Section 02 exit recede into Section 03 (Synchronized with Section 03 rising through the middle)
+  const recedeScale = useTransform(smoothProgress, [0.48, 0.96], [1, 0.88]);
+  const recedeOpacity = useTransform(smoothProgress, [0.48, 0.92], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.48, 0.96], [0, -60]);
 
   return (
     <section
       id="skills"
       ref={containerRef}
-      className="relative h-[250vh] w-full"
+      className="relative h-[280vh] w-full"
     >
       <motion.div
         style={{
@@ -74,7 +142,7 @@ export function SkillsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 py-24 md:px-12 md:py-32 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 02/ Skills */}
@@ -83,7 +151,7 @@ export function SkillsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={customSpring}
-            className="mb-6 md:mb-8 flex flex-col gap-3 shrink-0"
+            className="mb-2.5 sm:mb-3 md:mb-4 flex flex-col gap-2 shrink-0"
           >
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
@@ -104,7 +172,7 @@ export function SkillsSection() {
           </motion.div>
 
           {/* Unboxed Category Filter Navigation */}
-          <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-3.5 shrink-0 select-none">
+          <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-2.5 shrink-0 select-none">
             {SKILL_CATEGORIES.map((cat) => {
               const count =
                 cat.id === "all"
@@ -166,44 +234,27 @@ export function SkillsSection() {
               <div className="lg:col-span-7 flex flex-col min-h-0">
                 <div
                   ref={listRef}
-                  onScroll={() => setHoveredElementBounds(null)}
-                  onMouseLeave={() => setHoveredElementBounds(null)}
-                  className="max-h-[460px] overflow-y-auto space-y-1.5 pr-2 select-none"
+                  onMouseMove={(e) => {
+                    mousePosRef.current = { x: e.clientX, y: e.clientY };
+                  }}
+                  onScroll={handleListScroll}
+                  onMouseLeave={() => {
+                    mousePosRef.current = null;
+                    setHoveredElementBounds(null);
+                  }}
+                  className="max-h-[360px] sm:max-h-[390px] lg:max-h-[430px] overflow-y-auto space-y-1.5 pr-2 select-none"
                 >
                   {filteredSkills.map((skill, idx) => {
                     const isSelected = skill.name === activeSkill.name;
                     return (
                       <button
                         key={skill.name}
+                        data-skill-name={skill.name}
                         type="button"
                         onClick={() => setActiveSkill(skill)}
-                        onMouseEnter={(e) => {
-                          setActiveSkill(skill);
-                          const rect = (
-                            e.currentTarget as HTMLElement
-                          ).getBoundingClientRect();
-                          setHoveredElementBounds({
-                            x: rect.left,
-                            y: rect.top,
-                            width: rect.width,
-                            height: rect.height,
-                            shape: "rounded",
-                            borderRadius: 12,
-                          });
-                        }}
-                        onMouseMove={(e) => {
-                          const rect = (
-                            e.currentTarget as HTMLElement
-                          ).getBoundingClientRect();
-                          setHoveredElementBounds({
-                            x: rect.left,
-                            y: rect.top,
-                            width: rect.width,
-                            height: rect.height,
-                            shape: "rounded",
-                            borderRadius: 12,
-                          });
-                        }}
+                        onMouseEnter={(e) => handleHoverSkill(skill, e)}
+                        onMouseMove={(e) => handleHoverSkill(skill, e)}
+                        onFocus={(e) => handleHoverSkill(skill, e)}
                         onMouseLeave={() => setHoveredElementBounds(null)}
                         className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-200 text-left cursor-pointer ${
                           isSelected
@@ -255,7 +306,7 @@ export function SkillsSection() {
               </div>
 
               {/* Right Column: Dynamic Spec Inspector Canvas (5/12 cols) */}
-              <div className="lg:col-span-5 h-[440px] lg:h-[460px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-6 sm:p-8 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="lg:col-span-5 h-[360px] sm:h-[390px] lg:h-[430px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
               {/* Architectural Vector Geometry Watermark */}
               <motion.svg
                 viewBox="0 0 200 200"
@@ -300,13 +351,13 @@ export function SkillsSection() {
                 <rect x="70" y="70" width="60" height="60" strokeWidth="0.75" />
               </motion.svg>
 
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="popLayout" initial={false}>
                 <motion.div
                   key={activeSkill.name}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.14, ease: "easeOut" }}
                   className="relative z-10 flex flex-col justify-between h-full"
                 >
                   {/* Top Spec Header */}

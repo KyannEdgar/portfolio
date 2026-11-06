@@ -43,12 +43,116 @@ export function ProjectsSection() {
 
   const { setHoveredElementBounds } = useHeroCursor();
   const listRef = useRef<HTMLDivElement>(null);
+  const mousePosRef = useRef<{ x: number; y: number } | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up scroll timer on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Filter projects by selected category
   const filteredProjects = useMemo(() => {
     if (selectedCategory === "all") return PROJECTS_DATA;
     return PROJECTS_DATA.filter((p) => p.category === selectedCategory);
   }, [selectedCategory]);
+
+  // Visibility & conditional auto-scroll helper
+  const handleProjectInteraction = (
+    project: ProjectSystem,
+    element: HTMLElement
+  ) => {
+    if (!listRef.current) return;
+    const containerRect = listRef.current.getBoundingClientRect();
+    const itemRect = element.getBoundingClientRect();
+
+    const isCutOffBottom = itemRect.bottom > containerRect.bottom + 1;
+    const isCutOffTop = itemRect.top < containerRect.top - 1;
+
+    if (isCutOffBottom || isCutOffTop) {
+      // Condition A (Partially Visible / Cut Off):
+      // Dismiss bounds immediately and auto-scroll with 12px breathing buffer
+      setHoveredElementBounds(null);
+      setActiveProject(project);
+
+      if (isCutOffBottom) {
+        listRef.current.scrollTo({
+          top:
+            listRef.current.scrollTop +
+            (itemRect.bottom - containerRect.bottom) +
+            12,
+          behavior: "smooth",
+        });
+      } else if (isCutOffTop) {
+        listRef.current.scrollTo({
+          top:
+            listRef.current.scrollTop -
+            (containerRect.top - itemRect.top) -
+            12,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      // Condition B (Already Fully Visible): No scroll, immediate snap
+      setActiveProject(project);
+      setHoveredElementBounds({
+        x: itemRect.left,
+        y: itemRect.top,
+        width: itemRect.width,
+        height: itemRect.height,
+        shape: "rounded",
+        borderRadius: 12,
+      });
+    }
+  };
+
+  // Settle cursor bubble onto whichever project card rests under pointer after scrolling stops
+  const handleListScroll = () => {
+    setHoveredElementBounds(null);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (!mousePosRef.current || !listRef.current) return;
+      const element = document.elementFromPoint(
+        mousePosRef.current.x,
+        mousePosRef.current.y
+      );
+      const projectBtn = element?.closest<HTMLButtonElement>(
+        "button[data-project-id]"
+      );
+      if (projectBtn) {
+        const projectId = projectBtn.getAttribute("data-project-id");
+        const matched = filteredProjects.find((p) => p.id === projectId);
+        if (matched) {
+          const containerRect = listRef.current.getBoundingClientRect();
+          const itemRect = projectBtn.getBoundingClientRect();
+          const isCutOffBottom = itemRect.bottom > containerRect.bottom + 1;
+          const isCutOffTop = itemRect.top < containerRect.top - 1;
+
+          if (!isCutOffBottom && !isCutOffTop) {
+            if (activeProject.id !== matched.id) {
+              setActiveProject(matched);
+            }
+            setHoveredElementBounds({
+              x: itemRect.left,
+              y: itemRect.top,
+              width: itemRect.width,
+              height: itemRect.height,
+              shape: "rounded",
+              borderRadius: 12,
+            });
+          }
+        }
+      }
+    }, 40);
+  };
 
   const globalProjectIndex = useMemo(() => {
     const idx = PROJECTS_DATA.findIndex((p) => p.id === activeProject.id);
@@ -91,10 +195,10 @@ export function ProjectsSection() {
     damping: 25,
   });
 
-  // Section 03 exit recede as Section 04 (Experience) cascades in
-  const recedeScale = useTransform(smoothProgress, [0.78, 0.98], [1, 0.88]);
-  const recedeOpacity = useTransform(smoothProgress, [0.78, 0.95], [1, 0]);
-  const recedeY = useTransform(smoothProgress, [0.78, 0.98], [0, -60]);
+  // Section 03 exit recede into Section 04 (Synchronized with Section 04 rising through the middle)
+  const recedeScale = useTransform(smoothProgress, [0.48, 0.96], [1, 0.88]);
+  const recedeOpacity = useTransform(smoothProgress, [0.48, 0.92], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.48, 0.96], [0, -60]);
 
   // Active pipeline resolution for Cloud-AI
   const activePipeline = useMemo(() => {
@@ -130,7 +234,7 @@ export function ProjectsSection() {
     <section
       id="projects"
       ref={containerRef}
-      className="relative h-[250vh] w-full"
+      className="relative h-[280vh] w-full"
     >
       <motion.div
         style={{
@@ -138,7 +242,7 @@ export function ProjectsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 py-24 md:px-12 md:py-32 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 pt-20 pb-3 md:px-12 md:pt-24 md:pb-4 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 03/ Projects */}
@@ -147,7 +251,7 @@ export function ProjectsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={customSpring}
-            className="mb-6 md:mb-8 flex flex-col gap-3 shrink-0"
+            className="mb-2 sm:mb-3 flex flex-col gap-1.5 shrink-0"
           >
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
@@ -171,7 +275,7 @@ export function ProjectsSection() {
           </motion.div>
 
           {/* Unboxed Category Filter Navigation */}
-          <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-3.5 shrink-0 select-none">
+          <div className="mb-2.5 sm:mb-3 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-2 shrink-0 select-none">
             {PROJECT_CATEGORIES.map((cat) => {
               const count =
                 cat.id === "all"
@@ -226,43 +330,54 @@ export function ProjectsSection() {
               <div className="lg:col-span-5 flex flex-col min-h-0">
                 <div
                   ref={listRef}
-                  onScroll={() => setHoveredElementBounds(null)}
-                  onMouseLeave={() => setHoveredElementBounds(null)}
-                  className="max-h-[480px] overflow-y-auto space-y-2.5 pr-1 select-none"
+                  onMouseMove={(e) => {
+                    mousePosRef.current = { x: e.clientX, y: e.clientY };
+                  }}
+                  onScroll={handleListScroll}
+                  onMouseLeave={() => {
+                    mousePosRef.current = null;
+                    setHoveredElementBounds(null);
+                  }}
+                  className="max-h-[350px] sm:max-h-[380px] lg:max-h-[420px] overflow-y-auto space-y-2 pr-1 select-none"
                 >
                   {filteredProjects.map((project, idx) => {
                     const isSelected = project.id === activeProject.id;
                     return (
                       <button
                         key={project.id}
+                        data-project-id={project.id}
                         type="button"
                         onClick={() => setActiveProject(project)}
-                        onMouseEnter={(e) => {
-                          setActiveProject(project);
-                          const rect = (
-                            e.currentTarget as HTMLElement
-                          ).getBoundingClientRect();
-                          setHoveredElementBounds({
-                            x: rect.left,
-                            y: rect.top,
-                            width: rect.width,
-                            height: rect.height,
-                            shape: "rounded",
-                            borderRadius: 12,
-                          });
-                        }}
+                        onMouseEnter={(e) =>
+                          handleProjectInteraction(project, e.currentTarget)
+                        }
+                        onFocus={(e) =>
+                          handleProjectInteraction(project, e.currentTarget)
+                        }
                         onMouseMove={(e) => {
-                          const rect = (
+                          if (!listRef.current) return;
+                          const containerRect =
+                            listRef.current.getBoundingClientRect();
+                          const itemRect = (
                             e.currentTarget as HTMLElement
                           ).getBoundingClientRect();
-                          setHoveredElementBounds({
-                            x: rect.left,
-                            y: rect.top,
-                            width: rect.width,
-                            height: rect.height,
-                            shape: "rounded",
-                            borderRadius: 12,
-                          });
+                          const isCutOffBottom =
+                            itemRect.bottom > containerRect.bottom + 1;
+                          const isCutOffTop =
+                            itemRect.top < containerRect.top - 1;
+
+                          if (isCutOffBottom || isCutOffTop) {
+                            setHoveredElementBounds(null);
+                          } else {
+                            setHoveredElementBounds({
+                              x: itemRect.left,
+                              y: itemRect.top,
+                              width: itemRect.width,
+                              height: itemRect.height,
+                              shape: "rounded",
+                              borderRadius: 12,
+                            });
+                          }
                         }}
                         onMouseLeave={() => setHoveredElementBounds(null)}
                         className={`w-full flex flex-col p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer ${
@@ -331,7 +446,7 @@ export function ProjectsSection() {
               </div>
 
               {/* Right Column: Live Architecture Blueprint Visualizer (7/12 cols) */}
-              <div className="lg:col-span-7 h-[460px] lg:h-[480px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-6 sm:p-7 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="lg:col-span-7 h-[350px] sm:h-[380px] lg:h-[420px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"
@@ -641,7 +756,7 @@ export function ProjectsSection() {
           </div>
 
           {/* Bottom Status Rail */}
-          <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none">
+          <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none">
             <span className="text-foreground/70 truncate max-w-[70%]">
               {`[INSPECTED: ${activeProject.title}] // CLICK PIPELINE STEPS TO INSPECT LOGIC`}
             </span>

@@ -94,6 +94,9 @@ export function Hero() {
       if (scrollAnimationRef.current !== null) {
         cancelAnimationFrame(scrollAnimationRef.current);
       }
+      if (typeof document !== "undefined") {
+        document.documentElement.style.scrollBehavior = "";
+      }
     };
   }, []);
 
@@ -107,6 +110,11 @@ export function Hero() {
     if (scrollAnimationRef.current !== null) {
       cancelAnimationFrame(scrollAnimationRef.current);
       scrollAnimationRef.current = null;
+    }
+
+    // Temporarily bypass any browser smooth-scroll interception
+    if (typeof document !== "undefined") {
+      document.documentElement.style.scrollBehavior = "auto";
     }
 
     const startPosition = window.scrollY;
@@ -125,12 +133,19 @@ export function Hero() {
       const progress = Math.min(elapsed / duration, 1);
       const ease = easeInOutCubic(progress);
 
-      window.scrollTo(0, startPosition + distance * ease);
+      window.scrollTo({
+        top: startPosition + distance * ease,
+        left: 0,
+        behavior: "instant",
+      });
 
       if (elapsed < duration) {
         scrollAnimationRef.current = requestAnimationFrame(step);
       } else {
         scrollAnimationRef.current = null;
+        if (typeof document !== "undefined") {
+          document.documentElement.style.scrollBehavior = "";
+        }
         window.history.pushState(null, "", "#about");
       }
     };
@@ -370,7 +385,7 @@ export function Hero() {
               )}
             </AnimatePresence>
 
-            {/* Main Interactive Capsule Button */}
+            {/* Main Interactive Capsule Button (Dimension-Locked to Prevent Edge Hover Jitter) */}
             <motion.a
               href={siteConfig.documents?.resume || "/documents/resume/kian-edgar-abustan-resume.pdf"}
               download="Kian_Edgar_Abustan_Resume.pdf"
@@ -392,9 +407,9 @@ export function Hero() {
                 setIsResumeHovered(false);
                 setHoveredElementBounds(null);
               }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="group relative inline-flex items-center gap-3 rounded-full border border-foreground/25 bg-foreground/[0.04] hover:bg-foreground/[0.08] hover:border-foreground/80 px-5 py-2.5 sm:px-6 sm:py-3 font-mono text-xs sm:text-sm tracking-wider uppercase text-foreground backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-all duration-200 cursor-pointer select-none"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 w-[280px] sm:w-[310px] h-11 sm:h-12 rounded-full border border-foreground/25 bg-foreground/[0.04] hover:bg-foreground/[0.08] hover:border-foreground/80 px-4 sm:px-5 font-mono text-xs sm:text-sm tracking-wider uppercase text-foreground backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-[border-color,background-color,box-shadow] duration-200 cursor-pointer select-none"
             >
               {/* Pulsing Monochrome Beacon Dot */}
               <span className="relative flex h-2 w-2 shrink-0">
@@ -415,10 +430,27 @@ export function Hero() {
                 <Download className="h-4 w-4 text-foreground" />
               </motion.span>
 
-              {/* Dynamic Label Text */}
-              <span className="font-semibold tracking-widest font-mono text-[11px] sm:text-xs text-foreground transition-colors duration-200">
-                {isResumeHovered ? "DOWNLOAD RESUME [PDF]" : "CURRICULUM VITAE // RESUME"}
-              </span>
+              {/* Dimension-Locked Dual-Layer Text Slide (Zero Layout Reflow) */}
+              <div className="relative h-4 flex-1 flex items-center justify-center overflow-hidden">
+                <span
+                  className={`absolute inset-0 flex items-center justify-center font-semibold tracking-widest font-mono text-[10px] sm:text-[11px] text-foreground transition-all duration-200 ${
+                    isResumeHovered
+                      ? "opacity-0 -translate-y-2 pointer-events-none"
+                      : "opacity-100 translate-y-0"
+                  }`}
+                >
+                  CURRICULUM VITAE // RESUME
+                </span>
+                <span
+                  className={`absolute inset-0 flex items-center justify-center font-semibold tracking-widest font-mono text-[10px] sm:text-[11px] text-foreground transition-all duration-200 ${
+                    isResumeHovered
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-2 pointer-events-none"
+                  }`}
+                >
+                  DOWNLOAD RESUME [PDF]
+                </span>
+              </div>
             </motion.a>
           </motion.div>
         </div>

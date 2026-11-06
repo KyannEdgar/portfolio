@@ -257,7 +257,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="group relative flex shrink-0 w-[88vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[52vh] sm:h-[55vh] lg:h-[58vh] min-h-[440px] max-h-[540px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
+        className="group relative flex shrink-0 w-[88vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[48vh] sm:h-[52vh] lg:h-[56vh] min-h-[360px] sm:min-h-[390px] lg:min-h-[420px] max-h-[500px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
       >
         {/* Dynamic Monochrome Spotlight Overlay */}
         <motion.div
@@ -383,10 +383,10 @@ export function ExperienceSection() {
   // Horizontal travel finishes at 0.46 progress, hitting the right side padding before Section 05 enters at 0.58
   const x = useTransform(smoothProgress, [0.04, 0.46], [0, -scrollRange]);
 
-  // Section 04 recedes smoothly as Section 05 (Education) slides in over the final portion
-  const recedeScale = useTransform(smoothProgress, [0.72, 0.98], [1, 0.88]);
-  const recedeOpacity = useTransform(smoothProgress, [0.72, 0.95], [1, 0]);
-  const recedeY = useTransform(smoothProgress, [0.72, 0.98], [0, -50]);
+  // Section 04 exit recede into Section 05 (Synchronized with Section 05 rising through the middle)
+  const recedeScale = useTransform(smoothProgress, [0.65, 0.96], [1, 0.88]);
+  const recedeOpacity = useTransform(smoothProgress, [0.65, 0.92], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.65, 0.96], [0, -50]);
 
   return (
     <section
@@ -401,7 +401,7 @@ export function ExperienceSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-6 py-24 md:px-12 md:py-32 origin-center will-change-transform"
+        className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         {/* Top Header */}
         <div className="mx-auto max-w-7xl w-full shrink-0">
@@ -411,7 +411,7 @@ export function ExperienceSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={customSpring}
-            className="mb-12 flex flex-col gap-3 md:mb-16 shrink-0"
+            className="mb-3 sm:mb-4 md:mb-6 flex flex-col gap-2 md:gap-3 shrink-0"
           >
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
@@ -436,7 +436,7 @@ export function ExperienceSection() {
         </div>
 
         {/* Middle Track: Horizontally Scrolling Panoramic Cards */}
-        <div className="relative flex-1 flex items-center overflow-hidden my-auto -mx-6 md:-mx-12 w-[calc(100%+3rem)] md:w-[calc(100%+6rem)] min-h-0">
+        <div className="relative flex-1 flex items-center overflow-hidden my-auto -mx-6 md:-mx-12 w-[calc(100%+3rem)] md:w-[calc(100%+6rem)] min-h-0 py-3 sm:py-4">
           <motion.div
             ref={trackRef}
             style={{ x }}
