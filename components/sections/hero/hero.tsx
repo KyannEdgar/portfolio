@@ -197,7 +197,7 @@ export function Hero() {
   return (
     <section
       id="landing"
-      className="relative flex min-h-screen w-full flex-col justify-between px-6 pt-24 pb-8 md:px-12 md:pb-12 bg-background overflow-hidden select-none"
+      className="relative flex min-h-screen w-full flex-col justify-between px-4 pt-16 pb-6 sm:px-6 md:px-12 md:pt-24 md:pb-12 bg-background overflow-hidden select-none"
     >
       {/* Background ambient lighting - strictly monochrome */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/[0.03] blur-[140px]" />
@@ -240,7 +240,7 @@ export function Hero() {
         <div className="my-auto flex flex-col items-center justify-center w-full py-8 md:py-12">
           <motion.h1
             variants={heroItemVariants}
-            className="w-full text-center text-5xl sm:text-6xl md:text-[5.5vw] lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-none text-foreground select-none"
+            className="w-full text-center text-4xl sm:text-6xl md:text-[5.5vw] lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-none text-foreground select-none"
           >
             <motion.div
               layout
@@ -409,7 +409,7 @@ export function Hero() {
               }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 w-[280px] sm:w-[310px] h-11 sm:h-12 rounded-full border border-foreground/25 bg-foreground/[0.04] hover:bg-foreground/[0.08] hover:border-foreground/80 px-4 sm:px-5 font-mono text-xs sm:text-sm tracking-wider uppercase text-foreground backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-[border-color,background-color,box-shadow] duration-200 cursor-pointer select-none"
+              className="group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 w-[270px] sm:w-[310px] h-11 sm:h-12 rounded-full border border-foreground/25 bg-foreground/[0.04] hover:bg-foreground/[0.08] hover:border-foreground/80 px-4 sm:px-5 font-mono text-[10px] sm:text-xs tracking-wider uppercase text-foreground backdrop-blur-md shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition-[border-color,background-color,box-shadow] duration-200 cursor-pointer select-none"
             >
               {/* Pulsing Monochrome Beacon Dot */}
               <span className="relative flex h-2 w-2 shrink-0">
@@ -458,7 +458,7 @@ export function Hero() {
         {/* Bottom Editorial Footer Bar (3 Responsive Zones) */}
         <motion.div
           variants={heroItemVariants}
-          className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-5 pt-8 text-center"
+          className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-4 md:gap-5 pt-6 md:pt-8 text-center"
         >
           {/* Zone 1 (Left): Unboxed Social Icons with Animated Directional Indicator */}
           <div className="flex items-center justify-center md:justify-start gap-2.5 sm:gap-3 order-2 md:order-1">

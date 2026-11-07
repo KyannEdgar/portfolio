@@ -18,67 +18,13 @@ import { Cpu } from "lucide-react";
 
 export function SkillsSection() {
   const containerRef = useRef<HTMLElement>(null);
-  const [selectedCategory, setSelectedCategory] = useState<SkillCategory>("all");
-  const [activeSkill, setActiveSkill] = useState<SkillItem>(SKILLS_DATA[0]);
-  const { setHoveredElementBounds } = useHeroCursor();
-
+  const listRef = useRef<HTMLDivElement>(null);
   const mousePosRef = useRef<{ x: number; y: number } | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Unified hover & focus handler with equality guard
-  const handleHoverSkill = (
-    skill: SkillItem,
-    e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>
-  ) => {
-    if (activeSkill.name !== skill.name) {
-      setActiveSkill(skill);
-    }
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoveredElementBounds({
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
-      shape: "rounded",
-      borderRadius: 12,
-    });
-  };
-
-  // Automatically activate whichever skill lands under the resting cursor when scrolling stops
-  const handleListScroll = () => {
-    setHoveredElementBounds(null);
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-
-    scrollTimeoutRef.current = setTimeout(() => {
-      if (!mousePosRef.current) return;
-      const element = document.elementFromPoint(
-        mousePosRef.current.x,
-        mousePosRef.current.y
-      );
-      const skillBtn = element?.closest<HTMLButtonElement>("button[data-skill-name]");
-      if (skillBtn) {
-        const skillName = skillBtn.getAttribute("data-skill-name");
-        const matched = filteredSkills.find((s) => s.name === skillName);
-        if (matched) {
-          if (activeSkill.name !== matched.name) {
-            setActiveSkill(matched);
-          }
-          const rect = skillBtn.getBoundingClientRect();
-          setHoveredElementBounds({
-            x: rect.left,
-            y: rect.top,
-            width: rect.width,
-            height: rect.height,
-            shape: "rounded",
-            borderRadius: 12,
-          });
-        }
-      }
-    }, 40);
-  };
+  const [selectedCategory, setSelectedCategory] = useState<SkillCategory>("all");
+  const [activeSkill, setActiveSkill] = useState<SkillItem>(SKILLS_DATA[0]);
+  const { setHoveredElementBounds } = useHeroCursor();
 
   // Clean up timer on unmount
   useEffect(() => {
@@ -94,6 +40,103 @@ export function SkillsSection() {
     return SKILLS_DATA.filter((s) => s.category === selectedCategory);
   }, [selectedCategory]);
 
+  // Visibility & conditional auto-scroll helper
+  const handleSkillInteraction = (
+    skill: SkillItem,
+    element: HTMLElement
+  ) => {
+    if (!listRef.current) return;
+    const containerRect = listRef.current.getBoundingClientRect();
+    const itemRect = element.getBoundingClientRect();
+
+    const isCutOffBottom = itemRect.bottom > containerRect.bottom + 1;
+    const isCutOffTop = itemRect.top < containerRect.top - 1;
+
+    if (isCutOffBottom || isCutOffTop) {
+      // Condition A (Partially Visible / Cut Off):
+      // Clear cursor bounds immediately and auto-scroll with 12px breathing cushion
+      setHoveredElementBounds(null);
+      if (activeSkill.name !== skill.name) {
+        setActiveSkill(skill);
+      }
+
+      if (isCutOffBottom) {
+        listRef.current.scrollTo({
+          top:
+            listRef.current.scrollTop +
+            (itemRect.bottom - containerRect.bottom) +
+            12,
+          behavior: "smooth",
+        });
+      } else if (isCutOffTop) {
+        listRef.current.scrollTo({
+          top:
+            listRef.current.scrollTop -
+            (containerRect.top - itemRect.top) -
+            12,
+          behavior: "smooth",
+        });
+      }
+    } else {
+      // Condition B (Already Fully Visible): No scroll, immediate snap
+      if (activeSkill.name !== skill.name) {
+        setActiveSkill(skill);
+      }
+      setHoveredElementBounds({
+        x: itemRect.left,
+        y: itemRect.top,
+        width: itemRect.width,
+        height: itemRect.height,
+        shape: "rounded",
+        borderRadius: 12,
+      });
+    }
+  };
+
+  // Automatically activate whichever skill lands under the resting cursor when scrolling stops
+  const handleListScroll = () => {
+    setHoveredElementBounds(null);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (!mousePosRef.current || !listRef.current) return;
+      const element = document.elementFromPoint(
+        mousePosRef.current.x,
+        mousePosRef.current.y
+      );
+      const skillBtn = element?.closest<HTMLButtonElement>(
+        "button[data-skill-name]"
+      );
+      if (skillBtn) {
+        const skillName = skillBtn.getAttribute("data-skill-name");
+        const matched = filteredSkills.find((s) => s.name === skillName);
+        if (matched) {
+          const containerRect = listRef.current.getBoundingClientRect();
+          const itemRect = skillBtn.getBoundingClientRect();
+          const isCutOffBottom = itemRect.bottom > containerRect.bottom + 1;
+          const isCutOffTop = itemRect.top < containerRect.top - 1;
+
+          if (!isCutOffBottom && !isCutOffTop) {
+            if (activeSkill.name !== matched.name) {
+              setActiveSkill(matched);
+            }
+            setHoveredElementBounds({
+              x: itemRect.left,
+              y: itemRect.top,
+              width: itemRect.width,
+              height: itemRect.height,
+              shape: "rounded",
+              borderRadius: 12,
+            });
+          }
+        }
+      }
+    }, 40);
+  };
+
   const globalSkillIndex = useMemo(() => {
     const idx = SKILLS_DATA.findIndex((s) => s.name === activeSkill.name);
     return idx >= 0 ? idx : 0;
@@ -103,8 +146,6 @@ export function SkillsSection() {
     const cat = SKILL_CATEGORIES.find((c) => c.id === activeSkill.category);
     return cat?.label || activeSkill.category.toUpperCase();
   }, [activeSkill.category]);
-
-  const listRef = useRef<HTMLDivElement>(null);
 
   // Dissolve global cursor bubble on page scroll
   useEffect(() => {
@@ -142,7 +183,7 @@ export function SkillsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-4 pt-12 pb-6 sm:px-6 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 02/ Skills */}
@@ -168,67 +209,70 @@ export function SkillsSection() {
                 </span>
                 Skills &amp; Tooling
               </h2>
+              <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                Core Technologies, Operating Systems &amp; Engineering Tools
+              </p>
             </div>
           </motion.div>
 
-          {/* Unboxed Category Filter Navigation */}
-          <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-2.5 shrink-0 select-none">
-            {SKILL_CATEGORIES.map((cat) => {
-              const count =
-                cat.id === "all"
-                  ? SKILLS_DATA.length
-                  : SKILLS_DATA.filter((s) => s.category === cat.id).length;
-              const isActive = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedCategory(cat.id);
-                    const first =
-                      cat.id === "all"
-                        ? SKILLS_DATA[0]
-                        : SKILLS_DATA.find((s) => s.category === cat.id);
-                    if (first) setActiveSkill(first);
-                  }}
-                  onMouseEnter={(e) => {
-                    const rect = (
-                      e.currentTarget as HTMLElement
-                    ).getBoundingClientRect();
-                    setHoveredElementBounds({
-                      x: rect.left,
-                      y: rect.top,
-                      width: rect.width,
-                      height: rect.height,
-                      shape: "rounded",
-                      borderRadius: 6,
-                    });
-                  }}
-                  onMouseLeave={() => setHoveredElementBounds(null)}
-                  className={`relative py-1 font-mono text-xs uppercase tracking-widest transition-colors duration-200 cursor-pointer ${
-                    isActive
-                      ? "font-bold text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <span>{cat.label}</span>
-                  <span className="ml-1.5 opacity-50 text-[10px]">
-                    ({count < 10 ? `0${count}` : count})
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeSkillUnderline"
-                      className="absolute -bottom-[15px] left-0 right-0 h-[2px] bg-foreground"
-                      transition={customSpring}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
           {/* Precision Toolchain Workbench Container (Vertically Balanced) */}
           <div className="flex-1 flex flex-col justify-center min-h-0 my-auto w-full">
+            {/* Unboxed Category Filter Navigation */}
+            <div className="mb-4 sm:mb-5 flex items-center overflow-x-auto overflow-y-hidden no-scrollbar gap-x-6 sm:gap-x-8 border-b border-border/50 pb-0 shrink-0 select-none">
+              {SKILL_CATEGORIES.map((cat) => {
+                const count =
+                  cat.id === "all"
+                    ? SKILLS_DATA.length
+                    : SKILLS_DATA.filter((s) => s.category === cat.id).length;
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedCategory(cat.id);
+                      const first =
+                        cat.id === "all"
+                          ? SKILLS_DATA[0]
+                          : SKILLS_DATA.find((s) => s.category === cat.id);
+                      if (first) setActiveSkill(first);
+                    }}
+                    onMouseEnter={(e) => {
+                      const rect = (
+                        e.currentTarget as HTMLElement
+                      ).getBoundingClientRect();
+                      setHoveredElementBounds({
+                        x: rect.left,
+                        y: rect.top,
+                        width: rect.width,
+                        height: rect.height,
+                        shape: "rounded",
+                        borderRadius: 6,
+                      });
+                    }}
+                    onMouseLeave={() => setHoveredElementBounds(null)}
+                    className={`relative pb-2.5 font-mono text-xs uppercase tracking-widest transition-colors duration-200 cursor-pointer shrink-0 ${
+                      isActive
+                        ? "font-bold text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className="ml-1.5 opacity-50 text-[10px]">
+                      ({count < 10 ? `0${count}` : count})
+                    </span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSkillUnderline"
+                        className="absolute -bottom-px left-0 right-0 h-[2px] bg-foreground"
+                        transition={customSpring}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: The Toolchain Ledger Stream (7/12 cols) */}
               <div className="lg:col-span-7 flex flex-col min-h-0">
@@ -242,7 +286,7 @@ export function SkillsSection() {
                     mousePosRef.current = null;
                     setHoveredElementBounds(null);
                   }}
-                  className="max-h-[360px] sm:max-h-[390px] lg:max-h-[430px] overflow-y-auto space-y-1.5 pr-2 select-none"
+                  className="max-h-[240px] sm:max-h-[360px] lg:max-h-[430px] overflow-y-auto space-y-1.5 pr-2 select-none"
                 >
                   {filteredSkills.map((skill, idx) => {
                     const isSelected = skill.name === activeSkill.name;
@@ -252,9 +296,37 @@ export function SkillsSection() {
                         data-skill-name={skill.name}
                         type="button"
                         onClick={() => setActiveSkill(skill)}
-                        onMouseEnter={(e) => handleHoverSkill(skill, e)}
-                        onMouseMove={(e) => handleHoverSkill(skill, e)}
-                        onFocus={(e) => handleHoverSkill(skill, e)}
+                        onMouseEnter={(e) =>
+                          handleSkillInteraction(skill, e.currentTarget)
+                        }
+                        onFocus={(e) =>
+                          handleSkillInteraction(skill, e.currentTarget)
+                        }
+                        onMouseMove={(e) => {
+                          if (!listRef.current) return;
+                          const containerRect =
+                            listRef.current.getBoundingClientRect();
+                          const itemRect = (
+                            e.currentTarget as HTMLElement
+                          ).getBoundingClientRect();
+                          const isCutOffBottom =
+                            itemRect.bottom > containerRect.bottom + 1;
+                          const isCutOffTop =
+                            itemRect.top < containerRect.top - 1;
+
+                          if (isCutOffBottom || isCutOffTop) {
+                            setHoveredElementBounds(null);
+                          } else {
+                            setHoveredElementBounds({
+                              x: itemRect.left,
+                              y: itemRect.top,
+                              width: itemRect.width,
+                              height: itemRect.height,
+                              shape: "rounded",
+                              borderRadius: 12,
+                            });
+                          }
+                        }}
                         onMouseLeave={() => setHoveredElementBounds(null)}
                         className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-200 text-left cursor-pointer ${
                           isSelected
@@ -306,7 +378,7 @@ export function SkillsSection() {
               </div>
 
               {/* Right Column: Dynamic Spec Inspector Canvas (5/12 cols) */}
-              <div className="lg:col-span-5 h-[360px] sm:h-[390px] lg:h-[430px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="lg:col-span-5 h-auto min-h-[240px] sm:h-[390px] lg:h-[430px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
               {/* Architectural Vector Geometry Watermark */}
               <motion.svg
                 viewBox="0 0 200 200"

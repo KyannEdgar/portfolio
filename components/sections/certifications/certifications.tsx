@@ -123,7 +123,7 @@ export function CertificationsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-4 pt-12 pb-6 sm:px-6 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
           {/* Numbered Section Header: 01/ Certifications */}
@@ -156,11 +156,11 @@ export function CertificationsSection() {
           </motion.div>
 
           {/* Dual Track Architecture */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 flex-1 items-center min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 flex-1 items-center min-h-0">
             {/* ==============================================================
                 LEFT COLUMN: PrimeReact Timeline Attestation Tracks (5/12 cols)
                 ============================================================== */}
-            <div className="lg:col-span-5 flex flex-col justify-center space-y-6 sm:space-y-8 select-none">
+            <div className="lg:col-span-5 flex flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8 select-none">
               {isMounted ? (
                 <PrimeReactProvider unstyled>
                   {/* Track A: Verified Attestations */}
@@ -390,7 +390,7 @@ export function CertificationsSection() {
             {/* ==============================================================
                 RIGHT COLUMN: Shuffling Card Deck with Button Absorption
                 ============================================================== */}
-            <div className="lg:col-span-7 relative h-[380px] sm:h-[410px] md:h-[440px] lg:h-[460px] max-h-[calc(100vh-240px)] w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
+            <div className="lg:col-span-7 relative h-[260px] sm:h-[320px] lg:h-[420px] max-h-[calc(100vh-240px)] w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
               {ALL_CERTIFICATIONS.map((item, idx) => {
                 const isPast = idx < activeIndex;
                 const isCurrent = idx === activeIndex;
@@ -424,7 +424,7 @@ export function CertificationsSection() {
                       damping: 24,
                       mass: 0.8,
                     }}
-                    className="absolute inset-0 flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-6 sm:p-8 shadow-2xl backdrop-blur-md will-change-transform overflow-hidden"
+                    className="absolute inset-0 flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 lg:p-8 shadow-2xl backdrop-blur-md will-change-transform overflow-hidden"
                     style={{ pointerEvents: isCurrent ? "auto" : "none" }}
                   >
                     <div>

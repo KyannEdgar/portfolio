@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { siteConfig } from "@/config";
 import { customSpring } from "@/lib/animation";
+import { useHeroCursor } from "@/components/ui/hero-cursor-context";
 import { Briefcase } from "lucide-react";
 
 // ============================================================================
@@ -215,6 +216,24 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
   const rawRotateX = useMotionValue(0);
   const rawRotateY = useMotionValue(0);
 
+  const { setHoveredElementBounds } = useHeroCursor();
+
+  const handleMagneticHover = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoveredElementBounds({
+      x: rect.left,
+      y: rect.top,
+      width: rect.width,
+      height: rect.height,
+      shape: "rounded",
+      borderRadius: 6,
+    });
+  };
+
+  const handleMagneticLeave = () => {
+    setHoveredElementBounds(null);
+  };
+
   const springConfig = { stiffness: 150, damping: 20 };
   const rotateX = useSpring(rawRotateX, springConfig);
   const rotateY = useSpring(rawRotateY, springConfig);
@@ -245,6 +264,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
     rawRotateX.set(0);
     rawRotateY.set(0);
     spotlightOpacity.set(0);
+    setHoveredElementBounds(null);
   };
 
   return (
@@ -257,7 +277,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="group relative flex shrink-0 w-[88vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[48vh] sm:h-[52vh] lg:h-[56vh] min-h-[360px] sm:min-h-[390px] lg:min-h-[420px] max-h-[500px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
+        className="group relative flex shrink-0 w-[90vw] sm:w-[84vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[54vh] sm:h-[52vh] lg:h-[56vh] min-h-[340px] sm:min-h-[390px] lg:min-h-[420px] max-h-[500px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
       >
         {/* Dynamic Monochrome Spotlight Overlay */}
         <motion.div
@@ -271,11 +291,18 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
 
         <div className="relative z-0 grid grid-cols-1 lg:grid-cols-12 h-full w-full">
           {/* Left Column: Massive Typography, Meta, Role, Key Achievements & Skills */}
-          <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-7 lg:p-8 h-full overflow-y-auto">
+          <div
+            onScroll={handleMagneticLeave}
+            className="lg:col-span-7 flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-full overflow-y-auto"
+          >
             {/* Top Meta Line */}
             <div>
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <span className="rounded border border-white/15 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-neutral-300">
+                <span
+                  onMouseEnter={handleMagneticHover}
+                  onMouseLeave={handleMagneticLeave}
+                  className="rounded border border-white/15 bg-white/[0.04] px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-neutral-300 transition-colors hover:border-white/30 cursor-default select-none"
+                >
                   {item.period}
                 </span>
                 <span className="font-mono text-xs uppercase tracking-widest text-neutral-500">
@@ -285,7 +312,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
 
               {/* Massive Typography: Role & Company */}
               <div className="mt-4 space-y-2">
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-black uppercase tracking-tight text-white leading-tight">
+                <h3 className="text-lg sm:text-xl lg:text-3xl font-black uppercase tracking-tight text-white leading-tight">
                   {item.role}
                 </h3>
                 <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-neutral-400">
@@ -296,7 +323,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
               </div>
 
               {/* Description */}
-              <p className="mt-3 text-xs sm:text-sm leading-relaxed text-neutral-400">
+              <p className="mt-3 text-[11px] sm:text-xs sm:text-sm leading-relaxed text-neutral-400">
                 {item.description}
               </p>
 
@@ -305,7 +332,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
                 {item.achievements.map((achievement, aIdx) => (
                   <li
                     key={aIdx}
-                    className="flex items-start gap-2.5 text-xs text-neutral-300 leading-relaxed"
+                    className="flex items-start gap-2.5 text-[11px] sm:text-xs sm:text-sm text-neutral-300 leading-relaxed"
                   >
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" />
                     <span>{achievement}</span>
@@ -319,7 +346,9 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
               {item.skills.map((skill) => (
                 <span
                   key={skill}
-                  className="rounded border border-white/10 bg-white/[0.03] px-2.5 py-0.5 font-mono text-[11px] text-neutral-300 transition-colors hover:border-white/30 hover:text-white"
+                  onMouseEnter={handleMagneticHover}
+                  onMouseLeave={handleMagneticLeave}
+                  className="rounded border border-white/10 bg-white/[0.03] px-2.5 py-0.5 font-mono text-[11px] text-neutral-300 transition-colors hover:border-white/30 hover:text-white cursor-default select-none"
                 >
                   {skill}
                 </span>
@@ -344,6 +373,15 @@ export function ExperienceSection() {
   const containerRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollRange, setScrollRange] = React.useState(0);
+  const { setHoveredElementBounds } = useHeroCursor();
+
+  React.useEffect(() => {
+    const handleWindowScroll = () => {
+      setHoveredElementBounds(null);
+    };
+    window.addEventListener("scroll", handleWindowScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleWindowScroll);
+  }, [setHoveredElementBounds]);
 
   // 500vh track provides ample horizontal scroll room plus clean reading buffer
   const { scrollYProgress } = useScroll({
@@ -401,7 +439,7 @@ export function ExperienceSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-6 pt-20 pb-4 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
+        className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden px-4 pt-12 pb-6 sm:px-6 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
         {/* Top Header */}
         <div className="mx-auto max-w-7xl w-full shrink-0">

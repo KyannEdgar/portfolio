@@ -111,7 +111,7 @@ function WordToken({
         y,
         scale,
       }}
-      className={`relative inline-block whitespace-normal sm:whitespace-nowrap text-4xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] tracking-tighter transition-colors duration-300 ${
+      className={`relative inline-block whitespace-normal sm:whitespace-nowrap text-2xl sm:text-3xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] tracking-tighter transition-colors duration-300 ${
         token.isKeyword
           ? "font-bold text-black dark:text-white tracking-tight"
           : "font-light text-neutral-700 dark:text-white/80"

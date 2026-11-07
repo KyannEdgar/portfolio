@@ -242,7 +242,7 @@ export function ProjectsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-6 pt-20 pb-3 md:px-12 md:pt-24 md:pb-4 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-4 pt-12 pb-4 sm:px-6 md:px-12 md:pt-24 md:pb-4 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 03/ Projects */}
@@ -274,57 +274,57 @@ export function ProjectsSection() {
             </div>
           </motion.div>
 
-          {/* Unboxed Category Filter Navigation */}
-          <div className="mb-2.5 sm:mb-3 flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/50 pb-2 shrink-0 select-none">
-            {PROJECT_CATEGORIES.map((cat) => {
-              const count =
-                cat.id === "all"
-                  ? PROJECTS_DATA.length
-                  : PROJECTS_DATA.filter((p) => p.category === cat.id).length;
-              const isActive = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  onMouseEnter={(e) => {
-                    const rect = (
-                      e.currentTarget as HTMLElement
-                    ).getBoundingClientRect();
-                    setHoveredElementBounds({
-                      x: rect.left,
-                      y: rect.top,
-                      width: rect.width,
-                      height: rect.height,
-                      shape: "rounded",
-                      borderRadius: 6,
-                    });
-                  }}
-                  onMouseLeave={() => setHoveredElementBounds(null)}
-                  className={`relative py-1 font-mono text-xs uppercase tracking-widest transition-colors duration-200 cursor-pointer ${
-                    isActive
-                      ? "font-bold text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <span>{cat.label}</span>
-                  <span className="ml-1.5 opacity-50 text-[10px]">
-                    ({count < 10 ? `0${count}` : count})
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeProjectCategoryUnderline"
-                      className="absolute -bottom-[15px] left-0 right-0 h-[2px] bg-foreground"
-                      transition={customSpring}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
           {/* Precision System Console Container (Vertically Balanced) */}
           <div className="flex-1 flex flex-col justify-center min-h-0 my-auto w-full">
+            {/* Unboxed Category Filter Navigation */}
+            <div className="mb-4 sm:mb-5 flex items-center overflow-x-auto overflow-y-hidden no-scrollbar gap-x-6 sm:gap-x-8 border-b border-border/50 pb-0 shrink-0 select-none">
+              {PROJECT_CATEGORIES.map((cat) => {
+                const count =
+                  cat.id === "all"
+                    ? PROJECTS_DATA.length
+                    : PROJECTS_DATA.filter((p) => p.category === cat.id).length;
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    onMouseEnter={(e) => {
+                      const rect = (
+                        e.currentTarget as HTMLElement
+                      ).getBoundingClientRect();
+                      setHoveredElementBounds({
+                        x: rect.left,
+                        y: rect.top,
+                        width: rect.width,
+                        height: rect.height,
+                        shape: "rounded",
+                        borderRadius: 6,
+                      });
+                    }}
+                    onMouseLeave={() => setHoveredElementBounds(null)}
+                    className={`relative pb-2.5 font-mono text-xs uppercase tracking-widest transition-colors duration-200 cursor-pointer shrink-0 ${
+                      isActive
+                        ? "font-bold text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className="ml-1.5 opacity-50 text-[10px]">
+                      ({count < 10 ? `0${count}` : count})
+                    </span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeProjectCategoryUnderline"
+                        className="absolute -bottom-px left-0 right-0 h-[2px] bg-foreground"
+                        transition={customSpring}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: System Project Manifest (5/12 cols) */}
               <div className="lg:col-span-5 flex flex-col min-h-0">
@@ -338,7 +338,7 @@ export function ProjectsSection() {
                     mousePosRef.current = null;
                     setHoveredElementBounds(null);
                   }}
-                  className="max-h-[350px] sm:max-h-[380px] lg:max-h-[420px] overflow-y-auto space-y-2 pr-1 select-none"
+                  className="max-h-[220px] sm:max-h-[350px] lg:max-h-[420px] overflow-y-auto space-y-2 pr-1 select-none"
                 >
                   {filteredProjects.map((project, idx) => {
                     const isSelected = project.id === activeProject.id;
@@ -380,7 +380,7 @@ export function ProjectsSection() {
                           }
                         }}
                         onMouseLeave={() => setHoveredElementBounds(null)}
-                        className={`w-full flex flex-col p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer ${
+                        className={`w-full flex flex-col p-3 sm:p-4 rounded-xl border transition-all duration-200 text-left cursor-pointer ${
                           isSelected
                             ? "bg-foreground/[0.06] border-foreground/30 shadow-sm"
                             : "bg-card/40 border-border/50 hover:bg-foreground/[0.03] hover:border-border"
@@ -410,7 +410,7 @@ export function ProjectsSection() {
                         {/* Title & Subtitle */}
                         <div className="mb-3">
                           <h3
-                            className={`text-sm sm:text-base font-bold leading-snug line-clamp-2 ${
+                            className={`text-xs sm:text-sm md:text-base font-bold leading-snug line-clamp-2 ${
                               isSelected
                                 ? "text-foreground"
                                 : "text-foreground/90"
@@ -446,7 +446,7 @@ export function ProjectsSection() {
               </div>
 
               {/* Right Column: Live Architecture Blueprint Visualizer (7/12 cols) */}
-              <div className="lg:col-span-7 h-[350px] sm:h-[380px] lg:h-[420px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="lg:col-span-7 h-auto min-h-[260px] sm:h-[380px] lg:h-[420px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"
@@ -633,7 +633,7 @@ export function ProjectsSection() {
 
                               {/* Terminal Code Snippet Box */}
                               {activeStep.detailCode && (
-                                <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10.5px] leading-relaxed text-neutral-300 mt-2">
+                                <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10px] sm:text-xs leading-relaxed text-neutral-300 mt-2">
                                   <div className="flex items-center justify-between border-b border-white/10 pb-1 mb-1 text-[9px] uppercase tracking-wider text-neutral-400">
                                     <div className="flex items-center gap-1.5">
                                       <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
@@ -647,7 +647,7 @@ export function ProjectsSection() {
                                       {activeStep.service}
                                     </span>
                                   </div>
-                                  <pre className="overflow-x-auto text-[10.5px] font-mono text-neutral-300 leading-snug max-h-[75px] pr-1">
+                                  <pre className="overflow-x-auto text-[10px] sm:text-xs font-mono text-neutral-300 leading-snug max-h-[75px] pr-1">
                                     <code>{activeStep.detailCode}</code>
                                   </pre>
                                 </div>
@@ -696,7 +696,7 @@ export function ProjectsSection() {
 
                             {/* Cisco IOS CLI Terminal Box */}
                             {activeLayer.configSnippet && (
-                              <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10.5px] leading-relaxed text-neutral-300 mt-2">
+                              <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10px] sm:text-xs leading-relaxed text-neutral-300 mt-2">
                                 <div className="flex items-center justify-between border-b border-white/10 pb-1 mb-1 text-[9px] uppercase tracking-wider text-neutral-400">
                                   <div className="flex items-center gap-1.5">
                                     <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
@@ -710,7 +710,7 @@ export function ProjectsSection() {
                                     {activeLayer.devices}
                                   </span>
                                 </div>
-                                <pre className="overflow-x-auto text-[10.5px] font-mono text-neutral-300 leading-snug max-h-[85px] pr-1">
+                                <pre className="overflow-x-auto text-[10px] sm:text-xs font-mono text-neutral-300 leading-snug max-h-[85px] pr-1">
                                   <code>{activeLayer.configSnippet}</code>
                                 </pre>
                               </div>
