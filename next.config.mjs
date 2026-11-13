@@ -16,6 +16,12 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {
+    resolveAlias: {
+      "primereact/api": "./lib/primereact-api.ts",
+      "@primereact/core/license": "./lib/primereact-license-stub.ts",
+    },
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
