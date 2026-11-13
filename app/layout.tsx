@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { HeroCursorProvider } from "@/components/ui/hero-cursor-context";
 import { Preloader } from "@/components/ui/preloader";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -103,6 +104,7 @@ export default function RootLayout({
           </HeroCursorProvider>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
