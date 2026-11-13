@@ -310,7 +310,7 @@ export function Hero() {
                       scale: isHoveringPicture ? 1.02 : 1,
                     }}
                     transition={{ type: "spring", stiffness: 240, damping: 22 }}
-                    className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md md:rounded-lg border border-border/80 dark:border-white/10 cursor-pointer align-middle shadow-sm focus:outline-none focus:ring-1 focus:ring-foreground/40"
+                    className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md md:rounded-lg border border-border/80 dark:border-white/10 cursor-pointer align-middle shadow-sm focus:outline-none focus:ring-1 focus:ring-foreground/40 w-[1.25em] h-[0.85em]"
                   >
                     {/* Multi-Photo Transition Layer */}
                     <AnimatePresence mode="wait">
@@ -320,7 +320,7 @@ export function Hero() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.05 }}
                         transition={{ duration: 0.22, ease: "easeOut" }}
-                        className="relative h-full w-full"
+                        className="relative h-full w-full min-h-[0.85em] min-w-[1.25em]"
                       >
                         <Image
                           src={PORTRAITS[photoIndex].src}

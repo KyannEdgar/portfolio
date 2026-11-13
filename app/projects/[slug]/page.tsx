@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllProjects, getProjectBySlug } from "@/lib/mdx";
 import { mdxComponents } from "@/components/ui/mdx-components";
@@ -9,6 +10,24 @@ interface ProjectPageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProjectPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const project = getProjectBySlug(resolvedParams.slug);
+
+  if (!project) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  return {
+    title: project.frontmatter.title,
+    description: project.frontmatter.description,
+  };
 }
 
 export async function generateStaticParams() {

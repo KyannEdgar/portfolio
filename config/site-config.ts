@@ -2,8 +2,8 @@ import { SiteConfig } from "@/types";
 import { SKILLS_DATA, SKILLS_MARQUEE_ITEMS } from "./skills-config";
 
 export const siteConfig: SiteConfig = {
-  name: "Kian Edgar Villamater Abustan",
-  author: "Kian Edgar Villamater Abustan",
+  name: "Kian Abustan",
+  author: "Kian Abustan",
   role: "Principal Infrastructure & Security Architect",
   title: "Infrastructure & Cloud Engineering Portfolio",
   description:

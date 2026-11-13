@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HeroCursorProvider } from "@/components/ui/hero-cursor-context";
 import { Preloader } from "@/components/ui/preloader";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,8 +29,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} // ${siteConfig.title}`,
-    template: `%s // ${siteConfig.name}`,
+    default: "Kian Abustan",
+    template: "%s // Kian Abustan",
   },
   description: siteConfig.description,
   keywords: [
@@ -48,13 +49,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://kian.infra",
-    title: `${siteConfig.name} // ${siteConfig.title}`,
+    title: "Kian Abustan",
     description: siteConfig.description,
-    siteName: siteConfig.name,
+    siteName: "Kian Abustan",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} // ${siteConfig.title}`,
+    title: "Kian Abustan",
     description: siteConfig.description,
     creator: "@kianabustan",
   },
@@ -101,6 +102,7 @@ export default function RootLayout({
             </div>
           </HeroCursorProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
