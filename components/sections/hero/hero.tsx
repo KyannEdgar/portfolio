@@ -380,7 +380,7 @@ export function Hero() {
                   className="pointer-events-none absolute -top-8 sm:-top-9 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 whitespace-nowrap rounded-full bg-background/95 px-3 py-0.5 font-mono text-[9px] md:text-[10px] font-semibold uppercase tracking-widest text-foreground backdrop-blur-md border border-border/80 shadow-md select-none"
                 >
                   <FileText className="h-3 w-3 text-foreground" />
-                  <span>DIRECT PDF DOWNLOAD &bull; 160 KB</span>
+                  <span>DIRECT PDF DOWNLOAD &bull; 179 KB</span>
                 </motion.div>
               )}
             </AnimatePresence>
