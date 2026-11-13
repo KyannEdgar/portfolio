@@ -34,142 +34,200 @@ export const SKILL_CATEGORIES: SkillCategoryDef[] = [
 ];
 
 export const SKILLS_DATA: SkillItem[] = [
-  // Development & Cloud
+  // ==========================================
+  // Development & Cloud (dev-cloud)
+  // ==========================================
   {
     name: "AWS",
     category: "dev-cloud",
     icon: "aws",
-    description: "Multi-region cloud infrastructure, VPC peering, IAM, and high-availability solutions.",
-    proficiency: "Intermediate",
-    tags: ["Cloud", "IaC", "Compute"],
+    description:
+      "Architected a 100% serverless, event-driven cloud application. Utilized AWS Lambda and EventBridge to automate dual data pipelines for predictive generation and grading. Integrated Amazon Bedrock for generative AI reasoning, DynamoDB for central storage, and AWS IAM to enforce least-privilege security.",
+    proficiency: "Advanced",
+    tags: ["Serverless", "EventDriven", "GenAI"],
+    tierDefinition:
+      "Capable of designing, securing, and deploying zero-maintenance serverless backends.",
   },
   {
     name: "Google Cloud",
     category: "dev-cloud",
     icon: "gcp",
-    description: "Enterprise GKE clusters, VPC Service Controls, and global Anycast infrastructure.",
+    description:
+      "Integrated multiple Google Maps APIs (including routing, geocoding, and places) to power location-based features for a full-stack college capstone project. Managed project environments, API credential security, and usage quotas within the GCP Console.",
     proficiency: "Intermediate",
-    tags: ["Cloud", "Containers", "Networking"],
+    tags: ["GoogleMapsAPI", "APIIntegration", "CloudConsole"],
+    tierDefinition:
+      "Comfortable with common tasks, including navigating the console, provisioning specific API services, and implementing basic security restrictions.",
   },
   {
     name: "GitHub",
     category: "dev-cloud",
     icon: "github",
-    description: "GitOps automation pipelines, distributed version control, and CI/CD workflows.",
+    description:
+      "Managed source code versioning and project repositories using standard branch-based workflows. Regularly handled commits, merges, and pull requests to maintain a clean codebase history and track project development.",
     proficiency: "Intermediate",
-    tags: ["Version Control", "CI/CD", "DevOps"],
+    tags: ["VersionControl", "GitFlow", "SourceCodeManagement"],
+    tierDefinition:
+      "Comfortable with common tasks, including standard repository management, branching, and code integration.",
   },
   {
     name: "Vercel",
     category: "dev-cloud",
     icon: "vercel",
-    description: "Edge network compute, Next.js deployment orchestration, and global CDN delivery.",
+    description:
+      "Explored foundational deployment workflows and platform capabilities. Gained a practical understanding of continuous deployment concepts and how to connect Git repositories to host frontend applications on edge infrastructure.",
     proficiency: "Basic",
-    tags: ["Edge", "Hosting", "Next.js"],
+    tags: ["Deployment", "EdgeComputing", "FrontendHosting"],
+    tierDefinition:
+      "Familiar with core concepts and basic platform navigation.",
   },
   {
     name: "Supabase",
     category: "dev-cloud",
     icon: "supabase",
-    description: "PostgreSQL relational databases, row-level security policies, and realtime subscriptions.",
+    description:
+      "Explored foundational backend-as-a-service workflows. Gained a practical understanding of provisioning PostgreSQL databases, navigating the studio dashboard, and the basic concepts behind built-in authentication and Row Level Security (RLS).",
     proficiency: "Basic",
-    tags: ["PostgreSQL", "BaaS", "SQL"],
+    tags: ["PostgreSQL", "BaaS", "Backend"],
+    tierDefinition:
+      "Familiar with core database concepts and basic platform navigation.",
   },
   {
     name: "Firebase",
     category: "dev-cloud",
     icon: "firebase",
-    description: "NoSQL document storage, serverless functions, and real-time state synchronization.",
+    description:
+      "Architected and deployed a complete serverless backend ecosystem, successfully integrating Firebase Authentication, NoSQL databases (Firestore), Cloud Storage, and Web Hosting to power a full-stack application.",
     proficiency: "Advanced",
-    tags: ["NoSQL", "Serverless", "BaaS"],
+    tags: ["NoSQL", "BaaS", "Authentication"],
+    tierDefinition:
+      "Highly capable of independently setting up, configuring, and managing a comprehensive suite of Firebase services for end-to-end application delivery.",
   },
 
-  // Operating Systems
+  // ==========================================
+  // Operating Systems (os)
+  // ==========================================
   {
     name: "Linux",
     category: "os",
     icon: "linux",
-    description: "Kernel tuning, namespaces, cgroups, systemd services, and production server administration.",
+    description:
+      "Highly adaptable across multiple Linux distributions for daily usage and software development. Capable of navigating the file system, managing applications, and customizing the workspace with the same fluency as a native Windows environment.",
     proficiency: "Proficient",
-    tags: ["Kernel", "POSIX", "SysAdmin"],
+    tags: ["MultiDistro", "CLI", "PowerUser"],
+    tierDefinition:
+      "Comfortably operates and navigates Linux environments natively for day-to-day tasks, personal workflows, and general computing.",
   },
   {
     name: "Windows",
     category: "os",
     icon: "windows",
-    description: "Enterprise administration, WSL2 Linux integration, Hyper-V, and system policies.",
+    description:
+      "Native fluency in Windows desktop operating systems. Highly capable of advanced system configuration, deep troubleshooting, software management, and optimizing the environment for daily computing and local development workflows.",
     proficiency: "Advanced",
-    tags: ["Enterprise", "WSL2", "Virtualization"],
+    tags: ["DesktopOS", "PowerUser", "SystemConfiguration"],
+    tierDefinition:
+      "Possesses deep operational knowledge of the client OS, easily executing complex customizations and resolving system issues as a power user.",
   },
 
-  // UI/UX & Design
+  // ==========================================
+  // UI/UX & Design (design)
+  // ==========================================
   {
     name: "Figma",
     category: "design",
     icon: "figma",
-    description: "High-fidelity component design systems, autolayout wireframing, and interactive prototyping.",
+    description:
+      "Designed and prototyped user interfaces and experiences across multiple projects. Leveraged Figma to translate conceptual ideas into high-fidelity wireframes, interactive mockups, and cohesive design systems.",
     proficiency: "Proficient",
-    tags: ["Design System", "Prototyping", "UI/UX"],
+    tags: ["UIUX", "Prototyping", "Wireframing"],
+    tierDefinition:
+      "Highly capable of independently designing complete, multi-screen applications and interactive prototypes from scratch.",
   },
   {
     name: "Adobe Photoshop",
     category: "design",
     icon: "photoshop",
-    description: "Raster asset manipulation, visual compositing, and web graphic optimization.",
+    description:
+      "Used Photoshop for various real-world projects, creating a wide range of graphics. Comfortable making everything from logos and event posters to overall branding and UI layouts.",
     proficiency: "Advanced",
-    tags: ["Raster", "Graphics", "Creative"],
+    tags: ["GraphicDesign", "Branding", "VisualDesign"],
+    tierDefinition:
+      "Confident using it in real-world projects, easily handling different types of creative tasks without needing much guidance.",
   },
   {
     name: "Adobe Illustrator",
     category: "design",
     icon: "illustrator",
-    description: "Scalable vector graphics synthesis, technical icon design, and identity assets.",
+    description:
+      "Can create vector graphics and custom iconography across multiple projects. Applied Illustrator to construct foundational assets from scratch, providing clean, resizable elements for brand identities and user interfaces.",
     proficiency: "Advanced",
-    tags: ["Vector", "SVG", "Iconography"],
+    tags: ["VectorDesign", "AssetCreation", "GraphicDesign"],
+    tierDefinition:
+      "Confident using it in real-world projects, independently managing custom asset design from initial concept to final export.",
   },
 
-  // Shell & CLI
+  // ==========================================
+  // Shell & CLI (shell)
+  // ==========================================
   {
     name: "PowerShell",
     category: "shell",
     icon: "powershell",
-    description: "Object-oriented scripting pipelines, Windows system management, and cloud automation.",
+    description:
+      "Executed command-line operations for troubleshooting. Capable of sourcing, understanding, and adapting external scripts to configure local environments.",
     proficiency: "Intermediate",
-    tags: ["CLI", "Automation", "Scripting"],
+    tags: ["CLI", "Scripting", "SystemManagement"],
+    tierDefinition:
+      "Comfortable with common tasks, specifically running standard commands and modifying existing scripts to achieve desired outcomes.",
   },
   {
     name: "Bash",
     category: "shell",
     icon: "bash",
-    description: "POSIX shell automation, environment bootstrapping, process plumbing, and Unix tooling.",
+    description:
+      "Navigated and managed Linux environments without a graphical interface (GUI). Comfortable using standard command-line tools for file management and system operations, while looking up references for more complex shell scripts.",
     proficiency: "Intermediate",
-    tags: ["Linux", "CLI", "Automation"],
+    tags: ["CLI", "Linux", "Shell"],
+    tierDefinition:
+      "Comfortable with common tasks, easily moving around the file system and executing basic commands in headless setups.",
   },
 
-  // Networking Tools
+  // ==========================================
+  // Networking Tools (networking)
+  // ==========================================
   {
     name: "Wireshark",
     category: "networking",
     icon: "wireshark",
-    description: "Deep packet inspection, TCP stream dissection, TLS analysis, and latency troubleshooting.",
+    description:
+      "Gained hands-on experience during a networking certification program. Capable of capturing network traffic, applying basic display filters, and inspecting common protocols to understand general network behavior.",
     proficiency: "Intermediate",
-    tags: ["Packet Analysis", "Protocols", "Security"],
+    tags: ["PacketAnalysis", "ProtocolInspection", "Networking"],
+    tierDefinition:
+      "Comfortable with common tasks, like navigating the interface to set up captures and read basic packet data.",
   },
   {
     name: "Nmap",
     category: "networking",
     icon: "nmap",
-    description: "Network host discovery, port vulnerability scanning, and service version enumeration.",
+    description:
+      "Explored fundamental network discovery techniques during a certification program. Capable of executing standard command-line scans to identify live hosts, open ports, and basic network services without utilizing complex configurations or advanced scripts.",
     proficiency: "Basic",
-    tags: ["Reconnaissance", "Security", "Auditing"],
+    tags: ["NetworkScanning", "PortScanning", "Reconnaissance"],
+    tierDefinition:
+      "Familiar with core concepts and basic commands for introductory network reconnaissance.",
   },
   {
     name: "Cisco Packet Tracer",
     category: "networking",
     icon: "cisco",
-    description: "VLAN segmentation, dynamic routing protocol (OSPF/BGP) simulation, and topology modeling.",
+    description:
+      "Designed and constructed network topologies to simulate real-world infrastructure. Structured custom networking labs from the ground up, configuring routing, switching, and end-device behaviors to test various architectural scenarios.",
     proficiency: "Advanced",
-    tags: ["Routing", "Switching", "Simulation"],
+    tags: ["NetworkSimulation", "TopologyDesign", "LabCreation"],
+    tierDefinition:
+      "Highly capable of independently building, simulating, and troubleshooting complex network environments without relying on pre-built templates.",
   },
 ];
 

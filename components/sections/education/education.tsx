@@ -11,7 +11,8 @@ import {
 } from "framer-motion";
 import { siteConfig } from "@/config";
 import { customSpring } from "@/lib/animation";
-import { useHeroCursor } from "@/components/ui/hero-cursor-context";
+import { useMagneticHover } from "@/components/ui/hero-cursor-context";
+import { SectionHeader } from "@/components/ui/section-header";
 import {
   GraduationCap,
   Cloud,
@@ -29,7 +30,8 @@ interface EducationDossierCardProps {
 
 function EducationDossierCard({ item, index }: EducationDossierCardProps) {
   const [activePillarIndex, setActivePillarIndex] = useState(0);
-  const { setHoveredElementBounds } = useHeroCursor();
+  const { handleMouseEnter: handleMagneticHover, handleMouseLeave: handleMagneticLeave } =
+    useMagneticHover(8);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -46,22 +48,6 @@ function EducationDossierCard({ item, index }: EducationDossierCardProps) {
 
   const handleMouseLeave = () => {
     spotlightOpacity.set(0);
-  };
-
-  const handleMagneticHover = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoveredElementBounds({
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
-      shape: "rounded",
-      borderRadius: 8,
-    });
-  };
-
-  const handleMagneticLeave = () => {
-    setHoveredElementBounds(null);
   };
 
   const activePillar = item.pillars[activePillarIndex] || item.pillars[0];
@@ -286,33 +272,14 @@ export function EducationSection() {
     >
       <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
         {/* Numbered Section Header: 05/ Education */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={customSpring}
+        <SectionHeader
+          badgeIcon={<GraduationCap className="h-3.5 w-3.5 text-foreground" />}
+          badgeLabel="EDUCATION // TRAINING"
+          number="05/"
+          title="Education"
+          subtitle="Academic Foundations & Professional Training"
           className="mb-8 md:mb-12 flex flex-col gap-3 shrink-0"
-        >
-          <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
-              <GraduationCap className="h-3.5 w-3.5 text-foreground" />
-              <span>EDUCATION // TRAINING</span>
-            </div>
-            <span className="h-px flex-1 max-w-[80px] bg-border" />
-          </div>
-
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
-              <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
-                05/
-              </span>
-              Education
-            </h2>
-            <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
-              Academic Foundations &amp; Professional Training
-            </p>
-          </div>
-        </motion.div>
+        />
 
         {/* 2-Column Comparative Dual-Dossier Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch flex-1">

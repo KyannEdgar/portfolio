@@ -12,7 +12,8 @@ import {
 } from "framer-motion";
 import { siteConfig } from "@/config";
 import { customSpring } from "@/lib/animation";
-import { useHeroCursor } from "@/components/ui/hero-cursor-context";
+import { useHeroCursor, useMagneticHover } from "@/components/ui/hero-cursor-context";
+import { SectionHeader } from "@/components/ui/section-header";
 import { Briefcase } from "lucide-react";
 
 // ============================================================================
@@ -216,23 +217,8 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
   const rawRotateX = useMotionValue(0);
   const rawRotateY = useMotionValue(0);
 
-  const { setHoveredElementBounds } = useHeroCursor();
-
-  const handleMagneticHover = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setHoveredElementBounds({
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
-      shape: "rounded",
-      borderRadius: 6,
-    });
-  };
-
-  const handleMagneticLeave = () => {
-    setHoveredElementBounds(null);
-  };
+  const { handleMouseEnter: handleMagneticHover, handleMouseLeave: handleMagneticLeave } =
+    useMagneticHover(6);
 
   const springConfig = { stiffness: 150, damping: 20 };
   const rotateX = useSpring(rawRotateX, springConfig);
@@ -264,7 +250,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
     rawRotateX.set(0);
     rawRotateY.set(0);
     spotlightOpacity.set(0);
-    setHoveredElementBounds(null);
+    handleMagneticLeave();
   };
 
   return (
@@ -375,14 +361,6 @@ export function ExperienceSection() {
   const [scrollRange, setScrollRange] = React.useState(0);
   const { setHoveredElementBounds } = useHeroCursor();
 
-  React.useEffect(() => {
-    const handleWindowScroll = () => {
-      setHoveredElementBounds(null);
-    };
-    window.addEventListener("scroll", handleWindowScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleWindowScroll);
-  }, [setHoveredElementBounds]);
-
   // 500vh track provides ample horizontal scroll room plus clean reading buffer
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -444,33 +422,14 @@ export function ExperienceSection() {
         {/* Top Header */}
         <div className="mx-auto max-w-7xl w-full shrink-0">
           {/* Numbered Section Header: 04/ Experience */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={customSpring}
+          <SectionHeader
+            badgeIcon={<Briefcase className="h-3.5 w-3.5 text-foreground" />}
+            badgeLabel="CAREER // TIMELINE"
+            number="04/"
+            title="Experience"
+            subtitle="Professional & Technical Experience"
             className="mb-3 sm:mb-4 md:mb-6 flex flex-col gap-2 md:gap-3 shrink-0"
-          >
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
-                <Briefcase className="h-3.5 w-3.5 text-foreground" />
-                <span>CAREER // TIMELINE</span>
-              </div>
-              <span className="h-px flex-1 max-w-[80px] bg-border" />
-            </div>
-
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-              <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
-                <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
-                  04/
-                </span>
-                Experience
-              </h2>
-              <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                Professional &amp; Technical Experience
-              </p>
-            </div>
-          </motion.div>
+          />
         </div>
 
         {/* Middle Track: Horizontally Scrolling Panoramic Cards */}

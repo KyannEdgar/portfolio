@@ -183,7 +183,7 @@ export const siteConfig: SiteConfig = {
       issuer: "Coursera – Google Career Certificates",
       period: "Issued Jan 20, 2026",
       credentialId: "7WZONMEN5LJ9",
-      credentialUrl: "https://coursera.org/share/9d88fffc473e6ace2f2af29a90c516ee",
+      credentialUrl: "https://coursera.org/share/cec56f222d28de31555c1700553d8fd5",
       downloadUrl: "/documents/certificates/google-cybersecurity-certificate.pdf",
       description:
         "Professional cybersecurity certification authorized by Google and offered through Coursera. Attests core competency in network security defense, SIEM tools, threat analysis, Linux command-line operations, and automated incident response.",

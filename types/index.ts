@@ -84,6 +84,7 @@ export interface SkillItem {
   description: string;
   proficiency?: string;
   tags?: string[];
+  tierDefinition?: string;
 }
 
 export interface SkillCategoryDef {
@@ -166,7 +167,11 @@ export interface ProjectSystem {
   status: "PRODUCTION" | "LAB_TOPOLOGY";
   stack: string[];
   metrics: { label: string; value: string }[];
+  overview: string;
+  architectureHighlights: string[];
+  githubUrl?: string;
+  discordUrl?: string;
+  keyHighlights?: string[];
   pipelines?: SystemPipeline[];
   topologyLayers?: TopologyLayer[];
-  keyHighlights: string[];
 }

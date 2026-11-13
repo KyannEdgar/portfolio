@@ -9,25 +9,15 @@ import {
   useTransform,
   useSpring,
 } from "framer-motion";
-import { customSpring } from "@/lib/animation";
-import { useHeroCursor } from "@/components/ui/hero-cursor-context";
+import { useHeroCursor, useMagneticHover } from "@/components/ui/hero-cursor-context";
+import { SectionHeader } from "@/components/ui/section-header";
+import { CategoryTabs } from "@/components/ui/category-tabs";
 import {
   PROJECTS_DATA,
   PROJECT_CATEGORIES,
   ProjectSystem,
-  PipelineStep,
-  TopologyLayer,
 } from "@/config/projects-config";
-import {
-  Terminal,
-  ArrowRight,
-  ShieldCheck,
-  Activity,
-  Layers,
-  Cpu,
-  Workflow,
-  Network,
-} from "lucide-react";
+import { Terminal, ArrowUpRight } from "lucide-react";
 
 export function ProjectsSection() {
   const containerRef = useRef<HTMLElement>(null);
@@ -37,11 +27,10 @@ export function ProjectsSection() {
   const [activeProject, setActiveProject] = useState<ProjectSystem>(
     PROJECTS_DATA[0]
   );
-  const [activePipelineId, setActivePipelineId] = useState<string>("pipeline-a");
-  const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
-  const [activeLayerIndex, setActiveLayerIndex] = useState<number>(0);
 
   const { setHoveredElementBounds } = useHeroCursor();
+  const { bind: bindCardAction } = useMagneticHover(8);
+  const { bind: bindCardBadge } = useMagneticHover(6);
   const listRef = useRef<HTMLDivElement>(null);
   const mousePosRef = useRef<{ x: number; y: number } | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -167,24 +156,6 @@ export function ProjectsSection() {
     }
   }, [filteredProjects, activeProject.id]);
 
-  // Reset pipeline/layer indices when active project changes
-  useEffect(() => {
-    setActiveStepIndex(0);
-    setActiveLayerIndex(0);
-    if (activeProject.pipelines && activeProject.pipelines.length > 0) {
-      setActivePipelineId(activeProject.pipelines[0].id);
-    }
-  }, [activeProject.id]);
-
-  // Dissolve global cursor bubble on page scroll
-  useEffect(() => {
-    const handleWindowScroll = () => {
-      setHoveredElementBounds(null);
-    };
-    window.addEventListener("scroll", handleWindowScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleWindowScroll);
-  }, [setHoveredElementBounds]);
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
@@ -199,36 +170,6 @@ export function ProjectsSection() {
   const recedeScale = useTransform(smoothProgress, [0.48, 0.96], [1, 0.88]);
   const recedeOpacity = useTransform(smoothProgress, [0.48, 0.92], [1, 0]);
   const recedeY = useTransform(smoothProgress, [0.48, 0.96], [0, -60]);
-
-  // Active pipeline resolution for Cloud-AI
-  const activePipeline = useMemo(() => {
-    if (!activeProject.pipelines || activeProject.pipelines.length === 0) {
-      return null;
-    }
-    return (
-      activeProject.pipelines.find((p) => p.id === activePipelineId) ||
-      activeProject.pipelines[0]
-    );
-  }, [activeProject.pipelines, activePipelineId]);
-
-  const activeStep: PipelineStep | null = useMemo(() => {
-    if (!activePipeline || !activePipeline.steps) return null;
-    return activePipeline.steps[activeStepIndex] || activePipeline.steps[0];
-  }, [activePipeline, activeStepIndex]);
-
-  // Active topology layer for Cisco Networking
-  const activeLayer: TopologyLayer | null = useMemo(() => {
-    if (
-      !activeProject.topologyLayers ||
-      activeProject.topologyLayers.length === 0
-    ) {
-      return null;
-    }
-    return (
-      activeProject.topologyLayers[activeLayerIndex] ||
-      activeProject.topologyLayers[0]
-    );
-  }, [activeProject.topologyLayers, activeLayerIndex]);
 
   return (
     <section
@@ -246,88 +187,33 @@ export function ProjectsSection() {
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 03/ Projects */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={customSpring}
+          <SectionHeader
+            badgeIcon={<Terminal className="h-3.5 w-3.5 text-foreground" />}
+            badgeLabel="BUILDS // IMPLEMENTATIONS"
+            number="03/"
+            title="Projects & Labs"
+            subtitle="Network Infrastructure, Cloud Services & Server Management"
             className="mb-2 sm:mb-3 flex flex-col gap-1.5 shrink-0"
-          >
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
-                <Terminal className="h-3.5 w-3.5 text-foreground" />
-                <span>BUILDS // IMPLEMENTATIONS</span>
-              </div>
-              <span className="h-px flex-1 max-w-[80px] bg-border" />
-            </div>
-
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-              <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
-                <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
-                  03/
-                </span>
-                Projects &amp; Labs
-              </h2>
-              <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                Network Infrastructure, Cloud Services &amp; Server Management
-              </p>
-            </div>
-          </motion.div>
+          />
 
           {/* Precision System Console Container (Vertically Balanced) */}
           <div className="flex-1 flex flex-col justify-center min-h-0 my-auto w-full">
             {/* Unboxed Category Filter Navigation */}
-            <div className="mb-4 sm:mb-5 flex items-center overflow-x-auto overflow-y-hidden no-scrollbar gap-x-6 sm:gap-x-8 border-b border-border/50 pb-0 shrink-0 select-none">
-              {PROJECT_CATEGORIES.map((cat) => {
-                const count =
-                  cat.id === "all"
-                    ? PROJECTS_DATA.length
-                    : PROJECTS_DATA.filter((p) => p.category === cat.id).length;
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setSelectedCategory(cat.id)}
-                    onMouseEnter={(e) => {
-                      const rect = (
-                        e.currentTarget as HTMLElement
-                      ).getBoundingClientRect();
-                      setHoveredElementBounds({
-                        x: rect.left,
-                        y: rect.top,
-                        width: rect.width,
-                        height: rect.height,
-                        shape: "rounded",
-                        borderRadius: 6,
-                      });
-                    }}
-                    onMouseLeave={() => setHoveredElementBounds(null)}
-                    className={`relative pb-2.5 font-mono text-xs uppercase tracking-widest transition-colors duration-200 cursor-pointer shrink-0 ${
-                      isActive
-                        ? "font-bold text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <span>{cat.label}</span>
-                    <span className="ml-1.5 opacity-50 text-[10px]">
-                      ({count < 10 ? `0${count}` : count})
-                    </span>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeProjectCategoryUnderline"
-                        className="absolute -bottom-px left-0 right-0 h-[2px] bg-foreground"
-                        transition={customSpring}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <CategoryTabs
+              categories={PROJECT_CATEGORIES}
+              selectedCategory={selectedCategory}
+              onSelectCategory={(id) => setSelectedCategory(id)}
+              getItemCount={(id) =>
+                id === "all"
+                  ? PROJECTS_DATA.length
+                  : PROJECTS_DATA.filter((p) => p.category === id).length
+              }
+              layoutId="activeProjectCategoryUnderline"
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: System Project Manifest (5/12 cols) */}
-              <div className="lg:col-span-5 flex flex-col min-h-0">
+              <div className="lg:col-span-5 flex flex-col h-full min-h-0">
                 <div
                   ref={listRef}
                   onMouseMove={(e) => {
@@ -338,7 +224,7 @@ export function ProjectsSection() {
                     mousePosRef.current = null;
                     setHoveredElementBounds(null);
                   }}
-                  className="max-h-[220px] sm:max-h-[350px] lg:max-h-[420px] overflow-y-auto space-y-2 pr-1 select-none"
+                  className="flex-1 h-full min-h-0 max-h-[260px] sm:max-h-[340px] lg:max-h-none overflow-y-auto space-y-2 pr-1 select-none"
                 >
                   {filteredProjects.map((project, idx) => {
                     const isSelected = project.id === activeProject.id;
@@ -445,8 +331,8 @@ export function ProjectsSection() {
                 </div>
               </div>
 
-              {/* Right Column: Live Architecture Blueprint Visualizer (7/12 cols) */}
-              <div className="lg:col-span-7 h-auto min-h-[260px] sm:h-[380px] lg:h-[420px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              {/* Right Column: Executive Project Dossier (7/12 cols) */}
+              <div className="lg:col-span-7 h-auto min-h-[380px] lg:min-h-[440px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"
@@ -493,8 +379,8 @@ export function ProjectsSection() {
                     transition={{ duration: 0.18, ease: "easeOut" }}
                     className="relative z-10 flex flex-col justify-between h-full min-h-0"
                   >
-                    {/* Top Console Meta Bar */}
                     <div>
+                      {/* Top Console Meta Bar / Header Spec Line */}
                       <div className="flex items-center justify-between border-b border-white/10 pb-2.5 font-mono text-xs uppercase tracking-widest text-neutral-400">
                         <div className="flex items-center gap-2 truncate">
                           <span className="text-white font-bold shrink-0">
@@ -506,248 +392,103 @@ export function ProjectsSection() {
                             DOMAIN: {activeProject.categoryLabel.toUpperCase()}
                           </span>
                         </div>
-                        <span className="rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider shrink-0">
+                        <span
+                          {...bindCardBadge(6)}
+                          className="rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider shrink-0 cursor-default select-none"
+                        >
                           {activeProject.status}
                         </span>
                       </div>
 
-                      {/* Project Header & Controls */}
-                      <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-white leading-tight truncate">
-                            {activeProject.title}
-                          </h3>
+                      {/* Title & Subtitle */}
+                      <div className="mt-3">
+                        <h3 className="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-white leading-tight">
+                          {activeProject.title}
+                        </h3>
+                        <p className="text-xs font-mono text-neutral-400 mt-1">
+                          {activeProject.subtitle}
+                        </p>
+                      </div>
+
+                      {/* Overview Narrative */}
+                      <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed mt-3">
+                        {activeProject.overview}
+                      </p>
+
+                      {/* Architecture & System Highlights */}
+                      <div className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
+                        <div className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                          {activeProject.category === "cloud-ai"
+                            ? "AWS Cloud Infrastructure & Services Architecture:"
+                            : "Core Network Features & Implementation:"}
                         </div>
-
-                        {/* Interactive Switchers */}
-                        {activeProject.category === "cloud-ai" &&
-                          activeProject.pipelines && (
-                            <div className="flex items-center gap-1.5 shrink-0 select-none">
-                              {activeProject.pipelines.map((pipe) => {
-                                const isPipeActive =
-                                  activePipeline?.id === pipe.id;
-                                return (
-                                  <button
-                                    key={pipe.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setActivePipelineId(pipe.id);
-                                      setActiveStepIndex(0);
-                                    }}
-                                    className={`px-2.5 py-1 rounded font-mono text-[10px] sm:text-[11px] uppercase tracking-wider transition-colors duration-200 cursor-pointer ${
-                                      isPipeActive
-                                        ? "bg-white text-black font-bold shadow-sm"
-                                        : "text-neutral-400 hover:text-white bg-white/[0.04] border border-white/10"
-                                    }`}
-                                  >
-                                    {pipe.id === "pipeline-a"
-                                      ? "PIPELINE A: PRE-GAME"
-                                      : "PIPELINE B: POST-GAME"}
-                                  </button>
-                                );
-                              })}
-                            </div>
+                        <ul className="space-y-1.5 overflow-y-auto max-h-[140px] sm:max-h-[160px] pr-1">
+                          {activeProject.architectureHighlights.map(
+                            (highlight, hIdx) => {
+                              const [label, ...descParts] = highlight.split(":");
+                              const desc = descParts.join(":");
+                              return (
+                                <li
+                                  key={hIdx}
+                                  className="text-[11px] sm:text-xs text-neutral-300 leading-relaxed flex items-start gap-2"
+                                >
+                                  <span className="mt-1.5 h-1 w-1 rounded-full bg-white/70 shrink-0" />
+                                  <span>
+                                    <strong className="text-white font-semibold">
+                                      {label}:
+                                    </strong>
+                                    {desc}
+                                  </span>
+                                </li>
+                              );
+                            }
                           )}
-
-                        {activeProject.category === "cisco-networking" &&
-                          activeProject.topologyLayers && (
-                            <div className="flex items-center gap-1.5 shrink-0 select-none">
-                              {activeProject.topologyLayers.map(
-                                (layer, idx) => {
-                                  const isLayerActive =
-                                    activeLayerIndex === idx;
-                                  return (
-                                    <button
-                                      key={layer.layer}
-                                      type="button"
-                                      onClick={() => setActiveLayerIndex(idx)}
-                                      className={`px-2.5 py-1 rounded font-mono text-[10px] sm:text-[11px] uppercase tracking-wider transition-colors duration-200 cursor-pointer ${
-                                        isLayerActive
-                                          ? "bg-white text-black font-bold shadow-sm"
-                                          : "text-neutral-400 hover:text-white bg-white/[0.04] border border-white/10"
-                                      }`}
-                                    >
-                                      {layer.layer.split(" ")[0]}
-                                    </button>
-                                  );
-                                }
-                              )}
-                            </div>
-                          )}
+                        </ul>
                       </div>
                     </div>
 
-                    {/* Middle Interactive Blueprint Console */}
-                    <div className="my-2 flex-1 min-h-0 flex flex-col justify-between">
-                      {activeProject.category === "cloud-ai" &&
-                        activePipeline &&
-                        activeStep && (
-                          <div className="flex flex-col h-full justify-between min-h-0">
-                            {/* Pipeline Step Sequence Train */}
-                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 shrink-0 scrollbar-none select-none">
-                              {activePipeline.steps.map((step, idx) => {
-                                const isStepActive = activeStepIndex === idx;
-                                return (
-                                  <React.Fragment key={step.id}>
-                                    <button
-                                      type="button"
-                                      onClick={() => setActiveStepIndex(idx)}
-                                      className={`flex items-center gap-1.5 px-2 py-1 rounded-md border text-left transition-all duration-200 cursor-pointer shrink-0 ${
-                                        isStepActive
-                                          ? "bg-white text-black font-bold border-white shadow-sm"
-                                          : "bg-white/[0.04] text-neutral-300 border-white/10 hover:border-white/25 hover:text-white"
-                                      }`}
-                                    >
-                                      <span className="font-mono text-[10px] opacity-70">
-                                        0{step.stepNumber}
-                                      </span>
-                                      <span className="font-mono text-[11px] truncate max-w-[90px] sm:max-w-none">
-                                        {step.service.split("&")[0].trim()}
-                                      </span>
-                                    </button>
-                                    {idx < activePipeline.steps.length - 1 && (
-                                      <ArrowRight className="h-3 w-3 text-neutral-600 shrink-0" />
-                                    )}
-                                  </React.Fragment>
-                                );
-                              })}
-                            </div>
-
-                            {/* Active Step Details & Code Drawer */}
-                            <div className="flex-1 min-h-0 flex flex-col justify-between pt-1">
-                              <div>
-                                <div className="flex items-center justify-between text-xs font-mono text-neutral-300">
-                                  <span className="font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                    <Workflow className="h-3.5 w-3.5 text-neutral-300" />
-                                    STEP 0{activeStep.stepNumber} //{" "}
-                                    {activeStep.title}
-                                  </span>
-                                  <span className="text-[10px] text-neutral-400 font-mono hidden sm:inline">
-                                    TARGET: {activeStep.service}
-                                  </span>
-                                </div>
-                                <p className="mt-1 text-xs text-neutral-300 leading-relaxed line-clamp-2">
-                                  {activeStep.description}
-                                </p>
-                              </div>
-
-                              {/* Terminal Code Snippet Box */}
-                              {activeStep.detailCode && (
-                                <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10px] sm:text-xs leading-relaxed text-neutral-300 mt-2">
-                                  <div className="flex items-center justify-between border-b border-white/10 pb-1 mb-1 text-[9px] uppercase tracking-wider text-neutral-400">
-                                    <div className="flex items-center gap-1.5">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
-                                      <span className="h-1.5 w-1.5 rounded-full bg-neutral-600" />
-                                      <span className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                                      <span className="ml-1 text-white/80 font-bold">
-                                        EXECUTION_LOGIC // PYTHON 3.14
-                                      </span>
-                                    </div>
-                                    <span className="text-[9px] text-neutral-400 truncate max-w-[200px]">
-                                      {activeStep.service}
-                                    </span>
-                                  </div>
-                                  <pre className="overflow-x-auto text-[10px] sm:text-xs font-mono text-neutral-300 leading-snug max-h-[75px] pr-1">
-                                    <code>{activeStep.detailCode}</code>
-                                  </pre>
-                                </div>
-                              )}
-
-                              {/* Security & Runtime Badge Rail */}
-                              <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px] font-mono text-neutral-400">
-                                {activeStep.securityControl && (
-                                  <div className="flex items-center gap-1 rounded border border-white/10 bg-white/[0.04] px-2 py-0.5">
-                                    <ShieldCheck className="h-3 w-3 text-neutral-300 shrink-0" />
-                                    <span className="truncate max-w-[280px]">
-                                      {activeStep.securityControl}
-                                    </span>
-                                  </div>
-                                )}
-                                {activeStep.runtimeLogic && (
-                                  <div className="flex items-center gap-1 rounded border border-white/10 bg-white/[0.04] px-2 py-0.5">
-                                    <Activity className="h-3 w-3 text-neutral-300 shrink-0" />
-                                    <span className="truncate max-w-[240px]">
-                                      {activeStep.runtimeLogic}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                      {activeProject.category === "cisco-networking" &&
-                        activeLayer && (
-                          <div className="flex flex-col h-full justify-between min-h-0">
-                            <div>
-                              <div className="flex items-center justify-between text-xs font-mono text-neutral-300">
-                                <span className="font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                  <Network className="h-3.5 w-3.5 text-neutral-300" />
-                                  TOPOLOGY // {activeLayer.layer}
-                                </span>
-                                <span className="text-[10px] text-neutral-400 font-mono hidden sm:inline">
-                                  {activeLayer.devices}
-                                </span>
-                              </div>
-                              <p className="mt-1 text-xs text-neutral-300 leading-relaxed line-clamp-2">
-                                {activeLayer.details}
-                              </p>
-                            </div>
-
-                            {/* Cisco IOS CLI Terminal Box */}
-                            {activeLayer.configSnippet && (
-                              <div className="rounded-lg border border-white/10 bg-black/60 p-2.5 font-mono text-[10px] sm:text-xs leading-relaxed text-neutral-300 mt-2">
-                                <div className="flex items-center justify-between border-b border-white/10 pb-1 mb-1 text-[9px] uppercase tracking-wider text-neutral-400">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
-                                    <span className="h-1.5 w-1.5 rounded-full bg-neutral-600" />
-                                    <span className="h-1.5 w-1.5 rounded-full bg-neutral-700" />
-                                    <span className="ml-1 text-white/80 font-bold">
-                                      CISCO_IOS // RUNNING-CONFIG
-                                    </span>
-                                  </div>
-                                  <span className="text-[9px] text-neutral-400 truncate max-w-[200px]">
-                                    {activeLayer.devices}
-                                  </span>
-                                </div>
-                                <pre className="overflow-x-auto text-[10px] sm:text-xs font-mono text-neutral-300 leading-snug max-h-[85px] pr-1">
-                                  <code>{activeLayer.configSnippet}</code>
-                                </pre>
-                              </div>
-                            )}
-
-                            {/* Protocols Badge Rail */}
-                            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-neutral-300">
-                              <span className="text-neutral-500 uppercase">
-                                Active Protocols:
-                              </span>
-                              {activeLayer.protocols
-                                .split(",")
-                                .map((protocol) => (
-                                  <span
-                                    key={protocol.trim()}
-                                    className="rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 text-neutral-300"
-                                  >
-                                    {protocol.trim()}
-                                  </span>
-                                ))}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-
-                    {/* Bottom Console Metric Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-white/10 text-left shrink-0">
-                      {activeProject.metrics.map((m) => (
-                        <div key={m.label} className="flex flex-col">
-                          <span className="font-mono text-[9px] uppercase tracking-wider text-neutral-400 truncate">
-                            {m.label}
+                    {/* Bottom Area: Tech Stack Pills & Action Links */}
+                    <div>
+                      {/* Technology Stack Pills */}
+                      <div className="mt-3 flex flex-wrap gap-1.5 border-t border-white/10 pt-2.5">
+                        {activeProject.stack.map((tech) => (
+                          <span
+                            key={tech}
+                            {...bindCardBadge(6)}
+                            className="rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] text-neutral-300 transition-colors hover:border-white/30 hover:text-white cursor-default select-none"
+                          >
+                            {tech}
                           </span>
-                          <span className="font-mono text-[11px] font-bold text-white truncate">
-                            {m.value}
-                          </span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+
+                      {/* Action Links Tray (GitHub & Discord) */}
+                      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-white/10 pt-3">
+                        {activeProject.githubUrl && (
+                          <a
+                            href={activeProject.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...bindCardAction(8)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                          >
+                            <span>Project Repository</span>
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {activeProject.discordUrl && (
+                          <a
+                            href={activeProject.discordUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...bindCardAction(8)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                          >
+                            <span>Discord Showcase</span>
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -758,7 +499,7 @@ export function ProjectsSection() {
           {/* Bottom Status Rail */}
           <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none">
             <span className="text-foreground/70 truncate max-w-[70%]">
-              {`[INSPECTED: ${activeProject.title}] // CLICK PIPELINE STEPS TO INSPECT LOGIC`}
+              {`[DOSSIER: ${activeProject.title}] // EXECUTIVE ENGINEERING SPEC`}
             </span>
             <span className="shrink-0">
               {`SYSTEMS // 0${filteredProjects.length} ARCHITECTURES`}

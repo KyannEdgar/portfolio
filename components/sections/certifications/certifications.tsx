@@ -12,8 +12,9 @@ import {
 import { PrimeReactProvider } from "primereact/api";
 import { Timeline } from "@primereact/ui/timeline";
 import { siteConfig } from "@/config";
-import { useHeroCursor } from "@/components/ui/hero-cursor-context";
+import { useHeroCursor, useMagneticHover } from "@/components/ui/hero-cursor-context";
 import { customSpring } from "@/lib/animation";
+import { SectionHeader } from "@/components/ui/section-header";
 import {
   Award,
   ArrowUpRight,
@@ -61,6 +62,7 @@ export function CertificationsSection() {
   const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const { setHoveredElementBounds } = useHeroCursor();
+  const { bind, handleMouseLeave: handleBadgeLeave } = useMagneticHover(6);
 
   useEffect(() => {
     setIsMounted(true);
@@ -84,7 +86,10 @@ export function CertificationsSection() {
       ALL_CERTIFICATIONS.length - 1,
       Math.floor((clamped / cardRange) * ALL_CERTIFICATIONS.length)
     );
-    setActiveIndex(index);
+    if (index !== activeIndex) {
+      setHoveredElementBounds(null);
+      setActiveIndex(index);
+    }
   });
 
   // Section 01 exit recede into Section 02
@@ -127,33 +132,13 @@ export function CertificationsSection() {
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
           {/* Numbered Section Header: 01/ Certifications */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={customSpring}
-            className="mb-4 sm:mb-6 md:mb-8 flex flex-col gap-2 md:gap-3 shrink-0"
-          >
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 rounded border border-card-border bg-card/60 px-3 py-1 font-mono text-xs uppercase tracking-widest text-muted-foreground backdrop-blur-md">
-                <Award className="h-3.5 w-3.5 text-foreground" />
-                <span>CREDENTIALS // INDUSTRY ATTESTATIONS</span>
-              </div>
-              <span className="h-px flex-1 max-w-[80px] bg-border" />
-            </div>
-
-            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-              <h2 className="text-4xl font-extrabold tracking-tighter text-foreground sm:text-5xl md:text-6xl uppercase leading-none">
-                <span className="text-foreground/40 font-mono text-3xl sm:text-4xl md:text-5xl mr-3 font-normal">
-                  01/
-                </span>
-                Certifications
-              </h2>
-              <p className="max-w-md font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                Verified Technical Credentials &amp; Cloud Specializations
-              </p>
-            </div>
-          </motion.div>
+          <SectionHeader
+            badgeIcon={<Award className="h-3.5 w-3.5 text-foreground" />}
+            badgeLabel="CREDENTIALS // INDUSTRY ATTESTATIONS"
+            number="01/"
+            title="Certifications"
+            subtitle="Verified Technical Credentials & Cloud Specializations"
+          />
 
           {/* Dual Track Architecture */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 flex-1 items-center min-h-0">
@@ -237,20 +222,7 @@ export function CertificationsSection() {
                               <button
                                 type="button"
                                 onClick={() => handleScrollToCard(globalIdx)}
-                                onMouseEnter={(e) => {
-                                  const rect = (
-                                    e.currentTarget as HTMLElement
-                                  ).getBoundingClientRect();
-                                  setHoveredElementBounds({
-                                    x: rect.left,
-                                    y: rect.top,
-                                    width: rect.width,
-                                    height: rect.height,
-                                    shape: "rounded",
-                                    borderRadius: 12,
-                                  });
-                                }}
-                                onMouseLeave={() => setHoveredElementBounds(null)}
+                                {...bind(12)}
                                 className={`text-left transition-all duration-200 cursor-pointer block p-2 rounded-xl border border-transparent w-full ${
                                   isNodeActive
                                     ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
@@ -345,20 +317,7 @@ export function CertificationsSection() {
                               <button
                                 type="button"
                                 onClick={() => handleScrollToCard(globalIdx)}
-                                onMouseEnter={(e) => {
-                                  const rect = (
-                                    e.currentTarget as HTMLElement
-                                  ).getBoundingClientRect();
-                                  setHoveredElementBounds({
-                                    x: rect.left,
-                                    y: rect.top,
-                                    width: rect.width,
-                                    height: rect.height,
-                                    shape: "rounded",
-                                    borderRadius: 12,
-                                  });
-                                }}
-                                onMouseLeave={() => setHoveredElementBounds(null)}
+                                {...bind(12)}
                                 className={`text-left transition-all duration-200 cursor-pointer block p-2 rounded-xl border border-transparent w-full ${
                                   isNodeActive
                                     ? "text-foreground font-bold bg-foreground/[0.03] border-border/40"
@@ -395,18 +354,27 @@ export function CertificationsSection() {
                 const isPast = idx < activeIndex;
                 const isCurrent = idx === activeIndex;
                 const offsetIndex = idx - activeIndex;
+                const pastDistance = activeIndex - idx;
 
-                const targetY = isPast ? 110 : isCurrent ? 0 : offsetIndex * 12;
+                // Directional Continuity: Exiting cards lift upward (-55px), current sits at 0, upcoming stack below (+14px)
+                const targetY = isPast
+                  ? -Math.min(pastDistance * 55, 90)
+                  : isCurrent
+                  ? 0
+                  : offsetIndex * 14;
+
                 const targetScale = isPast
-                  ? 0.94
+                  ? 0.95
                   : isCurrent
                   ? 1
                   : 1 - offsetIndex * 0.035;
+
                 const targetOpacity = isPast
                   ? 0
                   : isCurrent
                   ? 1
-                  : Math.max(0.2, 1 - offsetIndex * 0.22);
+                  : Math.max(0.18, 1 - offsetIndex * 0.22);
+
                 const targetZIndex = isPast ? 0 : 20 - offsetIndex;
 
                 return (
@@ -420,9 +388,9 @@ export function CertificationsSection() {
                     }}
                     transition={{
                       type: "spring",
-                      stiffness: 260,
-                      damping: 24,
-                      mass: 0.8,
+                      stiffness: 280,
+                      damping: 26,
+                      mass: 0.7,
                     }}
                     className="absolute inset-0 flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 lg:p-8 shadow-2xl backdrop-blur-md will-change-transform overflow-hidden"
                     style={{ pointerEvents: isCurrent ? "auto" : "none" }}
@@ -446,11 +414,17 @@ export function CertificationsSection() {
 
                         <div className="shrink-0">
                           {item.status === "VERIFIED" ? (
-                            <span className="inline-flex items-center rounded border border-white/20 bg-white/[0.08] px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white">
+                            <span
+                              {...bind(6)}
+                              className="inline-flex items-center rounded border border-white/20 bg-white/[0.08] px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white transition-colors hover:border-white/40 cursor-default select-none"
+                            >
                               VERIFIED
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[10px] font-bold text-neutral-300">
+                            <span
+                              {...bind(6)}
+                              className="inline-flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[10px] font-bold text-neutral-300 transition-colors hover:border-white/30 cursor-default select-none"
+                            >
                               <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />
                               IN_PROGRESS
                             </span>
@@ -502,7 +476,8 @@ export function CertificationsSection() {
                         {item.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="rounded border border-white/10 bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] sm:text-xs text-neutral-200"
+                            {...bind(6)}
+                            className="rounded border border-white/10 bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] sm:text-xs text-neutral-200 transition-colors hover:border-white/30 hover:text-white cursor-default select-none"
                           >
                             {skill}
                           </span>
@@ -516,21 +491,8 @@ export function CertificationsSection() {
                         <a
                           href={item.downloadUrl}
                           download
-                          onMouseEnter={(e) => {
-                            const rect = (
-                              e.currentTarget as HTMLElement
-                            ).getBoundingClientRect();
-                            setHoveredElementBounds({
-                              x: rect.left,
-                              y: rect.top,
-                              width: rect.width,
-                              height: rect.height,
-                              shape: "rounded",
-                              borderRadius: 8,
-                            });
-                          }}
-                          onMouseLeave={() => setHoveredElementBounds(null)}
-                          className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30"
+                          {...bind(8)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
                         >
                           <Download className="h-3.5 w-3.5" />
                           <span>Download PDF</span>
@@ -546,21 +508,8 @@ export function CertificationsSection() {
                           href={item.credentialUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          onMouseEnter={(e) => {
-                            const rect = (
-                              e.currentTarget as HTMLElement
-                            ).getBoundingClientRect();
-                            setHoveredElementBounds({
-                              x: rect.left,
-                              y: rect.top,
-                              width: rect.width,
-                              height: rect.height,
-                              shape: "rounded",
-                              borderRadius: 8,
-                            });
-                          }}
-                          onMouseLeave={() => setHoveredElementBounds(null)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-300 transition-colors duration-200 hover:text-white hover:border-white/20"
+                          {...bind(8)}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-300 transition-colors duration-200 hover:text-white hover:border-white/20 cursor-pointer"
                         >
                           <span>Verify Attestation</span>
                           <ArrowUpRight className="h-3.5 w-3.5" />

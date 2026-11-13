@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export interface ElementAbsorptionBounds {
   x: number;
@@ -30,6 +30,14 @@ export function HeroCursorProvider({ children }: { children: React.ReactNode }) 
   const [hoveredElementBounds, setHoveredElementBounds] = useState<ElementAbsorptionBounds | null>(null);
   const [isHeaderHovered, setIsHeaderHovered] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setHoveredElementBounds(null);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <HeroCursorContext.Provider
       value={{
@@ -45,3 +53,42 @@ export function HeroCursorProvider({ children }: { children: React.ReactNode }) 
 }
 
 export const useHeroCursor = () => useContext(HeroCursorContext);
+
+/**
+ * Universal hook for magnetic cursor bubble absorption on hoverable bordered badges, pills, and buttons.
+ */
+export function useMagneticHover(
+  defaultRadius: number = 6,
+  defaultShape: "rounded" | "pill" | "circle" = "rounded"
+) {
+  const { setHoveredElementBounds } = useHeroCursor();
+
+  const handleMouseEnter = React.useCallback(
+    (e: React.MouseEvent<HTMLElement>, overrideRadius?: number) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setHoveredElementBounds({
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+        shape: defaultShape,
+        borderRadius: overrideRadius ?? defaultRadius,
+      });
+    },
+    [setHoveredElementBounds, defaultShape, defaultRadius]
+  );
+
+  const handleMouseLeave = React.useCallback(() => {
+    setHoveredElementBounds(null);
+  }, [setHoveredElementBounds]);
+
+  return {
+    handleMouseEnter,
+    handleMouseLeave,
+    bind: (radius?: number) => ({
+      onMouseEnter: (e: React.MouseEvent<HTMLElement>) =>
+        handleMouseEnter(e, radius),
+      onMouseLeave: handleMouseLeave,
+    }),
+  };
+}
