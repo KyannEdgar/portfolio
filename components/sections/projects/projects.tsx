@@ -22,7 +22,7 @@ import { Terminal, ArrowUpRight } from "lucide-react";
 export function ProjectsSection() {
   const containerRef = useRef<HTMLElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<
-    "all" | "cloud-ai" | "cisco-networking"
+    "all" | "cloud-ai" | "cisco-networking" | "web-platform"
   >("all");
   const [activeProject, setActiveProject] = useState<ProjectSystem>(
     PROJECTS_DATA[0]
@@ -183,7 +183,7 @@ export function ProjectsSection() {
           opacity: recedeOpacity,
           y: recedeY,
         }}
-        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-4 pt-12 pb-4 sm:px-6 md:px-12 md:pt-24 md:pb-4 origin-center will-change-transform"
+        className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto flex flex-col justify-between px-4 pt-12 pb-4 sm:px-6 md:px-12 md:pt-24 md:pb-4 origin-center will-change-transform"
       >
         <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 03/ Projects */}
@@ -193,11 +193,11 @@ export function ProjectsSection() {
             number="03/"
             title="Projects & Labs"
             subtitle="Network Infrastructure, Cloud Services & Server Management"
-            className="mb-2 sm:mb-3 flex flex-col gap-1.5 shrink-0"
+            className="mb-3 sm:mb-4 md:mb-5 flex flex-col gap-1.5 shrink-0"
           />
 
-          {/* Precision System Console Container (Vertically Balanced) */}
-          <div className="flex-1 flex flex-col justify-center min-h-0 my-auto w-full">
+          {/* Precision System Console Container (Top-Anchored, Invariant Filter Position) */}
+          <div className="flex-1 flex flex-col justify-start min-h-0 w-full pt-3 sm:pt-4 md:pt-5">
             {/* Unboxed Category Filter Navigation */}
             <CategoryTabs
               categories={PROJECT_CATEGORIES}
@@ -253,6 +253,17 @@ export function ProjectsSection() {
                         <ArrowUpRight className="h-3 w-3" />
                       </a>
                     )}
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                      >
+                        <span>Live Demo</span>
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
+                    )}
                     {project.discordUrl && (
                       <a
                         href={project.discordUrl}
@@ -271,7 +282,7 @@ export function ProjectsSection() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: System Project Manifest (5/12 cols) */}
-              <div className="hidden lg:flex lg:col-span-5 flex-col h-full min-h-0">
+              <div className="hidden lg:flex lg:col-span-5 flex-col min-h-0">
                 <div
                   ref={listRef}
                   onMouseMove={(e) => {
@@ -282,7 +293,7 @@ export function ProjectsSection() {
                     mousePosRef.current = null;
                     setHoveredElementBounds(null);
                   }}
-                  className="flex-1 h-full min-h-0 max-h-[260px] sm:max-h-[340px] lg:max-h-none overflow-y-auto space-y-2 pr-1 select-none"
+                  className="h-full min-h-[480px] lg:min-h-[520px] max-h-[580px] overflow-y-auto space-y-2 pr-1.5 select-none"
                 >
                   {filteredProjects.map((project, idx) => {
                     const isSelected = project.id === activeProject.id;
@@ -368,17 +379,17 @@ export function ProjectsSection() {
                         </div>
 
                         {/* Stack Pills Tray */}
-                        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/40">
+                        <div className="flex items-center gap-1.5 pt-2 border-t border-border/40 overflow-hidden">
                           {project.stack.slice(0, 3).map((tech) => (
                             <span
                               key={tech}
-                              className="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] text-muted-foreground truncate max-w-[140px]"
+                              className="rounded border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] text-muted-foreground truncate max-w-[140px] shrink-0"
                             >
                               {tech}
                             </span>
                           ))}
                           {project.stack.length > 3 && (
-                            <span className="font-mono text-[10px] text-muted-foreground/60">
+                            <span className="font-mono text-[10px] text-muted-foreground/60 shrink-0">
                               +{project.stack.length - 3}
                             </span>
                           )}
@@ -390,7 +401,7 @@ export function ProjectsSection() {
               </div>
 
               {/* Right Column: Executive Project Dossier (7/12 cols) */}
-              <div className="hidden lg:flex lg:col-span-7 h-auto min-h-[380px] lg:min-h-[440px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="hidden lg:flex lg:col-span-7 h-auto min-h-[480px] lg:min-h-[520px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"
@@ -476,11 +487,14 @@ export function ProjectsSection() {
                       {/* Architecture & System Highlights */}
                       <div className="mt-3.5 space-y-2 border-t border-white/10 pt-3">
                         <div className="font-mono text-[10px] uppercase tracking-wider text-neutral-400">
-                          {activeProject.category === "cloud-ai"
-                            ? "AWS Cloud Infrastructure & Services Architecture:"
-                            : "Core Network Features & Implementation:"}
+                          {activeProject.architectureSectionTitle ||
+                            (activeProject.category === "cloud-ai"
+                              ? "AWS Cloud Infrastructure & Services Architecture:"
+                              : activeProject.category === "web-platform"
+                              ? "Frontend Architecture, Motion Engine & Edge Performance:"
+                              : "Core Network Features & Implementation:")}
                         </div>
-                        <ul className="space-y-1.5 overflow-y-auto max-h-[140px] sm:max-h-[160px] pr-1">
+                        <ul className="space-y-1.5 overflow-y-auto max-h-[130px] sm:max-h-[140px] pr-1">
                           {activeProject.architectureHighlights.map(
                             (highlight, hIdx) => {
                               const [label, ...descParts] = highlight.split(":");
@@ -520,7 +534,7 @@ export function ProjectsSection() {
                         ))}
                       </div>
 
-                      {/* Action Links Tray (GitHub & Discord) */}
+                      {/* Action Links Tray (GitHub, Live URL & Discord) */}
                       <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-white/10 pt-3">
                         {activeProject.githubUrl && (
                           <a
@@ -531,6 +545,18 @@ export function ProjectsSection() {
                             className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
                           >
                             <span>Project Repository</span>
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {activeProject.liveUrl && (
+                          <a
+                            href={activeProject.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            {...bindCardAction(8)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                          >
+                            <span>Live Demo</span>
                             <ArrowUpRight className="h-3.5 w-3.5" />
                           </a>
                         )}

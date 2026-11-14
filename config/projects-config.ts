@@ -1,15 +1,16 @@
-import { ProjectSystem, PipelineStep, SystemPipeline, TopologyLayer } from "@/types";
+import { ProjectCategory, ProjectSystem, PipelineStep, SystemPipeline, TopologyLayer } from "@/types";
 
-export type { ProjectSystem, PipelineStep, SystemPipeline, TopologyLayer };
+export type { ProjectCategory, ProjectSystem, PipelineStep, SystemPipeline, TopologyLayer };
 
 export interface ProjectCategoryDef {
-  id: "all" | "cloud-ai" | "cisco-networking";
+  id: "all" | ProjectCategory;
   label: string;
 }
 
 export const PROJECT_CATEGORIES: ProjectCategoryDef[] = [
   { id: "all", label: "ALL SYSTEMS" },
   { id: "cloud-ai", label: "AWS & SERVERLESS CLOUD" },
+  { id: "web-platform", label: "WEB & CLOUD PLATFORMS" },
   { id: "cisco-networking", label: "CISCO NETWORKING" },
 ];
 
@@ -52,6 +53,47 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       "100% Serverless architecture on AWS with zero idle server overhead",
       "Automated dual-pipeline workflow (Pre-Game Generation + Post-Game Grading)",
       "Brier score algorithmic calibration with public S3 audit reports",
+    ],
+  },
+  {
+    id: "web-app-portfolio",
+    title: "Modern Web Portfolio: Precision Engineering & Minimalist Architecture",
+    subtitle: "Production Full-Stack Web Application with Scroll-Driven Parallax, Magnetic HUD Physics & Edge Deployment",
+    category: "web-platform",
+    categoryLabel: "Web & Cloud Platforms",
+    role: "Frontend & Systems Architect",
+    status: "PRODUCTION",
+    stack: [
+      "Next.js 15 (App Router)",
+      "React 19 / TypeScript",
+      "Tailwind CSS",
+      "Framer Motion 12",
+      "Three.js Canvas",
+      "Vercel Edge Network",
+      "Vercel Speed Insights",
+      "Vercel Analytics",
+    ],
+    metrics: [
+      { label: "Rendering Architecture", value: "Hybrid Static Site Generation (SSG)" },
+      { label: "Motion & Physics Engine", value: "Framer Motion Spring Dynamics" },
+      { label: "Design Token System", value: "Strict Monochromatic Grayscale" },
+      { label: "Edge Telemetry", value: "Real-time Core Web Vitals Tracking" },
+    ],
+    overview:
+      "A high-performance personal engineering portfolio engineered from the ground up using Next.js 15, React 19, and Tailwind CSS. Built to demonstrate rigorous systems architecture, featuring a custom magnetic cursor absorption engine, hardware-accelerated scroll-linked parallax narratives, autonomous SVG background packet routing, and an interactive Three.js viewport canvas. Deployed globally via Vercel's Edge Network with strict adherence to a pure monochromatic design language.",
+    architectureSectionTitle: "Frontend Architecture, Motion Engine & Edge Performance:",
+    architectureHighlights: [
+      "Next.js 15 App Router & Static Generation: Fully pre-rendered static routes compiled ahead-of-time with Turbopack, delivering sub-second initial paint times and zero layout shift.",
+      "Hardware-Accelerated Motion Orchestration: Complex scroll-driven multi-phase text reveals, spring physics recede transitions, and synchronized section layering powered by Framer Motion.",
+      "Universal Magnetic HUD Cursor Engine: Custom React context provider tracking pointer coordinates, absorbing bordered UI elements, and handling auto-scroll bounding box transitions.",
+      "Strict Monochrome Design Tokens: Pure CSS variable design system adhering to strict black/white/neutral grayscale invariants with dynamic dark/light mode switching.",
+      "Edge Telemetry & Production Observability: Integrated Vercel Analytics and Speed Insights for live real-time Core Web Vitals monitoring, performance profiling, and audience telemetry.",
+    ],
+    githubUrl: "https://github.com/KianAbustan/Portfolio",
+    keyHighlights: [
+      "100% static route generation with zero-hydration layout shift",
+      "Custom magnetic cursor HUD physics engine with element boundary absorption",
+      "Strict monochromatic minimalist design language with zero colored accents",
     ],
   },
   {

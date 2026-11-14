@@ -157,11 +157,13 @@ export interface TopologyLayer {
   configSnippet?: string;
 }
 
+export type ProjectCategory = "cloud-ai" | "cisco-networking" | "web-platform";
+
 export interface ProjectSystem {
   id: string;
   title: string;
   subtitle: string;
-  category: "cloud-ai" | "cisco-networking";
+  category: ProjectCategory;
   categoryLabel: string;
   role: string;
   status: "PRODUCTION" | "LAB_TOPOLOGY";
@@ -169,8 +171,10 @@ export interface ProjectSystem {
   metrics: { label: string; value: string }[];
   overview: string;
   architectureHighlights: string[];
+  architectureSectionTitle?: string;
   githubUrl?: string;
   discordUrl?: string;
+  liveUrl?: string;
   keyHighlights?: string[];
   pipelines?: SystemPipeline[];
   topologyLayers?: TopologyLayer[];
