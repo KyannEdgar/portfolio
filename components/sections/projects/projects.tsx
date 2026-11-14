@@ -166,10 +166,10 @@ export function ProjectsSection() {
     damping: 25,
   });
 
-  // Section 03 exit recede into Section 04 (Synchronized with Section 04 rising through the middle)
-  const recedeScale = useTransform(smoothProgress, [0.48, 0.96], [1, 0.88]);
-  const recedeOpacity = useTransform(smoothProgress, [0.48, 0.92], [1, 0]);
-  const recedeY = useTransform(smoothProgress, [0.48, 0.96], [0, -60]);
+  // Section 03 exit recede into Section 04 (Synchronized with Section 04 rising)
+  const recedeScale = useTransform(smoothProgress, [0.72, 0.96], [1, 0.88]);
+  const recedeOpacity = useTransform(smoothProgress, [0.72, 0.94], [1, 0]);
+  const recedeY = useTransform(smoothProgress, [0.72, 0.96], [0, -60]);
 
   return (
     <section
@@ -211,9 +211,67 @@ export function ProjectsSection() {
               layoutId="activeProjectCategoryUnderline"
             />
 
+            {/* Mobile Horizontal Swipeable Dossier Carousel (< 1024px) */}
+            <div className="lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 pt-2 -mx-4 px-4">
+              {filteredProjects.map((project, idx) => (
+                <div
+                  key={project.id}
+                  className="w-[88vw] sm:w-[420px] shrink-0 snap-center rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 flex flex-col justify-between"
+                >
+                  {/* Top Meta */}
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5 font-mono text-[11px] text-neutral-400">
+                    <span>PRJ_0{idx + 1} // {project.categoryLabel.toUpperCase()}</span>
+                    <span className="rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                      {project.status}
+                    </span>
+                  </div>
+                  {/* Title */}
+                  <div className="mt-3">
+                    <h3 className="text-lg font-bold uppercase text-white leading-tight">{project.title}</h3>
+                    <p className="text-xs font-mono text-neutral-400 mt-0.5">{project.subtitle}</p>
+                  </div>
+                  {/* Overview */}
+                  <p className="text-xs text-neutral-300 leading-relaxed mt-2.5 line-clamp-3">{project.overview}</p>
+                  {/* Stack Pills */}
+                  <div className="mt-3 flex flex-wrap gap-1 border-t border-white/10 pt-2.5">
+                    {project.stack.map((t) => (
+                      <span key={t} className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[9px] text-neutral-300">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  {/* Action Links */}
+                  <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                      >
+                        <span>Repository</span>
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
+                    )}
+                    {project.discordUrl && (
+                      <a
+                        href={project.discordUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                      >
+                        <span>Discord</span>
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: System Project Manifest (5/12 cols) */}
-              <div className="lg:col-span-5 flex flex-col h-full min-h-0">
+              <div className="hidden lg:flex lg:col-span-5 flex-col h-full min-h-0">
                 <div
                   ref={listRef}
                   onMouseMove={(e) => {
@@ -332,7 +390,7 @@ export function ProjectsSection() {
               </div>
 
               {/* Right Column: Executive Project Dossier (7/12 cols) */}
-              <div className="lg:col-span-7 h-auto min-h-[380px] lg:min-h-[440px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="hidden lg:flex lg:col-span-7 h-auto min-h-[380px] lg:min-h-[440px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"

@@ -61,8 +61,11 @@ export function CertificationsSection() {
   const containerRef = useRef<HTMLElement>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mobileCertGroup, setMobileCertGroup] = useState<"verified" | "inProgress">("verified");
   const { setHoveredElementBounds } = useHeroCursor();
   const { bind, handleMouseLeave: handleBadgeLeave } = useMagneticHover(6);
+
+  const mobileFilteredCerts = mobileCertGroup === "verified" ? VERIFIED_ITEMS : IN_PROGRESS_ITEMS;
 
   useEffect(() => {
     setIsMounted(true);
@@ -120,7 +123,7 @@ export function CertificationsSection() {
     <section
       id="certifications"
       ref={containerRef}
-      className="relative h-[500vh] w-full"
+      className="relative h-[280vh] lg:h-[500vh] w-full"
     >
       <motion.div
         style={{
@@ -130,7 +133,7 @@ export function CertificationsSection() {
         }}
         className="sticky top-0 min-h-screen lg:h-screen w-full overflow-y-auto lg:overflow-hidden flex flex-col justify-between px-4 pt-12 pb-6 sm:px-6 md:px-12 md:pt-24 md:pb-6 origin-center will-change-transform"
       >
-        <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0">
+        <div className="mx-auto max-w-7xl w-full flex-1 flex flex-col min-h-0 justify-between">
           {/* Numbered Section Header: 01/ Certifications */}
           <SectionHeader
             badgeIcon={<Award className="h-3.5 w-3.5 text-foreground" />}
@@ -140,12 +143,161 @@ export function CertificationsSection() {
             subtitle="Verified Technical Credentials & Cloud Specializations"
           />
 
+          {/* Mobile Centered Workbench Container (< 1024px) */}
+          <div className="lg:hidden flex-1 flex flex-col justify-center min-h-0 my-auto w-full">
+            {/* Filter Navigation */}
+            <div className="flex items-center gap-2 mb-3 select-none">
+              <button
+                type="button"
+                onClick={() => setMobileCertGroup("verified")}
+                className={`px-3 py-1 font-mono text-xs uppercase tracking-wider rounded-lg border transition-colors ${
+                  mobileCertGroup === "verified"
+                    ? "bg-foreground text-background border-foreground font-bold"
+                    : "bg-card/40 text-muted-foreground border-border/60 hover:text-foreground"
+                }`}
+              >
+                Verified ({VERIFIED_ITEMS.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileCertGroup("inProgress")}
+                className={`px-3 py-1 font-mono text-xs uppercase tracking-wider rounded-lg border transition-colors ${
+                  mobileCertGroup === "inProgress"
+                    ? "bg-foreground text-background border-foreground font-bold"
+                    : "bg-card/40 text-muted-foreground border-border/60 hover:text-foreground"
+                }`}
+              >
+                In Progress ({IN_PROGRESS_ITEMS.length})
+              </button>
+            </div>
+
+            {/* Horizontal Carousel (Padded to eliminate shadow clipping) */}
+            <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 pb-5 -mx-4 px-4">
+              {mobileFilteredCerts.map((cert) => (
+                <div
+                  key={cert.id}
+                  className="w-[85vw] sm:w-[420px] shrink-0 snap-center rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 flex flex-col justify-between shadow-lg backdrop-blur-md overflow-hidden"
+                >
+                  <div>
+                    {/* Top Meta Line */}
+                    <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2.5 font-mono text-xs uppercase tracking-widest text-neutral-400">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <ShieldCheck className="h-4 w-4 shrink-0 text-white" />
+                        <span className="shrink-0 text-white font-semibold">
+                          {cert.id}
+                        </span>
+                        <span className="opacity-40 shrink-0">//</span>
+                        <span
+                          className="truncate text-neutral-300 font-medium"
+                          title={cert.issuer}
+                        >
+                          {cert.issuer}
+                        </span>
+                      </div>
+                      <div className="shrink-0">
+                        {cert.status === "VERIFIED" ? (
+                          <span className="inline-flex items-center rounded border border-white/20 bg-white/[0.08] px-2 py-0.5 text-[9px] font-bold tracking-wider text-white">
+                            VERIFIED
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded border border-white/15 bg-white/[0.06] px-2 py-0.5 text-[9px] font-bold text-neutral-300">
+                            <span className="h-1.5 w-1.5 rounded-full bg-white/70 animate-pulse" />
+                            IN_PROGRESS
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Title & Metadata */}
+                    <div className="mt-3.5">
+                      <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white leading-tight break-words">
+                        {cert.title}
+                      </h3>
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-400">
+                        {cert.credentialId && (
+                          <div>
+                            CRED_ID:{" "}
+                            <span className="text-neutral-200">
+                              {cert.credentialId}
+                            </span>
+                          </div>
+                        )}
+                        {cert.certificateNo && (
+                          <div>
+                            CERT_NO:{" "}
+                            <span className="text-neutral-200">
+                              {cert.certificateNo}
+                            </span>
+                          </div>
+                        )}
+                        {cert.period && (
+                          <div>
+                            DURATION:{" "}
+                            <span className="text-neutral-200">
+                              {cert.period}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="mt-3 text-xs leading-relaxed text-neutral-300 line-clamp-3">
+                      {cert.description}
+                    </p>
+
+                    {/* Skills Tags */}
+                    <div className="mt-3.5 flex flex-wrap gap-1">
+                      {cert.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="rounded border border-white/10 bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] text-neutral-200"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3">
+                    {cert.downloadUrl ? (
+                      <a
+                        href={cert.downloadUrl}
+                        download
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-white"
+                      >
+                        <Download className="h-3 w-3" />
+                        <span>Download PDF</span>
+                      </a>
+                    ) : (
+                      <div className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider">
+                        Roadmap Attestation
+                      </div>
+                    )}
+                    {cert.credentialUrl && (
+                      <a
+                        href={cert.credentialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-300"
+                      >
+                        <span>Verify Attestation</span>
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Dual Track Architecture */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 flex-1 items-center min-h-0">
+          <div className="hidden lg:grid lg:grid-cols-12 gap-6 lg:gap-12 flex-1 items-center min-h-0">
             {/* ==============================================================
                 LEFT COLUMN: PrimeReact Timeline Attestation Tracks (5/12 cols)
                 ============================================================== */}
-            <div className="lg:col-span-5 flex flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8 select-none">
+            <div className="hidden lg:flex lg:col-span-5 flex-col justify-center space-y-4 sm:space-y-6 md:space-y-8 select-none">
               {isMounted ? (
                 <PrimeReactProvider unstyled>
                   {/* Track A: Verified Attestations */}
@@ -349,7 +501,7 @@ export function CertificationsSection() {
             {/* ==============================================================
                 RIGHT COLUMN: Shuffling Card Deck with Button Absorption
                 ============================================================== */}
-            <div className="lg:col-span-7 relative h-[260px] sm:h-[320px] lg:h-[420px] max-h-[calc(100vh-240px)] w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 flex items-center justify-center">
+            <div className="hidden lg:flex lg:col-span-7 relative h-[260px] sm:h-[320px] lg:h-[420px] max-h-[calc(100vh-240px)] w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 items-center justify-center">
               {ALL_CERTIFICATIONS.map((item, idx) => {
                 const isPast = idx < activeIndex;
                 const isCurrent = idx === activeIndex;
@@ -520,6 +672,16 @@ export function CertificationsSection() {
                 );
               })}
             </div>
+          </div>
+
+          {/* Bottom Status Rail */}
+          <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none">
+            <span className="text-foreground/70 truncate max-w-[70%]">
+              [ATTESTATION: {ALL_CERTIFICATIONS[activeIndex]?.title || "VERIFIED"}] // VERIFIED
+            </span>
+            <span className="shrink-0">
+              CREDENTIALS // 0{ALL_CERTIFICATIONS.length}
+            </span>
           </div>
         </div>
       </motion.div>

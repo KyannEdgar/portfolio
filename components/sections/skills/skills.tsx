@@ -212,9 +212,52 @@ export function SkillsSection() {
               layoutId="activeSkillUnderline"
             />
 
+            {/* Mobile Horizontal Swipeable Card Carousel (< 1024px) */}
+            <div className="lg:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 pt-2 -mx-4 px-4">
+              {filteredSkills.map((skill, idx) => (
+                <div
+                  key={skill.name}
+                  className="w-[85vw] sm:w-[380px] shrink-0 snap-center rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-5 flex flex-col justify-between"
+                >
+                  {/* Top spec line */}
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5 font-mono text-[11px] text-neutral-400">
+                    <span>SPEC_ID // 0x{String(idx + 1).padStart(2, "0")}</span>
+                    <span className="rounded border border-white/20 bg-white/[0.08] px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                      {skill.proficiency}
+                    </span>
+                  </div>
+                  {/* Title + Icon */}
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="h-10 w-10 shrink-0 flex items-center justify-center rounded-lg border border-white/15 bg-white/[0.04]">
+                      <TechIcon name={skill.icon} className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold uppercase text-white">{skill.name}</h3>
+                      <span className="font-mono text-[10px] text-neutral-400 uppercase">{skill.category}</span>
+                    </div>
+                  </div>
+                  {/* Experience Summary */}
+                  <p className="mt-3 text-xs leading-relaxed text-neutral-300 line-clamp-4">{skill.description}</p>
+                  {/* Tier Definition */}
+                  <div className="mt-3 pt-2.5 border-t border-white/10 font-mono text-[10px] text-neutral-400">
+                    <span className="text-neutral-500 block uppercase">TIER DEFINITION:</span>
+                    <span className="text-neutral-200 mt-0.5 block">{skill.tierDefinition}</span>
+                  </div>
+                  {/* Capability Tags */}
+                  <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap gap-1">
+                    {skill.tags?.map((t) => (
+                      <span key={t} className="rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] text-neutral-300">
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
               {/* Left Column: The Toolchain Ledger Stream (7/12 cols) */}
-              <div className="lg:col-span-7 flex flex-col min-h-0">
+              <div className="hidden lg:flex lg:col-span-7 flex-col min-h-0">
                 <div
                   ref={listRef}
                   onMouseMove={(e) => {
@@ -317,7 +360,7 @@ export function SkillsSection() {
               </div>
 
               {/* Right Column: Dynamic Spec Inspector Canvas (5/12 cols) */}
-              <div className="lg:col-span-5 h-auto min-h-[240px] sm:h-[390px] lg:h-[430px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <div className="hidden lg:flex lg:col-span-5 h-auto min-h-[240px] sm:h-[390px] lg:h-[430px] max-h-[calc(100vh-270px)] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
               {/* Architectural Vector Geometry Watermark */}
               <motion.svg
                 viewBox="0 0 200 200"

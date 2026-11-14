@@ -263,7 +263,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
           rotateY,
           transformStyle: "preserve-3d",
         }}
-        className="group relative flex shrink-0 w-[90vw] sm:w-[84vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[54vh] sm:h-[52vh] lg:h-[56vh] min-h-[340px] sm:min-h-[390px] lg:min-h-[420px] max-h-[500px] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
+        className="group relative flex shrink-0 w-[90vw] sm:w-[84vw] md:w-[68vw] lg:w-[58vw] xl:w-[54vw] h-[68vh] sm:h-[62vh] lg:h-[56vh] min-h-[460px] sm:min-h-[420px] lg:min-h-[420px] max-h-[calc(100vh-175px)] rounded-2xl border border-white/10 bg-black/95 text-white backdrop-blur-md overflow-hidden shadow-2xl transition-[border-color,box-shadow] duration-300 hover:border-white/30 hover:shadow-2xl"
       >
         {/* Dynamic Monochrome Spotlight Overlay */}
         <motion.div
@@ -279,7 +279,7 @@ function ExperienceCard({ item, index, total }: ExperienceCardProps) {
           {/* Left Column: Massive Typography, Meta, Role, Key Achievements & Skills */}
           <div
             onScroll={handleMagneticLeave}
-            className="lg:col-span-7 flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-full overflow-y-auto"
+            className="lg:col-span-7 flex flex-col justify-between p-4 sm:p-6 lg:p-8 h-full overflow-y-auto no-scrollbar"
           >
             {/* Top Meta Line */}
             <div>

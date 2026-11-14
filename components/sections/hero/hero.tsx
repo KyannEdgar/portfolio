@@ -240,18 +240,18 @@ export function Hero() {
         <div className="my-auto flex flex-col items-center justify-center w-full py-8 md:py-12">
           <motion.h1
             variants={heroItemVariants}
-            className="w-full text-center text-4xl sm:text-6xl md:text-[5.5vw] lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-none text-foreground select-none"
+            className="w-full text-center text-[12.5vw] sm:text-6xl md:text-[5.5vw] lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-[0.95] text-foreground select-none"
           >
             <motion.div
               layout
               transition={{ type: "spring", stiffness: 240, damping: 22 }}
-              className="flex flex-col md:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-8"
+              className="flex flex-col md:flex-row items-center justify-center gap-2 sm:gap-4 md:gap-8"
             >
               {/* Word 1: Kian + Dual-Axis Expandable Portrait */}
               <motion.div
                 layout
                 transition={{ type: "spring", stiffness: 240, damping: 22 }}
-                className="inline-flex items-center gap-3 sm:gap-4 md:gap-8"
+                className="inline-flex items-center gap-2 sm:gap-4 md:gap-8"
               >
                 <motion.span
                   layout
@@ -305,12 +305,12 @@ export function Hero() {
                       }
                     }}
                     animate={{
-                      width: isHoveringPicture ? "1.55em" : "1.25em",
-                      height: isHoveringPicture ? "2.35em" : "0.85em",
+                      width: isHoveringPicture ? "1.65em" : "1.3em",
+                      height: isHoveringPicture ? "2.4em" : "0.9em",
                       scale: isHoveringPicture ? 1.02 : 1,
                     }}
                     transition={{ type: "spring", stiffness: 240, damping: 22 }}
-                    className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md md:rounded-lg border border-border/80 dark:border-white/10 cursor-pointer align-middle shadow-sm focus:outline-none focus:ring-1 focus:ring-foreground/40 w-[1.25em] h-[0.85em]"
+                    className="group relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md md:rounded-lg border border-border/80 dark:border-white/10 cursor-pointer align-middle shadow-sm focus:outline-none focus:ring-1 focus:ring-foreground/40 w-[1.3em] h-[0.9em]"
                   >
                     {/* Multi-Photo Transition Layer */}
                     <AnimatePresence mode="wait">
@@ -320,7 +320,7 @@ export function Hero() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.05 }}
                         transition={{ duration: 0.22, ease: "easeOut" }}
-                        className="relative h-full w-full min-h-[0.85em] min-w-[1.25em]"
+                        className="relative h-full w-full min-h-[0.9em] min-w-[1.3em]"
                       >
                         <Image
                           src={PORTRAITS[photoIndex].src}
