@@ -199,9 +199,9 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       { label: "Edge Translation", value: "High-Capacity Overloaded PAT" },
     ],
     overview:
-      "A high-throughput commercial network architecture designed for an esports computer café and gaming center. Prioritizes deterministic low-latency packet delivery, aggregated switch-to-switch trunk bandwidth via LACP EtherChannel, robust client subnet segregation, and high-concurrency NAT/PAT routing for gaming stations.",
+      "A high-throughput commercial network architecture designed for an esports computer café and gaming center. Prioritizes low-latency packet delivery, switch-to-switch trunk bandwidth via LACP EtherChannel, client subnet segregation, and NAT/PAT routing for gaming stations.",
     architectureHighlights: [
-      "Network Topology Design: Resilient two-tier hierarchical switching topology connecting high-density client gaming stations and cashier terminals.",
+      "Network Topology Design: Two-tier switching topology connecting high-density client gaming stations and cashier terminals.",
       "LACP EtherChannel: Link aggregation bundling physical switch interlinks to eliminate bandwidth bottlenecks and deliver trunk failover redundancy.",
       "VLAN Segmentation & IP Schema: Logical segregation separating High-Performance Gaming PCs, Cashier/Admin Systems, and Management subnets.",
       "Automated DHCP & PAT: Automated dynamic IP provisioning with aggressive lease renewal paired with high-capacity PAT internet translation.",
