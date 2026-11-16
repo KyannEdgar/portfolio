@@ -48,7 +48,7 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       "Amazon S3 & Secrets Manager: Used S3 for read-only public CSV storage, and Secrets Manager to safely store encrypted credentials with tight access controls.",
     ],
     githubUrl: "https://github.com/KyannEdgar/CourtEdge",
-    discordUrl: "https://discord.gg/your-invite-code",
+    discordUrl: "https://discord.gg/sJFYtzKYV",
     keyHighlights: [
       "Built on a serverless AWS architecture to eliminate infrastructure management and reduce costs.",
       "Automated dual-pipeline workflow (Pre-Game Generation + Post-Game Grading)",
