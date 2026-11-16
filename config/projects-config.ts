@@ -204,7 +204,7 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       "Network Topology Design: Two-tier switching topology connecting high-density client gaming stations and cashier terminals.",
       "LACP EtherChannel: Link aggregation bundling physical switch interlinks to eliminate bandwidth bottlenecks and deliver trunk failover redundancy.",
       "VLAN Segmentation & IP Schema: Logical segregation separating High-Performance Gaming PCs, Cashier/Admin Systems, and Management subnets.",
-      "Automated DHCP & PAT: Automated dynamic IP provisioning with aggressive lease renewal paired with high-capacity PAT internet translation.",
+      "Automated DHCP & NAT: Automated dynamic IP provisioning with aggressive lease renewal paired with high-capacity NAT internet translation.",
       "Connectivity & Latency Testing: End-to-end ping sweep validation, path tracing, and QoS verification under simulated peak traffic loads.",
     ],
     githubUrl: "https://github.com/your-username/computer-shop-network",
