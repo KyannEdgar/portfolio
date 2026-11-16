@@ -240,49 +240,68 @@ export function ProjectsSection() {
                       </span>
                     ))}
                   </div>
-                  {/* Action Links */}
-                  <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
-                      >
-                        <span>Repository</span>
-                        <ArrowUpRight className="h-3 w-3" />
-                      </a>
-                    )}
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
-                      >
-                        <span>Live Demo</span>
-                        <ArrowUpRight className="h-3 w-3" />
-                      </a>
-                    )}
-                    {project.discordUrl && (
-                      <a
-                        href={project.discordUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
-                      >
-                        <span>Discord</span>
-                        <ArrowUpRight className="h-3 w-3" />
-                      </a>
-                    )}
-                  </div>
+                  {/* Action Links (Only rendered if links exist) */}
+                  {(project.githubUrl || project.liveUrl || project.discordUrl) ? (
+                    <div className="mt-3 flex items-center gap-2 border-t border-white/10 pt-3">
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                        >
+                          <span>Repository</span>
+                          <ArrowUpRight className="h-3 w-3" />
+                        </a>
+                      )}
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                        >
+                          <span>Live Demo</span>
+                          <ArrowUpRight className="h-3 w-3" />
+                        </a>
+                      )}
+                      {project.discordUrl && (
+                        <a
+                          href={project.discordUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white"
+                        >
+                          <span>Discord</span>
+                          <ArrowUpRight className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="mt-3 flex items-center gap-1.5 border-t border-white/10 pt-2.5 font-mono text-[10px] text-neutral-400">
+                      <span className="h-1 w-1 rounded-full bg-neutral-500" />
+                      <span className="uppercase tracking-wider">Internal Enterprise System</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-0">
+            <motion.div
+              layout
+              transition={{
+                layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+              }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-h-0"
+            >
               {/* Left Column: System Project Manifest (5/12 cols) */}
-              <div className="hidden lg:flex lg:col-span-5 flex-col min-h-0">
+              <motion.div
+                layout
+                transition={{
+                  layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                }}
+                className="hidden lg:flex lg:col-span-5 flex-col min-h-0"
+              >
                 <div
                   ref={listRef}
                   onMouseMove={(e) => {
@@ -398,10 +417,17 @@ export function ProjectsSection() {
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Right Column: Executive Project Dossier (7/12 cols) */}
-              <div className="hidden lg:flex lg:col-span-7 h-auto min-h-[480px] lg:min-h-[520px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl">
+              <motion.div
+                layout
+                transition={{
+                  layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                }}
+                style={{ borderRadius: 16 }}
+                className="hidden lg:flex lg:col-span-7 h-auto min-h-[480px] lg:min-h-[520px] rounded-2xl border border-white/10 bg-[#0c0d10] text-[#f8fafc] p-4 sm:p-6 flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-2xl"
+              >
                 {/* Architectural Vector Geometry Watermark */}
                 <motion.svg
                   viewBox="0 0 200 200"
@@ -439,14 +465,19 @@ export function ProjectsSection() {
                   <circle cx="150" cy="150" r="6" strokeWidth="1" />
                 </motion.svg>
 
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="popLayout" initial={false}>
                   <motion.div
                     key={activeProject.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    layout="position"
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className="relative z-10 flex flex-col justify-between h-full min-h-0"
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{
+                      opacity: { duration: 0.16, ease: "easeOut" },
+                      y: { duration: 0.16, ease: "easeOut" },
+                      layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+                    }}
+                    className="w-full relative z-10 flex flex-col justify-between min-h-[480px] lg:min-h-[520px]"
                   >
                     <div>
                       {/* Top Console Meta Bar / Header Spec Line */}
@@ -494,7 +525,7 @@ export function ProjectsSection() {
                               ? "Frontend Architecture, Motion Engine & Edge Performance:"
                               : "Core Network Features & Implementation:")}
                         </div>
-                        <ul className="space-y-1.5 overflow-y-auto max-h-[130px] sm:max-h-[140px] pr-1">
+                        <ul className="space-y-1.5 pr-1">
                           {activeProject.architectureHighlights.map(
                             (highlight, hIdx) => {
                               const [label, ...descParts] = highlight.split(":");
@@ -534,61 +565,74 @@ export function ProjectsSection() {
                         ))}
                       </div>
 
-                      {/* Action Links Tray (GitHub, Live URL & Discord) */}
-                      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-white/10 pt-3">
-                        {activeProject.githubUrl && (
-                          <a
-                            href={activeProject.githubUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            {...bindCardAction(8)}
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
-                          >
-                            <span>Project Repository</span>
-                            <ArrowUpRight className="h-3.5 w-3.5" />
-                          </a>
-                        )}
-                        {activeProject.liveUrl && (
-                          <a
-                            href={activeProject.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            {...bindCardAction(8)}
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
-                          >
-                            <span>Live Demo</span>
-                            <ArrowUpRight className="h-3.5 w-3.5" />
-                          </a>
-                        )}
-                        {activeProject.discordUrl && (
-                          <a
-                            href={activeProject.discordUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            {...bindCardAction(8)}
-                            className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
-                          >
-                            <span>Discord Showcase</span>
-                            <ArrowUpRight className="h-3.5 w-3.5" />
-                          </a>
-                        )}
-                      </div>
+                      {/* Action Links Tray (GitHub, Live URL, Discord, or Proprietary Notice) */}
+                      {(activeProject.githubUrl || activeProject.liveUrl || activeProject.discordUrl) ? (
+                        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-white/10 pt-3">
+                          {activeProject.githubUrl && (
+                            <a
+                              href={activeProject.githubUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              {...bindCardAction(8)}
+                              className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                            >
+                              <span>Project Repository</span>
+                              <ArrowUpRight className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                          {activeProject.liveUrl && (
+                            <a
+                              href={activeProject.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              {...bindCardAction(8)}
+                              className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                            >
+                              <span>Live Demo</span>
+                              <ArrowUpRight className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                          {activeProject.discordUrl && (
+                            <a
+                              href={activeProject.discordUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              {...bindCardAction(8)}
+                              className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.04] px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-white transition-colors duration-200 hover:bg-white/10 hover:border-white/30 cursor-pointer"
+                            >
+                              <span>Discord Showcase</span>
+                              <ArrowUpRight className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-3 font-mono text-[11px] text-neutral-400 select-none">
+                          <span className="h-1.5 w-1.5 rounded-full bg-neutral-500" />
+                          <span className="uppercase tracking-wider">Internal Enterprise System // Proprietary Codebase</span>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
 
           {/* Bottom Status Rail */}
-          <div className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none">
+          <motion.div
+            layout
+            transition={{
+              layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+            }}
+            className="mt-2 pt-2 border-t border-border/40 flex items-center justify-between font-mono text-[11px] text-muted-foreground uppercase tracking-wider shrink-0 select-none"
+          >
             <span className="text-foreground/70 truncate max-w-[70%]">
               {`[DOSSIER: ${activeProject.title}] // EXECUTIVE ENGINEERING SPEC`}
             </span>
             <span className="shrink-0">
               {`SYSTEMS // 0${filteredProjects.length} ARCHITECTURES`}
             </span>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </section>

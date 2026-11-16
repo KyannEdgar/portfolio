@@ -114,6 +114,17 @@ export const SKILLS_DATA: SkillItem[] = [
     tierDefinition:
       "Confident in configuring complex server environments from scratch, managing strict role-based permissions, and seamlessly integrating automated bot workflows and API webhooks.",
   },
+  {
+    name: "Docker",
+    category: "dev-cloud",
+    icon: "docker",
+    description:
+      "Applied containerization fundamentals to support local development workflows for an enterprise HRIS project. Familiar with image/container lifecycles and running isolated service environments.",
+    proficiency: "Intermediate",
+    tags: ["Containerization", "DockerCLI", "LocalDevEnvironment"],
+    tierDefinition:
+      "Comfortable with foundational container tasks, including running basic images, container runtimes, and maintaining consistent local service environments.",
+  },
 
   // ==========================================
   // Operating Systems (os)
