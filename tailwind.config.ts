@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// @ts-expect-error @tailwindcss/typography lacks TypeScript declaration files
+import typography from "@tailwindcss/typography";
 
 function withOpacity(variableName: string): any {
   return ({ opacityValue }: { opacityValue?: string }) => {
@@ -101,7 +103,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [typography],
 };
 
 export default config;

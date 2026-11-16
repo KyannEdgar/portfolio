@@ -42,7 +42,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "aws",
     description:
-      "Architected a 100% serverless, event-driven cloud application. Utilized AWS Lambda and EventBridge to automate dual data pipelines for predictive generation and grading. Integrated Amazon Bedrock for generative AI reasoning, DynamoDB for central storage, and AWS IAM to enforce least-privilege security.",
+      "Architected a serverless, event-driven cloud application. Utilized AWS Lambda and EventBridge to automate data pipelines for predictive generation and grading. Integrated Amazon Bedrock for generative AI reasoning, DynamoDB for central storage, and AWS IAM to enforce least-privilege security.",
     proficiency: "Advanced",
     tags: ["Serverless", "EventDriven", "GenAI"],
     tierDefinition:
@@ -53,7 +53,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "gcp",
     description:
-      "Integrated multiple Google Maps APIs (including routing, geocoding, and places) to power location-based features for a full-stack college capstone project. Managed project environments, API credential security, and usage quotas within the GCP Console.",
+      "Integrated multiple Google Maps APIs (including routing, geocoding, and places) used for location-based features for a full-stack capstone project. Managed project environments, API credential security, and usage quotas within the GCP Console.",
     proficiency: "Intermediate",
     tags: ["GoogleMapsAPI", "APIIntegration", "CloudConsole"],
     tierDefinition:
@@ -64,7 +64,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "dev-cloud",
     icon: "github",
     description:
-      "Managed source code versioning and project repositories using standard branch-based workflows. Regularly handled commits, merges, and pull requests to maintain a clean codebase history and track project development.",
+      "Managed source code versioning and project repositories using standard branch-based workflows. Handled commits, merges, and pull requests to maintain a clean codebase history and track project development.",
     proficiency: "Intermediate",
     tags: ["VersionControl", "GitFlow", "SourceCodeManagement"],
     tierDefinition:
@@ -103,6 +103,17 @@ export const SKILLS_DATA: SkillItem[] = [
     tierDefinition:
       "Highly capable of independently setting up, configuring, and managing a comprehensive suite of Firebase services for end-to-end application delivery.",
   },
+  {
+    name: "Discord",
+    category: "dev-cloud",
+    icon: "discord",
+    description:
+      "Experienced in architecting Discord servers for development teams and communities. Proficient in setting up custom webhooks, deploying bot automations, and integrating external services to streamline project notifications and workflows.",
+    proficiency: "Proficient",
+    tags: ["Webhooks", "BotAutomation", "RolePermissions"],
+    tierDefinition:
+      "Confident in configuring complex server environments from scratch, managing strict role-based permissions, and seamlessly integrating automated bot workflows and API webhooks.",
+  },
 
   // ==========================================
   // Operating Systems (os)
@@ -112,7 +123,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "os",
     icon: "linux",
     description:
-      "Highly adaptable across multiple Linux distributions for daily usage and software development. Capable of navigating the file system, managing applications, and customizing the workspace with the same fluency as a native Windows environment.",
+      "Proficient in multiple Linux distributions for software development and daily operations, with a strong command of file systems, package management, and environment configuration comparable to my fluency in Windows.",
     proficiency: "Proficient",
     tags: ["MultiDistro", "CLI", "PowerUser"],
     tierDefinition:
@@ -138,7 +149,7 @@ export const SKILLS_DATA: SkillItem[] = [
     category: "design",
     icon: "figma",
     description:
-      "Designed and prototyped user interfaces and experiences across multiple projects. Leveraged Figma to translate conceptual ideas into high-fidelity wireframes, interactive mockups, and cohesive design systems.",
+      "Designed and prototyped user interfaces and experiences across multiple projects. Used Figma to translate conceptual ideas into interactive mockups and cohesive design systems.",
     proficiency: "Proficient",
     tags: ["UIUX", "Prototyping", "Wireframing"],
     tierDefinition:
