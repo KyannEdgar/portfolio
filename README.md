@@ -17,10 +17,10 @@ Rather than relying on templates or visual clutter, the portfolio was custom-bui
 
 ## 🎯 What the Portfolio Showcases
 
-- **Interactive Project Consoles:** In-depth architectural breakdowns of real-world builds—including cloud-based AI pipelines, enterprise software backends, and multi-VLAN Cisco networking topologies.
+- **Project Consoles:** Breakdown of my builds including cloud-based AI pipelines, enterprise software backends, and multi-VLAN Cisco networking topologies.
 - **Skills & Technical Proficiency:** Categorized directory of technical competencies spanning cloud platforms, programming languages, operating systems, and network engineering tools.
 - **Verified Credentials & Certifications:** Direct verification links and credential details for industry certifications and ongoing specializations.
-- **Experience & Academic Background:** Structured timelines detailing professional internship work, software testing, and computer science degree coursework.
+- **Experience & Academic Background:** Structured timelines detailing professional internship work, software testing, and information technology degree coursework.
 
 ---
 
