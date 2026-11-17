@@ -47,7 +47,7 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       "Amazon DynamoDB: Used for low-latency data storage, keeping a reliable history of application states and historical audit logs.",
       "Amazon S3 & Secrets Manager: Used S3 for read-only public CSV storage, and Secrets Manager to safely store encrypted credentials with tight access controls.",
     ],
-    githubUrl: "https://github.com/KyannEdgar/CourtEdge",
+    githubUrl: "https://github.com/KyannEdgar/courtedge",
     discordUrl: "https://discord.gg/sJFYtzKYV",
     keyHighlights: [
       "Built on a serverless AWS architecture to eliminate infrastructure management and reduce costs.",
@@ -89,7 +89,7 @@ export const PROJECTS_DATA: ProjectSystem[] = [
       "Monochromatic Design System: Created a strict grayscale design system using pure CSS variables.",
       "Performance Monitoring: Integrated Vercel Analytics and Speed Insights to track Core Web Vitals and monitor live user traffic.",
     ],
-    githubUrl: "https://github.com/KianAbustan/Portfolio",
+    githubUrl: "https://github.com/KianAbustan/portfolio",
     keyHighlights: [
       "100% static route generation with zero-hydration layout shift",
       "Custom magnetic cursor HUD physics engine with element boundary absorption",
