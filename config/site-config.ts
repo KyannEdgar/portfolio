@@ -44,7 +44,7 @@ export const siteConfig: SiteConfig = {
     {
       platform: "Discord",
       label: "Direct Comms",
-      url: "https://discord.com/invite/hZPrBDpS",
+      url: "https://discord.com/users/1556539432176328794",
       handle: "hZPrBDpS",
     },
   ],
